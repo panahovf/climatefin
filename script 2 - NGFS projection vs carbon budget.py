@@ -4,13 +4,29 @@
 # Author: Farhad Panahov
 
 
+
+
 # Task #1: The datapoints are provided in 5 year intervals, ending in 2050
 #   - Iterpolate linear trend line
 #   - Obtain YoY % change 
 
 
 
-# Task #2: For Primary Energy convert units and values to emissions
+
+# Task #2: For Secondary Energy
+# I am using FA data to identify country specific emissions intensity values. 
+# Oil and Gas are constant. Coal has some variation across countries
+# We follow following formula:
+# Alissa Kleinnijenhuis: annual CO2 (in million tonnes) = capacity * capacity factor * heat rate (in Btu per kWh) * emission factor (kg of CO2 per TJ) * 9.2427 x 10^-12
+# Prevous script gets a product of 'heat rate' and 'emissinos factor' (weighted for counties by activity)
+# Here below we incorporate chaging EJ to MWh, and then MWh to Capacity X Capacity Factor
+# MWh is C X CF over 24 hours and 365 days
+
+
+
+
+
+# Task #3: For Primary Energy convert units and values to emissions
 #   - Change EJ/year to emissions 
 
 # COAL
@@ -32,15 +48,6 @@
 # 1 m3 = 1.932 kg CO2
 
 
-
-# Task #3: For Secondary Energy
-# I am using FA data to identify country specific emissions intensity values. 
-# Oil and Gas are constant. Coal has some variation across countries
-# We follow following formula:
-# Alissa Kleinnijenhuis: annual CO2 (in million tonnes) = capacity * capacity factor * heat rate (in Btu per kWh) * emission factor (kg of CO2 per TJ) * 9.2427 x 10^-12
-# Prevous script gets a product of 'heat rate' and 'emissinos factor' (weighted for counties by activity)
-# Here below we incorporate chaging EJ to MWh, and then MWh to Capacity X Capacity Factor
-# MWh is C X CF over 24 hours and 365 days
 
 
 # Task #4: Compare emissions globally to carbon budget
@@ -66,53 +73,50 @@ from matplotlib.ticker import FuncFormatter
 # In[3]:
 # directory & load data
 
+# ----------------------------
 directory = r'C:\Users\panah\OneDrive\Desktop\Work\2 - RA - Climate fin'
 os.chdir(directory)
+del directory
 
 
-GCAM = "1 - input/Downscaled_GCAM 6.0 NGFS_data.xlsx"
-df_gcam = pd.read_excel(GCAM)      #input the name of the Excel file
-del GCAM, directory
+# ---------------------------- 
+# NGFS GCAM 6
+df_gcam = pd.read_excel('1 - input/Downscaled_GCAM 6.0 NGFS_data.xlsx')      #input the name of the Excel file
 
 
-
-# In[4]:
+# ----------------------------
 # load country power sector OIL&GAS and COAL emissions intensity data
-# for coal intensity is given in kg of CO2 per TJ, and for oil and gas in million tonnes of CO2 per MWh
-
-# https://www.convertunits.com/from/EJ/to/TJ
-co2_factor_coal = pd.read_excel('2 - output/script 1/1 - country_power_co2factor_coal.xlsx')
-co2_factor_coal.columns = ['Region', 'factor']
-co2_factor_coal['factor'] = co2_factor_coal['factor'] * (277777777.778) /(24*365) * 9.2427 / (10**12)
-# this converts EJ to MWh --> MWh to Capacity X Capacity Factor --> and then follows emissions calculation formula
-# Alissa Kleinnijenhuis: annual CO2 (in million tonnes) = capacity * capacity factor * heat rate (in Btu per kWh) * emission factor (kg of CO2 per TJ) * 9.2427 x 10^-12
-
+# original intensity is given in million tonnes of CO2 per MWh; this section already converts it from MWh to EJ by multiplying to 277777777.778
 
 # https://www.convertunits.com/from/EJ/to/MWh
+# coal
+co2_factor_coal = pd.read_excel('2 - output/script 1/1 - country_power_co2factor_coal.xlsx')
+co2_factor_coal.columns = ['Region', 'factor']
+co2_factor_coal['factor'] = co2_factor_coal['factor'] * (277777777.778) 
+
+# oil
 co2_factor_oil = pd.read_excel('2 - output/script 1/2 - country_power_co2factor_oil.xlsx')
 co2_factor_oil.columns = ['Region', 'factor']
-co2_factor_oil['factor'] = co2_factor_oil['factor'] * (277777777.778) # this converts MWh to EJ
+co2_factor_oil['factor'] = co2_factor_oil['factor'] * (277777777.778)
 
-
+# gas
 co2_factor_gas = pd.read_excel('2 - output/script 1/3 - country_power_co2factor_gas.xlsx')
 co2_factor_gas.columns = ['Region', 'factor']
-co2_factor_gas['factor'] = co2_factor_gas['factor'] * (277777777.778) # this converts MWh to EJ
+co2_factor_gas['factor'] = co2_factor_gas['factor'] * (277777777.778)
 
 
-
-# In[5]:
+# ----------------------------
 # load market and region datasets
-df_developed = pd.read_excel('2 - output/script a - country codes/1 - developed.xlsx')
-df_developing = pd.read_excel('2 - output/script a - country codes/2 - developing.xlsx')
-df_emerging = pd.read_excel('2 - output/script a - country codes/3 - emerging.xlsx')
-
 df_regions = pd.read_excel('1 - input/Country Datasets/country_gca_region.xlsx')
 
 
 
-# In[5]:
-# filter, and create %change df
+# In[5]: Task #1: The datapoints are provided in 5 year intervals, ending in 2050
+#################################################################################
+#   - Iterpolate linear trend line
+#   - Obtain YoY % change 
 
+# filter
 df_gcam_filtered = df_gcam.loc[(df_gcam['Variable'] == 'Primary Energy|Gas') |  (df_gcam['Variable'] == 'Primary Energy|Oil')| (df_gcam['Variable'] == 'Primary Energy|Coal')| (df_gcam['Variable'] == 'Secondary Energy|Electricity|Coal')| (df_gcam['Variable'] == 'Secondary Energy|Electricity|Gas')|(df_gcam['Variable'] == 'Secondary Energy|Electricity|Oil')]
 
 
@@ -120,7 +124,6 @@ df_gcam_filtered = df_gcam.loc[(df_gcam['Variable'] == 'Primary Energy|Gas') |  
 years = [str(year) for year in range(2020, 2101)]
 df_gcam_filtered[years] = df_gcam_filtered[years].interpolate(method='linear', axis=1)
 df_gcam_years = df_gcam_filtered[years]
-#df_gcam_years.to_excel('Interpolated-GCAM.xlsx', index=False)
     
 
 # Calculate yearly percent change for each row
@@ -136,9 +139,10 @@ del first_5_columns, pct_change_df
 
 
 
-# In[6]:
-# get list of countries for coal and oilgas secondary energy
+# In[6]: Task #2: For Secondary Energy - use country specific emissions factors to get GHG levels
+####################################################################################################
 
+# get list of countries for coal and oilgas secondary energy
 gcam_countries = df_gcam_filtered.loc[(df_gcam['Variable'] == 'Secondary Energy|Electricity|Gas')|(df_gcam['Variable'] == 'Secondary Energy|Electricity|Oil')| (df_gcam['Variable'] == 'Secondary Energy|Electricity|Coal')]
 gcam_countries = gcam_countries[['Region']].drop_duplicates()
 
@@ -147,7 +151,6 @@ gcam_countries = gcam_countries[['Region']].drop_duplicates()
 gcam_countries = gcam_countries.merge(co2_factor_coal, on='Region', how='left')
 gcam_countries = gcam_countries.merge(co2_factor_oil, on='Region', how='left')
 gcam_countries = gcam_countries.merge(co2_factor_gas, on='Region', how='left')
-
 gcam_countries.columns = ['Region', 'coal','oil','gas']
 
 
@@ -161,6 +164,7 @@ gcam_countries['gas'].fillna(value=gcam_countries['gas'].mean(), inplace=True)
 # In[7]:
 # Convert secondary energy to emissions
 
+# get copy dataframe
 df_gcam_emissions = df_gcam_filtered.copy()
 
 
@@ -193,7 +197,9 @@ del emissions_factor_gas, emissions_factor_oil, emissions_factor_coal
 
 
 
-# In[8]:
+# In[8]: # Task #3: For Primary Energy convert units and values to emissions
+############################################################################
+
 # Convert primary energy to emissions    
     
 # Define the constant to multiply for unit conversion
@@ -226,35 +232,37 @@ del emissions_factor_gas, emissions_factor_oil, emissions_factor_coal
 
 
 
-# In[9]:
-# Get emissions over years across sources, scenario and cumulative starting 2024 to align with carbon budget
+# In[9]: GET REGIONS, FUEL TYPE
+##################################################
 
 # set years 2024-2050    
 year_columns = [str(year) for year in range(2024, 2051)]
 
 
+# 1 --- PRIMARY vs SECONDARY BY SCENARIO
+########################################
+
 # get by scenario & energy type (primary vs secondary)
-df_global_byscenario = df_gcam_emissions.groupby(['Scenario', 'Variable'])[year_columns].sum()
-df_global_byscenario.reset_index(inplace=True)
+df_emissions_global_byscenario = df_gcam_emissions.groupby(['Scenario', 'Variable'])[year_columns].sum()
+df_emissions_global_byscenario.reset_index(inplace=True)
 
 
 # primary
-df_global_byscenario_primary = df_global_byscenario[df_global_byscenario['Variable'].str.contains('Primary')]
-df_global_byscenario_primary = df_global_byscenario_primary.groupby(['Scenario'])[year_columns].sum()
+df_emissions_global_byscenario_primary = df_emissions_global_byscenario[df_emissions_global_byscenario['Variable'].str.contains('Primary')]
+df_emissions_global_byscenario_primary = df_emissions_global_byscenario_primary.groupby(['Scenario'])[year_columns].sum()
+df_emissions_global_byscenario_primary = df_emissions_global_byscenario_primary.reset_index()
 
 
 # secondary
-df_global_byscenario_secondary = df_global_byscenario[df_global_byscenario['Variable'].str.contains('Secondary')]
-df_global_byscenario_secondary = df_global_byscenario_secondary.groupby(['Scenario'])[year_columns].sum()
+df_emissions_global_byscenario_secondary = df_emissions_global_byscenario[df_emissions_global_byscenario['Variable'].str.contains('Secondary')]
+df_emissions_global_byscenario_secondary = df_emissions_global_byscenario_secondary.groupby(['Scenario'])[year_columns].sum()
+df_emissions_global_byscenario_secondary = df_emissions_global_byscenario_secondary.reset_index()
 
 
-del df_global_byscenario
 
 
 
-# In[10]:
-# add regions
-
+# 2 --- BY REGIONS AND SCENARIO --- FOR PRIMARY AND SECONDARY
 # get the regions & create 4 dataframes for scenarios
 df_emissions_byregion = df_gcam_emissions.copy()      # create a new dataframe
 df_emissions_byregion = pd.merge(df_emissions_byregion,
@@ -276,82 +284,105 @@ df_emissions_byregion_ndc = df_emissions_byregion[df_emissions_byregion['Scenari
 # reginos by scenario by primary vs secondary
 df_emissions_byregion_currentpolicy.reset_index(inplace=True)
 df_emissions_byregion_currentpolicy_primary = df_emissions_byregion_currentpolicy[df_emissions_byregion_currentpolicy['Variable'].str.contains('Primary')]
-#df_emissions_byregion_currentpolicy_secondary = df_emissions_byregion_currentpolicy[df_emissions_byregion_currentpolicy['Variable'].str.contains('Secondary')]
+df_emissions_byregion_currentpolicy_secondary = df_emissions_byregion_currentpolicy[df_emissions_byregion_currentpolicy['Variable'].str.contains('Secondary')]
 
 df_emissions_byregion_netzero.reset_index(inplace=True)
 df_emissions_byregion_netzero_primary = df_emissions_byregion_netzero[df_emissions_byregion_netzero['Variable'].str.contains('Primary')]
-#df_emissions_byregion_netzero_secondary = df_emissions_byregion_netzero[df_emissions_byregion_netzero['Variable'].str.contains('Secondary')]
+df_emissions_byregion_netzero_secondary = df_emissions_byregion_netzero[df_emissions_byregion_netzero['Variable'].str.contains('Secondary')]
 
 df_emissions_byregion_below2.reset_index(inplace=True)
 df_emissions_byregion_below2_primary = df_emissions_byregion_below2[df_emissions_byregion_below2['Variable'].str.contains('Primary')]
-#df_emissions_byregion_below2_secondary = df_emissions_byregion_below2[df_emissions_byregion_below2['Variable'].str.contains('Secondary')]
+df_emissions_byregion_below2_secondary = df_emissions_byregion_below2[df_emissions_byregion_below2['Variable'].str.contains('Secondary')]
 
 df_emissions_byregion_ndc.reset_index(inplace=True)
 df_emissions_byregion_ndc_primary = df_emissions_byregion_ndc[df_emissions_byregion_ndc['Variable'].str.contains('Primary')]
-#df_emissions_byregion_ndc_secondary = df_emissions_byregion_ndc[df_emissions_byregion_ndc['Variable'].str.contains('Secondary')]
+df_emissions_byregion_ndc_secondary = df_emissions_byregion_ndc[df_emissions_byregion_ndc['Variable'].str.contains('Secondary')]
 
 
 del df_emissions_byregion_currentpolicy, df_emissions_byregion_netzero, df_emissions_byregion_below2, df_emissions_byregion_ndc
 
 
 
-# In[12]:
-# get cumulative by primary vs secondarry by scenario
+# In[12]: CUMULATIVE EMISSIONS
+##############################
+
+# 1 --- get cumulative by primary vs secondarry by scenario
 
 # primary
-df_global_byscenario_primary_cumulative = df_global_byscenario_primary.copy()
-df_global_byscenario_primary_cumulative[year_columns] = df_global_byscenario_primary[year_columns].cumsum(axis=1)
-df_global_byscenario_primary_cumulative = df_global_byscenario_primary_cumulative.reset_index()
+df_emissions_global_byscenario_primary_cumulative = df_emissions_global_byscenario_primary.copy()
+df_emissions_global_byscenario_primary_cumulative[year_columns] = df_emissions_global_byscenario_primary[year_columns].cumsum(axis=1)
+df_emissions_global_byscenario_primary_cumulative = df_emissions_global_byscenario_primary_cumulative.reset_index()
 
 
 # secondary
-df_global_byscenario_secondary_cumulative = df_global_byscenario_secondary.copy()
-df_global_byscenario_secondary_cumulative[year_columns] = df_global_byscenario_secondary[year_columns].cumsum(axis=1)
-df_global_byscenario_secondary_cumulative = df_global_byscenario_secondary_cumulative.reset_index()
+df_emissions_global_byscenario_secondary_cumulative = df_emissions_global_byscenario_secondary.copy()
+df_emissions_global_byscenario_secondary_cumulative[year_columns] = df_emissions_global_byscenario_secondary[year_columns].cumsum(axis=1)
+df_emissions_global_byscenario_secondary_cumulative = df_emissions_global_byscenario_secondary_cumulative.reset_index()
 
 
 
-# In[12]:
-# get cumulative by primary vs secondarry by scenario & REGIONS
 
-# primary
+# 2 --- get cumulative by primary vs secondarry by scenario & REGIONS
+# PRIMARY
 # CurrentPolicy
 df_emissions_byregion_currentpolicy_primary_cumulative = df_emissions_byregion_currentpolicy_primary.copy()
 df_emissions_byregion_currentpolicy_primary_cumulative[year_columns] = df_emissions_byregion_currentpolicy_primary[year_columns].cumsum(axis=1)
 df_emissions_byregion_currentpolicy_primary_cumulative = df_emissions_byregion_currentpolicy_primary_cumulative.reset_index()
-
 
 # NetZero
 df_emissions_byregion_netzero_primary_cumulative = df_emissions_byregion_netzero_primary.copy()
 df_emissions_byregion_netzero_primary_cumulative[year_columns] = df_emissions_byregion_netzero_primary[year_columns].cumsum(axis=1)
 df_emissions_byregion_netzero_primary_cumulative = df_emissions_byregion_netzero_primary_cumulative.reset_index()
 
-
 # Below2
 df_emissions_byregion_below2_primary_cumulative = df_emissions_byregion_below2_primary.copy()
 df_emissions_byregion_below2_primary_cumulative[year_columns] = df_emissions_byregion_below2_primary[year_columns].cumsum(axis=1)
 df_emissions_byregion_below2_primary_cumulative = df_emissions_byregion_below2_primary_cumulative.reset_index()
 
-
-# Below2
+# NDC
 df_emissions_byregion_ndc_primary_cumulative = df_emissions_byregion_ndc_primary.copy()
 df_emissions_byregion_ndc_primary_cumulative[year_columns] = df_emissions_byregion_ndc_primary[year_columns].cumsum(axis=1)
 df_emissions_byregion_ndc_primary_cumulative = df_emissions_byregion_ndc_primary_cumulative.reset_index()
 
 
 
-# In[10]:
-# Get overall emissions for 2020 for comparisons
-    
+# SECONDARY
+# CurrentPolicy
+df_emissions_byregion_currentpolicy_secondary_cumulative = df_emissions_byregion_currentpolicy_secondary.copy()
+df_emissions_byregion_currentpolicy_secondary_cumulative[year_columns] = df_emissions_byregion_currentpolicy_secondary[year_columns].cumsum(axis=1)
+df_emissions_byregion_currentpolicy_secondary_cumulative = df_emissions_byregion_currentpolicy_secondary_cumulative.reset_index()
+
+# NetZero
+df_emissions_byregion_netzero_secondary_cumulative = df_emissions_byregion_netzero_secondary.copy()
+df_emissions_byregion_netzero_secondary_cumulative[year_columns] = df_emissions_byregion_netzero_secondary[year_columns].cumsum(axis=1)
+df_emissions_byregion_netzero_secondary_cumulative = df_emissions_byregion_netzero_secondary_cumulative.reset_index()
+
+# Below2
+df_emissions_byregion_below2_secondary_cumulative = df_emissions_byregion_below2_secondary.copy()
+df_emissions_byregion_below2_secondary_cumulative[year_columns] = df_emissions_byregion_below2_secondary[year_columns].cumsum(axis=1)
+df_emissions_byregion_below2_secondary_cumulative = df_emissions_byregion_below2_secondary_cumulative.reset_index()
+
+# NDC
+df_emissions_byregion_ndc_secondary_cumulative = df_emissions_byregion_ndc_secondary.copy()
+df_emissions_byregion_ndc_secondary_cumulative[year_columns] = df_emissions_byregion_ndc_secondary[year_columns].cumsum(axis=1)
+df_emissions_byregion_ndc_secondary_cumulative = df_emissions_byregion_ndc_secondary_cumulative.reset_index()
+
+
+
+
+
+# In[10]: Get overall emissions for 2020 for comparisons
+########################################################
+
 year_columns2 = [str(year) for year in range(2020, 2021)]
-df_global_bysource = df_gcam_emissions[df_gcam_emissions['Scenario'] == 'Current Policies'].groupby(['Variable'])[year_columns2].sum()
+df_emissions_global_bysource = df_gcam_emissions[df_gcam_emissions['Scenario'] == 'Current Policies'].groupby(['Variable'])[year_columns2].sum()
 
 
 # create a dataset with emissions from NGFS
 df_gcam_ghg = df_gcam.loc[(df_gcam['Variable'] == 'Emissions|CO2')]
 df_gcam_ghg_energy = df_gcam.loc[(df_gcam['Variable'] == 'Emissions|CO2|Energy')]
 
-# estimates
+# estimates as given in NGFS dataset
 df_gcam_ghg = df_gcam_ghg.groupby(['Scenario'])[year_columns2].sum()
 df_gcam_ghg_energy = df_gcam_ghg_energy.groupby(['Scenario'])[year_columns2].sum()
 
@@ -361,9 +392,10 @@ df_gcam_ghg_energy = df_gcam_ghg_energy.groupby(['Scenario'])[year_columns2].sum
 # manual comparison dataframe
 # Creating a DataFrame with specified rows and columns
 # for secondary
+# print(df_emissions_global_bysource)
 df_comparison_secondary = {
-    'NGFS': [10.490, 2.908, 0.652],  # Initial values for NGFS
-    'Ford Analytics': [10.085, 3.41, 0.641]  # Initial values for Moritz
+    'NGFS': [10.490, 2.908, 0.652],  # Initial values for NGFS --- df_emissions_blobal_bysource above
+    'Ford Analytics': [10.085, 3.41, 0.641]  # Initial values from Moritz
 }
 
 # Define the index for the rows corresponding to coal, oil, and gas
@@ -427,8 +459,8 @@ df_comparison_total_regions = pd.DataFrame(df_comparison_total_regions, index=['
 # Plot the cumulative emissions
 plt.figure(figsize=(12, 8))
 
-for scenario in df_global_byscenario_primary_cumulative['Scenario'].unique():
-    plt.plot(year_columns, df_global_byscenario_primary_cumulative[df_global_byscenario_primary_cumulative['Scenario'] == scenario][year_columns].values[0],
+for scenario in df_emissions_global_byscenario_primary_cumulative['Scenario'].unique():
+    plt.plot(year_columns, df_emissions_global_byscenario_primary_cumulative[df_emissions_global_byscenario_primary_cumulative['Scenario'] == scenario][year_columns].values[0],
              label=scenario)
 
 # Customize the x-axis to show ticks every 5 years
@@ -480,8 +512,8 @@ plt.show()
 # Plot the cumulative emissions
 plt.figure(figsize=(12, 8))
 
-for scenario in df_global_byscenario_secondary_cumulative['Scenario'].unique():
-    plt.plot(year_columns, df_global_byscenario_secondary_cumulative[df_global_byscenario_secondary_cumulative['Scenario'] == scenario][year_columns].values[0], label=scenario)
+for scenario in df_emissions_global_byscenario_secondary_cumulative['Scenario'].unique():
+    plt.plot(year_columns, df_emissions_global_byscenario_secondary_cumulative[df_emissions_global_byscenario_secondary_cumulative['Scenario'] == scenario][year_columns].values[0], label=scenario)
 
 # Customize the x-axis to show ticks every 5 years
 plt.xticks([str(year) for year in range(2025, 2051, 5)])
@@ -532,8 +564,8 @@ plt.show()
 # Plot the cumulative emissions
 plt.figure(figsize=(12, 8))
 
-for scenario in df_global_byscenario_secondary_cumulative['Scenario'].unique():
-    plt.plot(year_columns, df_global_byscenario_secondary_cumulative[df_global_byscenario_secondary_cumulative['Scenario'] == scenario][year_columns].values[0], label=scenario)
+for scenario in df_emissions_global_byscenario_secondary_cumulative['Scenario'].unique():
+    plt.plot(year_columns, df_emissions_global_byscenario_secondary_cumulative[df_emissions_global_byscenario_secondary_cumulative['Scenario'] == scenario][year_columns].values[0], label=scenario)
 
 # Customize the x-axis to show ticks every 5 years
 plt.xticks([str(year) for year in range(2025, 2051, 5)])
@@ -671,7 +703,7 @@ plt.show()
 
 
 
-# Plot # 3 --- NDC
+# Plot # 3 --- BELOW 2
 
 # get cumulative emissions by region
 df_emissions_byregion_below2_primary_cumulative_REGION = df_emissions_byregion_below2_primary_cumulative.groupby(['gca_region'])[year_columns].sum()
@@ -822,17 +854,33 @@ plt.show()
 
 
 
-# In[]
-# delete extra stuff
-del ax, colors, data, df_regions, scenario, scenario_data, scenarios
-del df_developed, df_developing, df_emerging
-
-
-
 # In[10]:
 # Export data
 
-df_gcam_change.to_excel('2 - output/script 2/1 - GCAM - percent change.xlsx', index=False)
-df_global_byscenario_secondary_cumulative.to_excel('2 - output/script 2/2 - GCAM - scenarios.xlsx', index = False)
+df_gcam_filtered.to_excel('2 - output/script 2/1.1 - GCAM - filtered.xlsx', index=False)
+df_gcam_emissions.to_excel('2 - output/script 2/1.2 - GCAM - filtered - emissions.xlsx', index=False)
+df_gcam_change.to_excel('2 - output/script 2/1.3 - GCAM - percent change.xlsx', index=False)
+gcam_countries.to_excel('2 - output/script 2/1.4 - GCAM - countries - emissions intensity based on FA.xlsx', index=False)
 
+df_emissions_global_bysource.to_excel('2 - output/script 2/2.1 - GCAM - emissions - bysource.xlsx', index = False)
+df_emissions_byregion.to_excel('2 - output/script 2/2.2 - GCAM - emissions - byregion.xlsx', index = False)
+df_gcam_ghg.to_excel('2 - output/script 2/2.3 - GCAM - emissions - ghg as given.xlsx', index = False)
+df_gcam_ghg_energy.to_excel('2 - output/script 2/2.4 - GCAM - emissions - ghg as given - energy.xlsx', index = False)
+
+df_emissions_global_byscenario_primary.to_excel('2 - output/script 2/3.1 - GCAM - emissions - scenarios - primary.xlsx', index = False)
+df_emissions_global_byscenario_primary_cumulative.to_excel('2 - output/script 2/3.2 - GCAM - emissions - scenarios - primary - cumulative.xlsx', index = False)
+
+df_emissions_global_byscenario_secondary.to_excel('2 - output/script 2/4.1 - GCAM - emissions - scenarios - secondary.xlsx', index = False)
+df_emissions_global_byscenario_secondary_cumulative.to_excel('2 - output/script 2/4.2 - GCAM - emissions - scenarios - secondary - cumulative.xlsx', index = False)
+
+df_comparison_total.to_excel('2 - output/script 2/5.1 - GCAM - comparison - total.xlsx', index=False)
+df_comparison_total_regions.to_excel('2 - output/script 2/5.2 - GCAM - comparison - total - by regions.xlsx', index=False)
+df_comparison_primary.to_excel('2 - output/script 2/5.3 - GCAM - comparison - primary.xlsx', index=False)
+df_comparison_secondary.to_excel('2 - output/script 2/5.4 - GCAM - comparison - secondary.xlsx', index=False)
+
+df_emissions_byregion_currentpolicy_primary.to_excel('2 - output/script 2/6.1 - GCAM - emissions - current policy - primary.xlsx', index=False)
+df_emissions_byregion_currentpolicy_secondary.to_excel('2 - output/script 2/6.2 - GCAM - emissions - current policy - secondary.xlsx', index=False)
+
+df_emissions_byregion_netzero_primary.to_excel('2 - output/script 2/7.1 - GCAM - emissions - netzero - primary.xlsx', index=False)
+df_emissions_byregion_netzero_secondary.to_excel('2 - output/script 2/7.2 - GCAM - emissions - netzero - secondary.xlsx', index=False)
 

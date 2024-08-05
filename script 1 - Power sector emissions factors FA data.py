@@ -4,7 +4,7 @@
 # Author: Farhad Panahov
 
 
-# Task #1: Identify weighted average emissions intensity in power for Oil and Gas by country
+# Task: Identify weighted average emissions intensity in power for Oil and Gas by country
 
 
 # In[2]:
@@ -27,37 +27,38 @@ from matplotlib.ticker import FuncFormatter
 
 directory = r'C:\Users\panah\OneDrive\Desktop\Work\2 - RA - Climate fin'
 os.chdir(directory)
+del directory
 
 
-# load oil & gas
-oilgas = "1 - input/power-oil-and-gas-activity_V.02.csv"
-df_oilgas = pd.read_csv(oilgas)      #input the name of the Excel file
-
-
-# break oil and gas separately
-df_oil = df_oilgas.loc[(df_oilgas['Sub_sector'] == "Oil")]
-df_gas = df_oilgas.loc[(df_oilgas['Sub_sector'] == "Gas")]
-
-# load coal
-coal = "1 - input/power-coal.xlsx"
-df_coal = pd.read_excel(coal)      #input the name of the Excel file
-df_coal = df_coal.loc[df_coal['Status'] == 'operating']
-df_coal['new_factor'] = df_coal['Emission Factor'] * df_coal['Heat rate']
-
-del oilgas, coal, directory, df_oilgas
+# load power data
+df_power_all = pd.read_csv("1 - input/v3_power_Forward_Analytics2024.csv")
 
 
 
 # In[4]:
+
+# filter by operating
+df_power_all = df_power_all[df_power_all['status'] == "operating"]    
+
+# break oil and gas separately
+df_power_oil = df_power_all[df_power_all['subsector'] == "Oil"]
+df_power_gas = df_power_all[df_power_all['subsector'] == "Gas"]
+df_power_coal = df_power_all[df_power_all['subsector'] == "Coal"]
+
+# create emissions factor in coal dataset MTCO2 per MWH
+df_power_coal['emissions_factor_perMWh'] = df_power_coal['annual_co2_calc']/df_power_coal['activity']
+
+
+# In[5.1]:
 # create a function to get weighted average for emissions intensity
 # OIL --- million tonnes of CO2 per MWh
 
 def weighted_avg_oil(group):
-    return (group['Emission_Factor'] * group['Activity']).sum() / group['Activity'].sum()
+    return (group['emission_factor'] * group['activity']).sum() / group['activity'].sum()
 
 
 # Group by country
-df_country_CO2factor_oil = df_oil.groupby('Country__Iso_3_').apply(weighted_avg_oil)
+df_country_CO2factor_oil = df_power_oil.groupby('countryiso3').apply(weighted_avg_oil)
 
 
 # Change the name for the column
@@ -69,16 +70,16 @@ df_country_CO2factor_oil = df_country_CO2factor_oil.reset_index()
 
 
 
-# In[5]:
+# In[5.2]:
 # create a function to get weighted average for emissions intensity
 # GAS --- million tonnes of CO2 per MWh
 
 def weighted_avg_gas(group):
-    return (group['Emission_Factor'] * group['Activity']).sum() / group['Activity'].sum()
+    return (group['emission_factor'] * group['activity']).sum() / group['activity'].sum()
 
 
 # Group by country
-df_country_CO2factor_gas = df_gas.groupby('Country__Iso_3_').apply(weighted_avg_gas)
+df_country_CO2factor_gas = df_power_gas.groupby('countryiso3').apply(weighted_avg_gas)
 
 
 # Change the name for the column
@@ -92,14 +93,14 @@ df_country_CO2factor_gas = df_country_CO2factor_gas.reset_index()
 
 # In[5]:
 # create a function to get weighted average for emissions intensity
-# COAL --- kg of CO2 per TJ
+# COAL --- million tonnes of CO2 per MWh --- USING CALCULATED CO2 PER MWH
 
 def weighted_avg_coal(group):
-    return (group['new_factor'] * group['Activity']).sum() / group['Activity'].sum()
+    return (group['emissions_factor_perMWh'] * group['activity']).sum() / group['activity'].sum()
 
 
 # Group by country
-df_country_CO2factor_coal = df_coal.groupby('Country (Iso-3)').apply(weighted_avg_coal)
+df_country_CO2factor_coal = df_power_coal.groupby('countryiso3').apply(weighted_avg_coal)
 
 
 # Change the name for the column

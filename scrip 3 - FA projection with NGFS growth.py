@@ -20,7 +20,8 @@ from matplotlib.ticker import FuncFormatter
 
 
 
-# In[3]:
+# In[3]: LOADING DATA
+##################################################
 # directory & load data
 
 directory = r'C:\Users\panah\OneDrive\Desktop\Work\2 - RA - Climate fin'
@@ -28,47 +29,110 @@ os.chdir(directory)
 del directory
 
 
+# --------------
 # load oil & gas
-df_power = pd.read_csv('1 - input/v2_power_Forward_Analytics2024.csv')   
-df_growth = pd.read_excel('2 - output/script 2/1 - GCAM - percent change.xlsx')
+df_power = pd.read_csv('1 - input/v3_power_Forward_Analytics2024.csv')   
+df_power = df_power[df_power['status'] == "operating"]
+
+df_growth = pd.read_excel('2 - output/script 2/1.3 - GCAM - percent change.xlsx')
 
 
+# ------------------------------------
 # load NGFS secondary energy scenarios
-df_ngfs_scenarios = pd.read_excel('2 - output/script 2/2 - GCAM - scenarios.xlsx')
+df_ngfs_scenarios_cumulative = pd.read_excel('2 - output/script 2/4.2 - GCAM - emissions - scenarios - secondary - cumulative.xlsx')
+df_ngfs_emissions = pd.read_excel('2 - output/script 2/1.2 - GCAM - filtered - emissions.xlsx')
+
+
+# ----------------------------
+# load market and region datasets
+df_developed = pd.read_excel('2 - output/script a - country codes/1 - developed.xlsx')
+df_developing = pd.read_excel('2 - output/script a - country codes/2 - developing.xlsx')
+df_emerging = pd.read_excel('2 - output/script a - country codes/3 - emerging.xlsx')
+df_regions = pd.read_excel('1 - input/Country Datasets/country_gca_region.xlsx')
 
 
 
-# In[4]:
+# In[]: SET THE REGIONS AND DDEVELOPMENT LEVELS
+###############################################
+
+df_growth_secondary = pd.merge(df_growth_secondary,
+                             df_regions[['alpha-3', 'gca_region']],
+                             left_on='Region',
+                             right_on='alpha-3',
+                             how='left')
+    
+
+    
+    
+# In[4]: GET POWER BY SOURCE FOR MAPPING BASED ON SOURCE AND COUNTRY
+####################################################################
 # subset power plants by source
 
 #coal
-df_power_coal = df_power[df_power['subsector'] == 'coal']
-df_power_coal = df_power_coal[df_power_coal['status'] == 'operating']
+df_power_coal = df_power[df_power['subsector'] == 'Coal']
 df_power_coal = df_power_coal.groupby(['countryiso3'])['annual_co2_calc'].sum()
 df_power_coal = df_power_coal.reset_index()
 
 
 #gas
-df_power_gas = df_power[df_power['subsector'] == 'gas']
-df_power_gas = df_power_gas[df_power_gas['status'] == 'operating']
+df_power_gas = df_power[df_power['subsector'] == 'Gas']
 df_power_gas = df_power_gas.groupby(['countryiso3'])['annual_co2_calc'].sum()
 df_power_gas = df_power_gas.reset_index()
 
 
 #oil
-df_power_oil = df_power[df_power['subsector'] == 'oil']
-df_power_oil = df_power_oil[df_power_oil['status'] == 'operating']
+df_power_oil = df_power[df_power['subsector'] == 'Oil']
 df_power_oil = df_power_oil.groupby(['countryiso3'])['annual_co2_calc'].sum()
 df_power_oil = df_power_oil.reset_index()
 
 
-# subset growth to secondary only
+# subset growth to secondary only & remove 2020-2023 years --- i.e start from 2024
 df_growth_secondary = df_growth[df_growth['Variable'].str.contains('Secondary')]
+df_growth_secondary= df_growth_secondary.drop(columns = ['2020', '2021', '2022', '2023']) # removing 2020-2023
+df_growth_secondary['2024'] = 0 # set all 2024 values to zero --- these will be filled by FA data
 
 
 
-# In[]
+# In[]: CHECK FOR COUNTRIES ACROSS BOTH DATASETS
+###################################################
 
+# get list of NGFS countries
+df_ngfs_countries = df_ngfs_emissions[df_ngfs_emissions['Scenario'] == 'Current Policies']
+df_ngfs_countries = df_ngfs_countries[df_ngfs_countries['Variable'].str.contains('Secondary')]
+df_ngfs_countries = df_ngfs_countries[['Region', 'Variable', '2024']]
+
+df_ngfs_countries = df_ngfs_countries.pivot(index='Region', columns='Variable', values='2024')
+df_ngfs_countries.reset_index(inplace = True)
+
+
+# Get list of FA countries
+df_fa_countries = df_power[['countryiso3']].drop_duplicates()
+df_fa_countries.reset_index(drop=True, inplace = True)
+
+
+# get FA data in to countries
+df_fa_countries = pd.merge(df_fa_countries,df_power_coal,
+                           on='countryiso3',
+                           how='left')
+
+df_fa_countries = pd.merge(df_fa_countries,df_power_gas,
+                           on='countryiso3',
+                           how='left')
+
+df_fa_countries = pd.merge(df_fa_countries,df_power_oil,
+                           on='countryiso3',
+                           how='left')
+
+
+# merge with NGFS data
+df_merged_countries = pd.merge(df_fa_countries, df_ngfs_countries,
+                               left_on='countryiso3',
+                               right_on='Region',
+                               how='outer')
+
+
+# In[]: USE MAPPING TO ADD EMISSSONS VALUES TO YEAR 2024 BACK TO MASTER DATA
+############################################################################
 # Get power values added to 2020 of growth dataframe
 
 # coal
@@ -79,7 +143,7 @@ df_growth_secondary_coal = df_growth_secondary[df_growth_secondary['Variable'].s
 co2_mapping = df_power_coal.set_index('countryiso3')['annual_co2_calc']
 
 # Step 3: Map and substitute values in the '2020' column for the filtered DataFrame
-df_growth_secondary_coal['2020'] = df_growth_secondary_coal['Region'].map(co2_mapping)
+df_growth_secondary_coal['2024'] = df_growth_secondary_coal['Region'].map(co2_mapping)
 
 # Step 4: Update the original DataFrame
 df_growth_secondary.update(df_growth_secondary_coal)
@@ -88,14 +152,14 @@ df_growth_secondary.update(df_growth_secondary_coal)
 # gas
 df_growth_secondary_gas = df_growth_secondary[df_growth_secondary['Variable'].str.contains('Gas')]
 co2_mapping = df_power_gas.set_index('countryiso3')['annual_co2_calc']
-df_growth_secondary_gas['2020'] = df_growth_secondary_gas['Region'].map(co2_mapping)
+df_growth_secondary_gas['2024'] = df_growth_secondary_gas['Region'].map(co2_mapping)
 df_growth_secondary.update(df_growth_secondary_gas)
 
 
 # oil
 df_growth_secondary_oil = df_growth_secondary[df_growth_secondary['Variable'].str.contains('Oil')]
 co2_mapping = df_power_oil.set_index('countryiso3')['annual_co2_calc']
-df_growth_secondary_oil['2020'] = df_growth_secondary_oil['Region'].map(co2_mapping)
+df_growth_secondary_oil['2024'] = df_growth_secondary_oil['Region'].map(co2_mapping)
 df_growth_secondary.update(df_growth_secondary_oil)
 
 
@@ -103,11 +167,13 @@ del co2_mapping, df_growth_secondary_coal, df_growth_secondary_gas, df_growth_se
 del df_power_coal, df_power_oil, df_power_gas
 
 
-# In[5]:
-# project the future growth
+
+# In[5]: PROJECT THE GROWTH TO ANNUAL EMISSIOSN
+###############################################
+# after this we get dataframe for secondary energy by source/country/scenario with annual emissions values
 
 # create a loop to go through each year column
-year_columns = [str(year) for year in range(2020, 2101)]
+year_columns = [str(year) for year in range(2024, 2101)]
 df_growth_secondary.replace([np.inf, -np.inf], 0, inplace=True) # there are some 'inf values --- replacing them with 0
 
 
@@ -122,40 +188,53 @@ del i, current_year, previous_year, year_columns
 
 
 
-# In[]
+# In[6]: NOW SLICE AND DICE THE DATA: by fuel type, region, develoment, etc.
+# WE GET THESE BOTH ANNUAL AND CUMULATIVE
+############################################################################
 # set years 2024-2050    
 year_columns = [str(year) for year in range(2024, 2051)]
 
 
-# get by scenario & energy type (primary vs secondary)
-df_global_byscenario = df_growth_secondary.groupby(['Scenario'])[year_columns].sum()
-df_global_byscenario.reset_index(inplace=True)
+# 1 --- SCENARIO:
+# annual
+df_growth_secondary_byscenario_annual = df_growth_secondary.groupby(['Scenario'])[year_columns].sum()
+df_growth_secondary_byscenario_annual.reset_index(inplace=True)
 
+# cumulative
+df_growth_secondary_byscenario_cumulative = df_growth_secondary_byscenario_annual.copy()
+df_growth_secondary_byscenario_cumulative[year_columns] = df_growth_secondary_byscenario_cumulative[year_columns].cumsum(axis=1)
+df_growth_secondary_byscenario_cumulative.reset_index(inplace=True)
+
+
+
+# 2 --- FUEL TYPE
+### net zero
+# annual
+df_growth_secondary_byfueltype_annual = df_growth_secondary.groupby(['Variable'])[year_columns].sum()
+df_growth_secondary_byfueltype_annual.reset_index(inplace=True)
+
+# cumulative
+df_growth_secondary_byfueltype_cumulative = df_growth_secondary_byfueltype_annual.copy()
+df_growth_secondary_byfueltype_cumulative[year_columns] = df_growth_secondary_byfueltype_cumulative[year_columns].cumsum(axis=1)
+df_growth_secondary_byfueltype_cumulative.reset_index(inplace=True) 
+
+
+
+# 3 --- 
 
 
 # In[12]:
-# get cumulative by primary vs secondarry by scenario
-
-# primary
-df_global_byscenario_cumulative = df_global_byscenario.copy()
-df_global_byscenario_cumulative[year_columns] = df_global_byscenario[year_columns].cumsum(axis=1)
-df_global_byscenario_cumulative = df_global_byscenario_cumulative.reset_index()
-
-
-
-# In[12]:
-# get cumulative by primary vs secondarry by scenario
+# get cumulative by scenario for NGFS
 
 # combine FA and NGFS
-df_comparison_faVSngfs = df_global_byscenario_cumulative[['Scenario', '2024', '2050']] # keep 2024 and 2050 in FA
-temp = df_ngfs_scenarios[['Scenario', '2024', '2050']] # create temporary 2024 & 2050 for NGFS
+df_comparison_faVSngfs = df_growth_secondary_byscenario_cumulative[['Scenario', '2024', '2050']] # keep 2024 and 2050 in FA
+temp = df_ngfs_scenarios_cumulative[['Scenario', '2024', '2050']] # create temporary 2024 & 2050 for NGFS
 
 
 # merge them
 df_comparison_faVSngfs = df_comparison_faVSngfs.merge(temp, on = 'Scenario', how = 'left')
-
-
 del temp
+
 
 
 # In[11]
@@ -179,8 +258,8 @@ del temp
 # Plot 1 --- the cumulative emissions
 plt.figure(figsize=(12, 8))
 
-for scenario in df_global_byscenario_cumulative['Scenario'].unique():
-    plt.plot(year_columns, df_global_byscenario_cumulative[df_global_byscenario_cumulative['Scenario'] == scenario][year_columns].values[0], label=scenario)
+for scenario in df_growth_secondary_byscenario_cumulative['Scenario'].unique():
+    plt.plot(year_columns, df_growth_secondary_byscenario_cumulative[df_growth_secondary_byscenario_cumulative['Scenario'] == scenario][year_columns].values[0], label=scenario)
 
 # Customize the x-axis to show ticks every 5 years
 plt.xticks([str(year) for year in range(2025, 2051, 5)])
@@ -246,7 +325,6 @@ def thousands_formatter(x, pos):
 # Set y-axis formatter to display values in thousands
 ax = plt.gca()
 ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
-
 
 
 fig.tight_layout()
