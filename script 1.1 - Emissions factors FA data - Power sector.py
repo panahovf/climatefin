@@ -119,6 +119,9 @@ df_country_CO2factor_coal.to_excel('2 - output/script 1/1 - country_power_co2fac
 df_country_CO2factor_oil.to_excel('2 - output/script 1/2 - country_power_co2factor_oil.xlsx', index=False)
 df_country_CO2factor_gas.to_excel('2 - output/script 1/3 - country_power_co2factor_gas.xlsx', index=False)
 
+df_power_coal.to_excel('2 - output/script 1/4 - power - coal.xlsx', index=False)
+df_power_gas.to_excel('2 - output/script 1/5 - power - gas.xlsx', index=False)
+df_power_oil.to_excel('2 - output/script 1/6 - power - oil.xlsx', index=False)
 
 
 
