@@ -1,6 +1,6 @@
 # In[1]:
 # Date: July 28, 2024
-# Project: Applying NGFS trends to FA data
+# Project: Applying NGFS trends to FA data - Secondary energy / Power sector
 # Author: Farhad Panahov
 
 
@@ -71,12 +71,14 @@ df_regions = pd.read_excel('1 - input/Country Datasets/country_gca_region.xlsx')
 # In[]: SCREATE A DATA FRAME FOR SCONDARY EMISSION ONLY
 #######################################################
 
+# -------------------
 # # subset growth to secondary only & remove 2020-2023 years --- i.e start from 2024
 df_growth_secondary = df_growth[df_growth['Variable'].str.contains('Secondary')]
 df_growth_secondary= df_growth_secondary.drop(columns = ['2020', '2021', '2022', '2023']) # removing 2020-2023
 df_growth_secondary['2024'] = 0 # set all 2024 values to zero --- these will be filled by FA data
 
 
+# -------------------
 # # subset emissions to secondary only & remove 2020-2023 years --- i.e start from 2024
 df_ngfs_emissions_secondary = df_ngfs_emissions[df_ngfs_emissions['Variable'].str.contains('Secondary')]
 df_ngfs_emissions_secondary= df_ngfs_emissions_secondary.drop(columns = ['2020', '2021', '2022', '2023']) # removing 2020-2023
@@ -94,18 +96,21 @@ df_ngfs_emissions_secondary= df_ngfs_emissions_secondary.drop(columns = ['2020',
 ####################################################################
 # subset power plants by source
 
+# -------------------
 #coal
 df_power_coal = df_power[df_power['subsector'] == 'Coal']
 df_power_coal = df_power_coal.groupby(['countryiso3'])['annual_co2_calc'].sum()
 df_power_coal = df_power_coal.reset_index()
 
 
+# -------------------
 #gas
 df_power_gas = df_power[df_power['subsector'] == 'Gas']
 df_power_gas = df_power_gas.groupby(['countryiso3'])['annual_co2_calc'].sum()
 df_power_gas = df_power_gas.reset_index()
 
 
+# -------------------
 #oil
 df_power_oil = df_power[df_power['subsector'] == 'Oil']
 df_power_oil = df_power_oil.groupby(['countryiso3'])['annual_co2_calc'].sum()
@@ -123,6 +128,7 @@ df_power_oil = df_power_oil.reset_index()
 # In[]: CHECK FOR COUNTRIES ACROSS BOTH DATASETS
 ################################################
 
+# -------------------
 # get list of NGFS countries
 df_ngfs_countries = df_ngfs_emissions[df_ngfs_emissions['Scenario'] == 'Current Policies']
 df_ngfs_countries = df_ngfs_countries[df_ngfs_countries['Variable'].str.contains('Secondary')]
@@ -132,6 +138,7 @@ df_ngfs_countries = df_ngfs_countries.pivot(index='Region', columns='Variable', 
 df_ngfs_countries.reset_index(inplace = True)
 
 
+# -------------------
 # Get list of FA countries
 df_fa_countries = df_power[['countryiso3']].drop_duplicates()
 df_fa_countries.reset_index(drop=True, inplace = True)
@@ -151,6 +158,7 @@ df_fa_countries = pd.merge(df_fa_countries,df_power_oil,
                            how='left')
 
 
+# -------------------
 # merge with NGFS data
 df_merged_countries_raw = pd.merge(df_fa_countries, df_ngfs_countries,
                                left_on='countryiso3',
@@ -204,6 +212,7 @@ df_merged_countries_edited.reset_index(inplace = True)
 ############################################################################
 # Get power values added to 2020 of growth dataframe
 
+# -------------------
 # coal
 # Step 1: Filter to include only rows where 'Variable' contains "coal"
 df_growth_secondary_coal = df_growth_secondary[df_growth_secondary['Variable'].str.contains('Coal')]
@@ -218,6 +227,7 @@ df_growth_secondary_coal['2024'] = df_growth_secondary_coal['Region'].map(co2_ma
 df_growth_secondary.update(df_growth_secondary_coal)
 
 
+# -------------------
 # gas
 df_growth_secondary_gas = df_growth_secondary[df_growth_secondary['Variable'].str.contains('Gas')]
 co2_mapping = df_merged_countries_edited.set_index('country_NGFS')['gas_FA']
@@ -225,6 +235,7 @@ df_growth_secondary_gas['2024'] = df_growth_secondary_gas['Region'].map(co2_mapp
 df_growth_secondary.update(df_growth_secondary_gas)
 
 
+# -------------------
 # oil
 df_growth_secondary_oil = df_growth_secondary[df_growth_secondary['Variable'].str.contains('Oil')]
 co2_mapping = df_merged_countries_edited.set_index('country_NGFS')['oil_FA']
@@ -232,6 +243,7 @@ df_growth_secondary_oil['2024'] = df_growth_secondary_oil['Region'].map(co2_mapp
 df_growth_secondary.update(df_growth_secondary_oil)
 
 
+# -------------------
 del co2_mapping, df_growth_secondary_coal, df_growth_secondary_gas, df_growth_secondary_oil
 del df_power_coal, df_power_oil, df_power_gas
 del df_fa_countries, df_ngfs_countries
@@ -271,6 +283,7 @@ for scenario in df_growth_secondary['Scenario'].unique():
 del mask, scenario, downscaling_values, variable, year_columns, zero_mask
 
 
+# -------------------
 # save this new edited annual growth file separately
 df_growth_secondary_change = df_growth_secondary.copy()
 
@@ -326,7 +339,10 @@ del i, current_year, previous_year, inf_mask, year_columns
 year_columns50 = [str(year) for year in range(2024, 2051)]
 
 
-# 1 --- SCENARIO --------------------------------------------------------------
+#############################################################
+# 1 --- SCENARIO --------------------------------------------
+#############################################################
+
 # annual
 df_growth_secondary_byscenario_annual = df_growth_secondary.groupby(['Scenario'])[year_columns50].sum()
 df_growth_secondary_byscenario_annual.reset_index(inplace=True)
@@ -340,7 +356,11 @@ df_growth_secondary_byscenario_cumulative.reset_index(inplace=True)
 
 
 
-# 2 --- FUEL TYPE -------------------------------------------------------------
+#############################################################
+# 2 --- FUEL TYPE -------------------------------------------
+#############################################################
+
+# -------------------
 ### net zero
 # annual
 df_growth_secondary_netzero_byfueltype_annual = df_growth_secondary[df_growth_secondary['Scenario'] == "Net Zero 2050"]
@@ -353,6 +373,7 @@ df_growth_secondary_netzero_byfueltype_cumulative[year_columns50] = df_growth_se
 df_growth_secondary_netzero_byfueltype_cumulative.reset_index(inplace=True) 
 
 
+# -------------------
 ### current policies
 # annual
 df_growth_secondary_currentpolicy_byfueltype_annual = df_growth_secondary[df_growth_secondary['Scenario'] == "Current Policies"]
@@ -368,7 +389,11 @@ df_growth_secondary_currentpolicy_byfueltype_cumulative.reset_index(inplace=True
 
 
 
-# 3 --- REGION -----------------------------------------------------------------
+#############################################################
+# 3 --- REGION ----------------------------------------------
+#############################################################
+
+# -------------------
 ### net zero
 # annual
 df_growth_secondary_netzero_byregion_annual = df_growth_secondary[df_growth_secondary['Scenario'] == "Net Zero 2050"]
@@ -381,6 +406,7 @@ df_growth_secondary_netzero_byregion_cumulative[year_columns50] = df_growth_seco
 df_growth_secondary_netzero_byregion_cumulative.reset_index(inplace=True) 
 
 
+# -------------------
 ### current policies
 # annual
 df_growth_secondary_currentpolicy_byregion_annual = df_growth_secondary[df_growth_secondary['Scenario'] == "Current Policies"]
@@ -396,7 +422,11 @@ df_growth_secondary_currentpolicy_byregion_cumulative.reset_index(inplace=True)
 
 
 
-# 4 --- DEVELOPMENT -----------------------------------------------------------
+#############################################################
+# 4 --- DEVELOPMENT -----------------------------------------
+#############################################################
+
+# -------------------
 ### net zero
 # annual
 df_growth_secondary_netzero_bydev_annual = df_growth_secondary[df_growth_secondary['Scenario'] == "Net Zero 2050"]
@@ -409,6 +439,7 @@ df_growth_secondary_netzero_bydev_cumulative[year_columns50] = df_growth_seconda
 df_growth_secondary_netzero_bydev_cumulative.reset_index(inplace=True) 
 
 
+# -------------------
 ### current policies
 # annual
 df_growth_secondary_currentpolicy_bydev_annual = df_growth_secondary[df_growth_secondary['Scenario'] == "Current Policies"]
@@ -424,7 +455,11 @@ df_growth_secondary_currentpolicy_bydev_cumulative.reset_index(inplace=True)
 
 
 
-# 5 --- BYCOUNTRY - TOP 15 -----------------------------------------------------------
+#############################################################
+# 5 --- BYCOUNTRY - TOP 15 ----------------------------------
+#############################################################
+
+# -------------------
 ### net zero
 # annual
 df_growth_secondary_netzero_bycountry_annual = df_growth_secondary[df_growth_secondary['Scenario'] == "Net Zero 2050"]
@@ -437,7 +472,7 @@ df_growth_secondary_netzero_bycountry_cumulative[year_columns50] = df_growth_sec
 df_growth_secondary_netzero_bycountry_cumulative.reset_index(inplace=True) 
 
 
-### NOW GET TOP 15 COUNTRIES
+### now get top 15 countries
 # 1 --- cumulative
 # sort by top 15 countries in 2050 --- CUMULATIVE
 df_growth_secondary_netzero_bycountry_cumulative = df_growth_secondary_netzero_bycountry_cumulative.sort_values(by='2050', ascending=False)
@@ -474,6 +509,8 @@ del top15_countries
 
 
 
+
+# -------------------
 ### current policies
 # annual
 df_growth_secondary_currentpolicy_bycountry_annual = df_growth_secondary[df_growth_secondary['Scenario'] == "Current Policies"]
@@ -486,7 +523,7 @@ df_growth_secondary_currentpolicy_bycountry_cumulative[year_columns50] = df_grow
 df_growth_secondary_currentpolicy_bycountry_cumulative.reset_index(inplace=True) 
 
 
-### NOW GET TOP 15 COUNTRIES
+### now get top 15 countries
 # 1 --- cumulative
 # sort by top 15 countries in 2050 --- CUMULATIVE
 df_growth_secondary_currentpolicy_bycountry_cumulative = df_growth_secondary_currentpolicy_bycountry_cumulative.sort_values(by='2050', ascending=False)
@@ -522,7 +559,8 @@ del df_other_annual, df_other_annual_sum, df_top15_annual
 del top15_countries
 
 
-# ADD COUNTRY NAMES
+# -------------------
+# add country names
 region_to_country = pd.Series(df_regions['name'].values, index=df_regions['alpha-3']).to_dict()
 
 df_top15_netzero_annual['Country'] = df_top15_netzero_annual['Region'].map(region_to_country)
@@ -572,7 +610,11 @@ del temp
 
 #####################################################################
 #####################################################################
+#####################################################################
+#####################################################################
 ########## PLOTS PLOTS PLOTS PLOTS PLOTS PLOTS PLOTS ################
+#####################################################################
+#####################################################################
 #####################################################################
 #####################################################################
 
@@ -614,13 +656,18 @@ plt.show()
 
 
 
+
+
+
+
+
 # In[8]:
 
 ##################################################################################################
 ##################### SECTION 1: BY SCENARIO VS CARBON BUDGET ####################################
 ##################################################################################################
 
-  
+# -------------------
 # Plot 1.1 --- the annual emissions
 plt.figure(figsize=(12, 8))
 
@@ -659,6 +706,7 @@ plt.show()
 
 
 
+# -------------------
 # Plot 1.2 --- the cumulative emissions
 plt.figure(figsize=(12, 8))
 
@@ -703,12 +751,20 @@ plt.show()
 
 
 
+
+
+
+
+
+
+
 # In[8]:
 
 ##################################################################################################
 ##################### SECTION 2: BY FUEL TYPE VS CARBON BUDGET ###################################
 ##################################################################################################
 
+# -------------------
 ### NET ZERO  
 # Plot 2.1 --- the annual emissions
 plt.figure(figsize=(12, 8))
@@ -754,7 +810,8 @@ plt.show()
 
 
 
-#--------------------------------------
+
+# -------------------
 # Plot 2.2 --- the cumulative emissions
 plt.figure(figsize=(12, 8))
 
@@ -811,6 +868,7 @@ plt.show()
 
 
 
+# -------------------
 ### CURRENT POLICY  
 # Plot 2.3 --- the annual emissions
 plt.figure(figsize=(12, 8))
@@ -853,7 +911,8 @@ plt.show()
 
 
 
-#--------------------------------------
+
+# -------------------
 # Plot 2.4 --- the cumulative emissions
 plt.figure(figsize=(12, 8))
 
@@ -907,12 +966,20 @@ plt.show()
 
 
 
+
+
+
+
+
+
+
 # In[8]:
 
 ###############################################################################################
 ##################### SECTION 3: BY REGION VS CARBON BUDGET ###################################
 ###############################################################################################
 
+# -------------------
 ### NET ZERO  
 # Plot 3.1 --- the annual emissions
 plt.figure(figsize=(12, 8))
@@ -951,7 +1018,9 @@ plt.show()
 
 
 
-# -------------------------------------
+
+
+# -------------------
 # Plot 3.2 --- the cumulative emissions
 plt.figure(figsize=(12, 8))
 
@@ -1006,6 +1075,7 @@ plt.show()
 
 
 
+# -------------------
 ### CURRENT POLICY 
 # Plot 3.3 --- the annual emissions
 plt.figure(figsize=(12, 8))
@@ -1044,7 +1114,9 @@ plt.show()
 
 
 
-# -------------------------------------
+
+
+# -------------------
 # Plot 3.4 --- the cumulative emissions
 plt.figure(figsize=(12, 8))
 
@@ -1097,12 +1169,20 @@ plt.show()
 
 
 
+
+
+
+
+
+
+
 # In[8]:
 
 #################################################################################################
 ##################### SECTION 4: DEVELOPMENT VS CARBON BUDGET ###################################
 #################################################################################################
 
+# -------------------
 ### NET ZERO  
 # Plot 4.1 --- the annual emissions
 plt.figure(figsize=(12, 8))
@@ -1141,7 +1221,9 @@ plt.show()
 
 
 
-# -------------------------------------
+
+
+# -------------------
 # Plot 4.2 --- the cumulative emissions
 plt.figure(figsize=(12, 8))
 
@@ -1195,6 +1277,7 @@ plt.show()
 
 
 
+# -------------------
 ### CURRENT POLICY 
 # Plot 4.3 --- the annual emissions
 plt.figure(figsize=(12, 8))
@@ -1233,7 +1316,9 @@ plt.show()
 
 
 
-# -------------------------------------
+
+
+# -------------------
 # Plot 4.4 --- the cumulative emissions
 plt.figure(figsize=(12, 8))
 
@@ -1287,6 +1372,11 @@ plt.show()
 
 
 
+
+
+
+
+
 # In[8]:
 
 ##################################################################################################
@@ -1297,6 +1387,7 @@ plt.show()
 colors = cm.get_cmap('tab20', 16).colors
 
 
+# -------------------
 ### NET ZERO  
 # Plot 5.1 --- the annual emissions
 plt.figure(figsize=(12, 8))
@@ -1343,7 +1434,8 @@ plt.show()
 
 
 
-#--------------------------------------
+
+# -------------------
 # Plot 5.2 --- the cumulative emissions
 plt.figure(figsize=(12, 8))
 
@@ -1401,6 +1493,7 @@ plt.show()
 
 
 
+# -------------------
 ### CURRENT POLICY  
 # Plot 5.3 --- the annual emissions
 plt.figure(figsize=(12, 8))
@@ -1447,7 +1540,8 @@ plt.show()
 
 
 
-#--------------------------------------
+
+# -------------------
 # Plot 5.4 --- the cumulative emissions
 plt.figure(figsize=(12, 8))
 
@@ -1505,9 +1599,21 @@ plt.show()
 
 
 
+
+
+
+
+
 # In[]
 
 del ax, i, fig, indices, line, modeled_data, real_data, region_to_country, scenario, scenarios, width, values
+
+
+
+
+
+
+
 
 
 

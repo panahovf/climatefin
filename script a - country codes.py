@@ -7,7 +7,6 @@
 # In[2]:
 # load packages
 
-
 import os
 import pandas as pd
 import geopandas as gpd
@@ -19,30 +18,39 @@ from matplotlib.ticker import FuncFormatter
 
 
 
+
+
+
+
+
+
+
 # In[3]:
 # directory & load data
 
+# ----------------------------
 directory = r'C:\Users\panah\OneDrive\Desktop\Work\2 - RA - Climate fin'
 os.chdir(directory)
+del directory
 
 
+# ----------------------------
 # markets
-developed = "1 - input/Country Datasets/developed.csv"
-df_developed = pd.read_csv(developed)      #input the name of the Excel file
-
-developing = "1 - input/Country Datasets/developing.csv"
-df_developing = pd.read_csv(developing)      #input the name of the Excel file
-
-emerging = "1 - input/Country Datasets/emerging.csv"
-df_emerging = pd.read_csv(emerging)      #input the name of the Excel file
+df_developed = pd.read_csv("1 - input/Country Datasets/developed.csv")      #input the name of the Excel file
+df_developing = pd.read_csv("1 - input/Country Datasets/developing.csv")      #input the name of the Excel file
+df_emerging = pd.read_csv("1 - input/Country Datasets/emerging.csv")      #input the name of the Excel file
 
 
+# ----------------------------
 # regions
-country_gca_region = "1 - input/Country Datasets/country_gca_region.xlsx"
-df_regions = pd.read_excel(country_gca_region)      #input the name of the Excel file
+df_regions = pd.read_excel("1 - input/Country Datasets/country_gca_region.xlsx")      #input the name of the Excel file
 
 
-del developed, developing, emerging, directory, country_gca_region
+
+
+
+
+
 
 
 
@@ -65,6 +73,13 @@ df_emerging = pd.merge(df_emerging,
                         df_regions[['alpha-2', 'alpha-3']], 
                         on='alpha-2', 
                         how='left')
+
+
+
+
+
+
+
 
 
 

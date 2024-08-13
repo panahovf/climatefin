@@ -1,6 +1,6 @@
 # In[1]:
 # Date: July 28, 2024
-# Project: Country level emissions intensity data for power sector from FA data
+# Project: Country level emissions intensity data for extraction sector from FA data
 # Author: Farhad Panahov
 
 
@@ -9,7 +9,6 @@
 
 # In[2]:
 # load packages
-
 
 import os
 import pandas as pd
@@ -22,34 +21,53 @@ from matplotlib.ticker import FuncFormatter
 
 
 
+
+
+
+
+
+
+
 # In[3]:
 # directory & load data
 
+# ----------------------------
 directory = r'C:\Users\panah\OneDrive\Desktop\Work\2 - RA - Climate fin'
 os.chdir(directory)
 del directory
 
 
+# ----------------------------
 # load oilgas extraction data
 df_extraction_oilgas = pd.read_csv("1 - input/v3_oil_gas_extraction_ForwardAnalytics2024.csv")
 
 
+# ----------------------------
 # load coal extraction data
 df_extraction_coal = pd.read_csv("1 - input/v1coal-extraction_ForwardAnalytics2024.csv")
 
 
 
 
-# In[4]: FILTER DATA
-###########################################
 
+
+
+
+
+
+# In[4]: FILTER DATA
+####################
+
+# ----------------------------
 ### OIL GAS
 df_extraction_oilgas = df_extraction_oilgas[df_extraction_oilgas['status'] == "operating"]  # filter by operating
 df_extraction_oilgas = df_extraction_oilgas[df_extraction_oilgas['latest_year'] == 1]    # keep only latest year
 
+
 # break oil and gas separately
 df_extraction_oil = df_extraction_oilgas[df_extraction_oilgas['subsector'] == "oil"]
 df_extraction_gas = df_extraction_oilgas[df_extraction_oilgas['subsector'] == "gas"]
+
 
 del df_extraction_oilgas
 
@@ -58,6 +76,13 @@ del df_extraction_oilgas
 df_extraction_coal = df_extraction_coal[df_extraction_coal['status']=='Operating']  # filter only operating plants
 df_extraction_coal['emissionsco2e20years'] = pd.to_numeric(df_extraction_coal['emissionsco2e20years'], errors='coerce')   # 
 df_extraction_coal['activity'] = pd.to_numeric(df_extraction_coal['activity'], errors='coerce')   # 
+
+
+
+
+
+
+
 
 
 
@@ -82,6 +107,13 @@ df_country_CO2factor_oil = df_country_CO2factor_oil.reset_index()
 
 
 
+
+
+
+
+
+
+
 # In[5.2]:
 # create a function to get weighted average for emissions intensity
 # GAS --- million tonnes of CO2 per production --- million m3/y
@@ -103,7 +135,14 @@ df_country_CO2factor_gas = df_country_CO2factor_gas.reset_index()
 
 
 
-# In[5]:
+
+
+
+
+
+
+
+# In[5.3]:
 # create a function to get weighted average for emissions intensity
 # COAL --- million tonnes of CO2 per production --- mtpa
 
@@ -121,6 +160,13 @@ df_country_CO2factor_coal.name = 'Coal_WA_Emissions_Factor'
 
 # Reset the index
 df_country_CO2factor_coal = df_country_CO2factor_coal.reset_index()
+
+
+
+
+
+
+
 
 
 

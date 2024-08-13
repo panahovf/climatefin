@@ -10,7 +10,6 @@
 # In[2]:
 # load packages
 
-
 import os
 import pandas as pd
 import geopandas as gpd
@@ -22,31 +21,57 @@ from matplotlib.ticker import FuncFormatter
 
 
 
+
+
+
+
+
+
+
 # In[3]:
 # directory & load data
 
+# ----------------------------
 directory = r'C:\Users\panah\OneDrive\Desktop\Work\2 - RA - Climate fin'
 os.chdir(directory)
 del directory
 
 
+# ----------------------------
 # load power data
 df_power_all = pd.read_csv("1 - input/v3_power_Forward_Analytics2024.csv")
 
 
 
-# In[4]:
+
+
+
+
+
+
+
+# In[4]: FILTER DAATA
 
 # filter by operating
 df_power_all = df_power_all[df_power_all['status'] == "operating"]    
+
 
 # break oil and gas separately
 df_power_oil = df_power_all[df_power_all['subsector'] == "Oil"]
 df_power_gas = df_power_all[df_power_all['subsector'] == "Gas"]
 df_power_coal = df_power_all[df_power_all['subsector'] == "Coal"]
 
+
 # create emissions factor in coal dataset MTCO2 per MWH
 df_power_coal['emissions_factor_perMWh'] = df_power_coal['annual_co2_calc']/df_power_coal['activity']
+
+
+
+
+
+
+
+
 
 
 # In[5.1]:
@@ -67,6 +92,13 @@ df_country_CO2factor_oil.name = 'O&G_WA_Emissions_Factor'
 
 # Reset the index
 df_country_CO2factor_oil = df_country_CO2factor_oil.reset_index()
+
+
+
+
+
+
+
 
 
 
@@ -91,7 +123,14 @@ df_country_CO2factor_gas = df_country_CO2factor_gas.reset_index()
 
 
 
-# In[5]:
+
+
+
+
+
+
+
+# In[5.3]:
 # create a function to get weighted average for emissions intensity
 # COAL --- million tonnes of CO2 per MWh --- USING CALCULATED CO2 PER MWH
 
@@ -109,6 +148,13 @@ df_country_CO2factor_coal.name = 'Coal_WA_Emissions_Factor'
 
 # Reset the index
 df_country_CO2factor_coal = df_country_CO2factor_coal.reset_index()
+
+
+
+
+
+
+
 
 
 

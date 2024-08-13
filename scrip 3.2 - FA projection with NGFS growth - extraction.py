@@ -1,6 +1,6 @@
 # In[1]:
 # Date: July 28, 2024
-# Project: Applying NGFS trends to FA data
+# Project: Applying NGFS trends to FA data - Primary energy / Extraction sector
 # Author: Farhad Panahov
 
 
@@ -43,6 +43,10 @@ df_extraction_coal = pd.read_excel('2 - output/script 1/4 - extraction_coal.xlsx
 df_extraction_gas = pd.read_excel('2 - output/script 1/5 - extraction_gas.xlsx')   
 df_extraction_oil = pd.read_excel('2 - output/script 1/6 - extraction_oil.xlsx')   
 
+df_extraction_coal['countryiso3'] = df_extraction_coal['countryiso3'].replace('TZ1', 'TZA') # this fixed an error in naming Tanzania
+df_extraction_gas['countryiso3'] = df_extraction_gas['countryiso3'].replace('TZ1', 'TZA') # this fixed an error in naming Tanzania
+df_extraction_oil['countryiso3'] = df_extraction_oil['countryiso3'].replace('TZ1', 'TZA') # this fixed an error in naming Tanzania
+
 
 # -----------------------
 # load growth projections
@@ -68,15 +72,17 @@ df_regions = pd.read_excel('1 - input/Country Datasets/country_gca_region.xlsx')
 
 
 
-# In[]: SCREATE A DATA FRAME FOR SCONDARY EMISSION ONLY
+# In[]: SCREATE A DATA FRAME FOR PRIMARY EMISSION ONLY
 #######################################################
 
+# -------------------
 # # subset growth to secondary only & remove 2020-2023 years --- i.e start from 2024
 df_growth_primary = df_growth[df_growth['Variable'].str.contains('Primary')]
 df_growth_primary= df_growth_primary.drop(columns = ['2020', '2021', '2022', '2023']) # removing 2020-2023
 df_growth_primary['2024'] = 0 # set all 2024 values to zero --- these will be filled by FA data
 
 
+# -------------------
 # # subset emissions to secondary only & remove 2020-2023 years --- i.e start from 2024
 df_ngfs_emissions_primary = df_ngfs_emissions[df_ngfs_emissions['Variable'].str.contains('Primary')]
 df_ngfs_emissions_primary= df_ngfs_emissions_primary.drop(columns = ['2020', '2021', '2022', '2023']) # removing 2020-2023
@@ -94,6 +100,7 @@ df_ngfs_emissions_primary= df_ngfs_emissions_primary.drop(columns = ['2020', '20
 ####################################################################
 # subset plants by source
 
+# -------------------
 #coal
 df_extraction_coal = df_extraction_coal.groupby(['countryiso3'])['emissionsco2e20years'].sum()
 df_extraction_coal = df_extraction_coal.reset_index()
@@ -109,6 +116,7 @@ df_extraction_oil = df_extraction_oil.groupby(['countryiso3'])['annual_co2_calc_
 df_extraction_oil = df_extraction_oil.reset_index()
 
 
+# -------------------
 # total
 df_extraction_total = pd.merge(df_extraction_coal, df_extraction_gas,
                                on='countryiso3',
@@ -122,8 +130,6 @@ df_extraction_total = pd.merge(df_extraction_total, df_extraction_oil,
 df_extraction_total.columns = ['country_FA', 'coal_FA', 'gas_FA', 'oil_FA']
 
 
-# tanzania
-df_extraction_total['country_FA'] = df_extraction_total['country_FA'].replace("TZ1", "TZA")
 
 
 
@@ -135,6 +141,7 @@ df_extraction_total['country_FA'] = df_extraction_total['country_FA'].replace("T
 # In[]: CHECK FOR COUNTRIES ACROSS BOTH DATASETS
 ################################################
 
+# -------------------
 # get list of NGFS countries
 df_ngfs_countries = df_ngfs_emissions[df_ngfs_emissions['Scenario'] == 'Current Policies']
 df_ngfs_countries = df_ngfs_countries[df_ngfs_countries['Variable'].str.contains('Primary')]
@@ -144,6 +151,7 @@ df_ngfs_countries = df_ngfs_countries.pivot(index='Region', columns='Variable', 
 df_ngfs_countries.reset_index(inplace = True)
 
 
+# -------------------
 # merge NGFS data with FA countries
 df_merged_countries_raw = pd.merge(df_extraction_total, df_ngfs_countries,
                                left_on='country_FA',
@@ -197,6 +205,7 @@ df_merged_countries_edited.reset_index(inplace = True)
 ############################################################################
 # Get power values added to 2020 of growth dataframe
 
+# -------------------
 # coal
 # Step 1: Filter to include only rows where 'Variable' contains "coal"
 df_growth_extraction_coal = df_growth_primary[df_growth_primary['Variable'].str.contains('Coal')]
@@ -211,6 +220,7 @@ df_growth_extraction_coal['2024'] = df_growth_extraction_coal['Region'].map(co2_
 df_growth_primary.update(df_growth_extraction_coal)
 
 
+# -------------------
 # gas
 df_growth_primary_gas = df_growth_primary[df_growth_primary['Variable'].str.contains('Gas')]
 co2_mapping = df_merged_countries_edited.set_index('country_NGFS')['gas_FA']
@@ -218,6 +228,7 @@ df_growth_primary_gas['2024'] = df_growth_primary_gas['Region'].map(co2_mapping)
 df_growth_primary.update(df_growth_primary_gas)
 
 
+# -------------------
 # oil
 df_growth_primary_oil = df_growth_primary[df_growth_primary['Variable'].str.contains('Oil')]
 co2_mapping = df_merged_countries_edited.set_index('country_NGFS')['oil_FA']
@@ -225,6 +236,7 @@ df_growth_primary_oil['2024'] = df_growth_primary_oil['Region'].map(co2_mapping)
 df_growth_primary.update(df_growth_primary_oil)
 
 
+# -------------------
 del co2_mapping, df_growth_extraction_coal, df_growth_primary_gas, df_growth_primary_oil
 del df_extraction_coal, df_extraction_oil, df_extraction_gas
 del df_extraction_total, df_ngfs_countries
@@ -264,6 +276,7 @@ for scenario in df_growth_primary['Scenario'].unique():
 del mask, scenario, downscaling_values, variable, year_columns, zero_mask
 
 
+# -------------------
 # save this new edited annual growth file separately
 df_growth_primary_change = df_growth_primary.copy()
 
@@ -319,7 +332,10 @@ del i, current_year, previous_year, inf_mask, year_columns
 year_columns50 = [str(year) for year in range(2024, 2051)]
 
 
-# 1 --- SCENARIO --------------------------------------------------------------
+#############################################################
+# 1 --- SCENARIO --------------------------------------------
+#############################################################
+
 # annual
 df_growth_primary_byscenario_annual = df_growth_primary.groupby(['Scenario'])[year_columns50].sum()
 df_growth_primary_byscenario_annual.reset_index(inplace=True)
@@ -333,7 +349,11 @@ df_growth_primary_byscenario_cumulative.reset_index(inplace=True)
 
 
 
-# 2 --- FUEL TYPE -------------------------------------------------------------
+#############################################################
+# 2 --- FUEL TYPE -------------------------------------------
+#############################################################
+
+# -------------------
 ### net zero
 # annual
 df_growth_primary_netzero_byfueltype_annual = df_growth_primary[df_growth_primary['Scenario'] == "Net Zero 2050"]
@@ -346,6 +366,7 @@ df_growth_primary_netzero_byfueltype_cumulative[year_columns50] = df_growth_prim
 df_growth_primary_netzero_byfueltype_cumulative.reset_index(inplace=True) 
 
 
+# -------------------
 ### current policies
 # annual
 df_growth_primary_currentpolicy_byfueltype_annual = df_growth_primary[df_growth_primary['Scenario'] == "Current Policies"]
@@ -361,7 +382,11 @@ df_growth_primary_currentpolicy_byfueltype_cumulative.reset_index(inplace=True)
 
 
 
-# 3 --- REGION -----------------------------------------------------------------
+#############################################################
+# 3 --- REGION ----------------------------------------------
+#############################################################
+
+# -------------------
 ### net zero
 # annual
 df_growth_primary_netzero_byregion_annual = df_growth_primary[df_growth_primary['Scenario'] == "Net Zero 2050"]
@@ -374,6 +399,7 @@ df_growth_primary_netzero_byregion_cumulative[year_columns50] = df_growth_primar
 df_growth_primary_netzero_byregion_cumulative.reset_index(inplace=True) 
 
 
+# -------------------
 ### current policies
 # annual
 df_growth_primary_currentpolicy_byregion_annual = df_growth_primary[df_growth_primary['Scenario'] == "Current Policies"]
@@ -389,7 +415,11 @@ df_growth_primary_currentpolicy_byregion_cumulative.reset_index(inplace=True)
 
 
 
-# 4 --- DEVELOPMENT -----------------------------------------------------------
+#############################################################
+# 4 --- DEVELOPMENT -----------------------------------------
+#############################################################
+
+# -------------------
 ### net zero
 # annual
 df_growth_primary_netzero_bydev_annual = df_growth_primary[df_growth_primary['Scenario'] == "Net Zero 2050"]
@@ -402,6 +432,7 @@ df_growth_primary_netzero_bydev_cumulative[year_columns50] = df_growth_primary_n
 df_growth_primary_netzero_bydev_cumulative.reset_index(inplace=True) 
 
 
+# -------------------
 ### current policies
 # annual
 df_growth_primary_currentpolicy_bydev_annual = df_growth_primary[df_growth_primary['Scenario'] == "Current Policies"]
@@ -417,7 +448,11 @@ df_growth_primary_currentpolicy_bydev_cumulative.reset_index(inplace=True)
 
 
 
-# 5 --- BYCOUNTRY - TOP 15 -----------------------------------------------------------
+#############################################################
+# 5 --- BYCOUNTRY - TOP 15 ----------------------------------
+#############################################################
+
+# -------------------
 ### net zero
 # annual
 df_growth_primary_netzero_bycountry_annual = df_growth_primary[df_growth_primary['Scenario'] == "Net Zero 2050"]
@@ -467,6 +502,9 @@ del top15_countries
 
 
 
+
+
+# -------------------
 ### current policies
 # annual
 df_growth_primary_currentpolicy_bycountry_annual = df_growth_primary[df_growth_primary['Scenario'] == "Current Policies"]
@@ -515,7 +553,8 @@ del df_other_annual, df_other_annual_sum, df_top15_annual
 del top15_countries
 
 
-# ADD COUNTRY NAMES
+# -------------------
+# add country names
 region_to_country = pd.Series(df_regions['name'].values, index=df_regions['alpha-3']).to_dict()
 
 df_top15_netzero_annual['Country'] = df_top15_netzero_annual['Region'].map(region_to_country)

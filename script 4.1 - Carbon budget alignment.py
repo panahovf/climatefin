@@ -4,12 +4,9 @@
 # Author: Farhad Panahov
 
 
-# Task: Identify scale value to be aligned with carbon budget
-
 
 # In[2]:
 # load packages
-
 
 import os
 import pandas as pd
@@ -22,6 +19,13 @@ from matplotlib.ticker import FuncFormatter
 
 
 
+
+
+
+
+
+
+
 # In[3]:
 # directory & load data
 
@@ -30,14 +34,16 @@ os.chdir(directory)
 del directory
 
 
+# --------------
 # load secondary
-df_power_annual_currentpolicy = pd.read_excel("2 - output/script 3/5.1 - Secondary - currentpolicy - annual - fueltype.xlsx")
+df_power_annual_currentpolicy = pd.read_excel("2 - output/script 3.1/5.1 - Secondary - currentpolicy - annual - fueltype.xlsx")
 df_power_annual_currentpolicy = df_power_annual_currentpolicy.set_index('fuel_type')
 
-df_power_annual_netzero = pd.read_excel("2 - output/script 3/3.1 - Secondary - netzero - annual - fueltype.xlsx")
+df_power_annual_netzero = pd.read_excel("2 - output/script 3.1/3.1 - Secondary - netzero - annual - fueltype.xlsx")
 df_power_annual_netzero = df_power_annual_netzero.set_index('fuel_type')
 
 
+# --------------
 # load extraction
 df_extraction_annual_currentpolicy = pd.read_excel("2 - output/script 3.2/5.1 - Primary - currentpolicy - annual - fueltype.xlsx")
 df_extraction_annual_currentpolicy = df_extraction_annual_currentpolicy.set_index('fuel_type')
@@ -46,8 +52,16 @@ df_extraction_annual_netzero = pd.read_excel("2 - output/script 3.2/3.1 - Primar
 df_extraction_annual_netzero = df_extraction_annual_netzero.set_index('fuel_type')
 
 
+# --------------
 # load ngfs growth for total energy
 df_ngfs_total_annual = pd.read_excel('2 - output/script 2/1.5 - GCAM - emissions - energy.xlsx')
+
+
+
+
+
+
+
 
 
 
@@ -55,7 +69,7 @@ df_ngfs_total_annual = pd.read_excel('2 - output/script 2/1.5 - GCAM - emissions
 ###########################################
 
 # select years
-year_columns = [str(year) for year in range(2023, 2051)]
+year_columns = [str(year) for year in range(2024, 2051)]
 
 # get total NGFS by scenario
 df_ngfs_total_annual = df_ngfs_total_annual.groupby('Scenario')[year_columns].sum()
@@ -68,14 +82,20 @@ df_total_annual = df_ngfs_annual_change.copy()
 # remove 2020-22
 # set 2023 energy emissions at 37.4 GT CO2
 # https://www.iea.org/reports/co2-emissions-in-2023/executive-summary
-df_total_annual['2023'] = 37400 # set
+df_total_annual['2024'] = 37400 # set
+
+
+
+
+
+
+
 
 
 
 # In[5]: PROJECT THE GROWTH TO ANNUAL EMISSIOSN
 ###############################################
 
-# after this we get dataframe for secondary energy by source/country/scenario with annual emissions values
 for i in range(1, len(year_columns)):
     previous_year = year_columns[i - 1]  # Get the previous year
     current_year = year_columns[i]       # Get the current year
@@ -85,15 +105,24 @@ for i in range(1, len(year_columns)):
 
 del i, current_year, previous_year
 
-# drop 2023
-df_total_annual = df_total_annual.drop(columns=['2023'])
+
 df_total_annual.reset_index(inplace=True)
+
+
+
+
+
+
+
 
 
 
 # In[]: GET RESIDUAL EMISSIONS
 ##############################
 
+# substract from total emissions power & extraction
+
+# --------------
 # current policy
 df_total_annual_currentpolicy = df_total_annual[df_total_annual['Scenario'] == "Current Policies"]
 df_total_annual_currentpolicy = df_total_annual_currentpolicy.set_index('Scenario')
@@ -102,6 +131,7 @@ df_total_annual_currentpolicy = df_total_annual_currentpolicy.set_index('Scenari
 df_residual_annual_currentpolicy = df_total_annual_currentpolicy - df_power_annual_currentpolicy.sum() - df_extraction_annual_currentpolicy.sum()
 
 
+# --------------
 # netzero
 df_total_annual_netzero = df_total_annual[df_total_annual['Scenario'] == "Net Zero 2050"]
 df_total_annual_netzero = df_total_annual_netzero.set_index('Scenario')
@@ -111,11 +141,19 @@ df_residual_annual_netzero = df_total_annual_netzero - df_power_annual_netzero.s
 
 
 
+
+
+
+
+
+
+
 # In[]: GET CUMULATIVE EMISSIONS
 
 year_columns = [str(year) for year in range(2024, 2051)]
 
-##############
+
+# --------------
 # current policy --- # cumulative
 # total
 df_total_cumulative_currentpolicy = df_total_annual_currentpolicy.copy()
@@ -138,7 +176,9 @@ df_residual_cumulative_currentpolicy[year_columns] = df_residual_cumulative_curr
 
 
 
-##############
+
+
+# --------------
 # netzero --- # cumulative
 # total
 df_total_cumulative_netzero = df_total_annual_netzero.copy()
@@ -161,12 +201,23 @@ df_residual_cumulative_netzero[year_columns] = df_residual_cumulative_netzero[ye
 
 
 
+
+
+
+
+
+
+
 # In[11]
 
 
 #####################################################################
 #####################################################################
+#####################################################################
+#####################################################################
 ########## PLOTS PLOTS PLOTS PLOTS PLOTS PLOTS PLOTS ################
+#####################################################################
+#####################################################################
 #####################################################################
 #####################################################################
 
@@ -175,10 +226,12 @@ df_residual_cumulative_netzero[year_columns] = df_residual_cumulative_netzero[ye
 # In[6]:  PREPARE DATASETS
 ###########################
 
+# --------------
 # Ensure all DataFrames have the same year columns
 common_years = df_total_annual_currentpolicy.columns.intersection(df_power_annual_currentpolicy.columns).intersection(df_extraction_annual_currentpolicy.columns).intersection(df_residual_annual_currentpolicy.columns)
 
 
+# --------------
 # Align all DataFrames to have the same year columns
 df_total_annual_currentpolicy = df_total_annual_currentpolicy[common_years]
 df_power_annual_currentpolicy = df_power_annual_currentpolicy[common_years]
@@ -186,6 +239,7 @@ df_extraction_annual_currentpolicy = df_extraction_annual_currentpolicy[common_y
 df_residual_annual_currentpolicy = df_residual_annual_currentpolicy[common_years]
 
 
+# --------------
 # Align all DataFrames to have the same year columns
 df_total_cumulative_netzero = df_total_cumulative_netzero[common_years]
 df_power_cumulative_netzero = df_power_cumulative_netzero[common_years]
@@ -193,9 +247,18 @@ df_extraction_cumulative_netzero = df_extraction_cumulative_netzero[common_years
 df_residual_cumulative_netzero = df_residual_cumulative_netzero[common_years]
 
 
+# --------------
 # Define colors for extraction and power components
 extraction_colors = {'Coal': '#991f17', 'Gas': '#b04238', 'Oil': '#c86558'}
 power_colors = {'Coal': '#255e7e', 'Gas': '#3d708f', 'Oil': '#6996b3'}
+
+
+
+
+
+
+
+
 
 
 # In[8]:
@@ -204,8 +267,7 @@ power_colors = {'Coal': '#255e7e', 'Gas': '#3d708f', 'Oil': '#6996b3'}
 ##################### SECTION 1: CURRENT POLICIES ################################################
 ##################################################################################################
 
-
-##############
+# --------------
 # ANNUAL
 # Plotting
 fig, ax = plt.subplots(figsize=(12, 8))
@@ -255,7 +317,7 @@ plt.show()
 
 
 
-#################
+# --------------
 # CUMULATIVE
 # Plotting
 fig, ax = plt.subplots(figsize=(12, 8))
@@ -331,13 +393,17 @@ plt.show()
 
 
 
+
+
+
+
+
 # In[]
 ##################################################################################################
 ##################### SECTION 2: NET ZERO 2050 ###################################################
 ##################################################################################################
 
-
-##############
+# --------------
 # ANNUAL
 # Plotting
 fig, ax = plt.subplots(figsize=(12, 8))
@@ -387,7 +453,7 @@ plt.show()
 
 
 
-#################
+# --------------
 # CUMULATIVE
 # Plotting
 fig, ax = plt.subplots(figsize=(12, 8))
