@@ -43,9 +43,9 @@ df_extraction_coal = pd.read_excel('2 - output/script 1/4 - extraction_coal.xlsx
 df_extraction_gas = pd.read_excel('2 - output/script 1/5 - extraction_gas.xlsx')   
 df_extraction_oil = pd.read_excel('2 - output/script 1/6 - extraction_oil.xlsx')   
 
-df_extraction_coal['countryiso3'] = df_extraction_coal['countryiso3'].replace('TZ1', 'TZA') # this fixed an error in naming Tanzania
-df_extraction_gas['countryiso3'] = df_extraction_gas['countryiso3'].replace('TZ1', 'TZA') # this fixed an error in naming Tanzania
-df_extraction_oil['countryiso3'] = df_extraction_oil['countryiso3'].replace('TZ1', 'TZA') # this fixed an error in naming Tanzania
+df_extraction_coal['country_iso_3'] = df_extraction_coal['country_iso_3'].replace('TZ1', 'TZA') # this fixed an error in naming Tanzania
+df_extraction_gas['country_iso_3'] = df_extraction_gas['country_iso_3'].replace('TZ1', 'TZA') # this fixed an error in naming Tanzania
+df_extraction_oil['country_iso_3'] = df_extraction_oil['country_iso_3'].replace('TZ1', 'TZA') # this fixed an error in naming Tanzania
 
 
 # -----------------------
@@ -102,28 +102,28 @@ df_ngfs_emissions_primary= df_ngfs_emissions_primary.drop(columns = ['2020', '20
 
 # -------------------
 #coal
-df_extraction_coal = df_extraction_coal.groupby(['countryiso3'])['emissionsco2e20years'].sum()
+df_extraction_coal = df_extraction_coal.groupby(['country_iso_3'])['emissions_co2e_million_tonnes'].sum()
 df_extraction_coal = df_extraction_coal.reset_index()
 
 
 #gas
-df_extraction_gas = df_extraction_gas.groupby(['countryiso3'])['annual_co2_calc_20yr'].sum()
+df_extraction_gas = df_extraction_gas.groupby(['country_iso_3'])['emissions_co2e_million_tonnes'].sum()
 df_extraction_gas = df_extraction_gas.reset_index()
 
 
 #oil
-df_extraction_oil = df_extraction_oil.groupby(['countryiso3'])['annual_co2_calc_20yr'].sum()
+df_extraction_oil = df_extraction_oil.groupby(['country_iso_3'])['emissions_co2e_million_tonnes'].sum()
 df_extraction_oil = df_extraction_oil.reset_index()
 
 
 # -------------------
 # total
 df_extraction_total = pd.merge(df_extraction_coal, df_extraction_gas,
-                               on='countryiso3',
+                               on='country_iso_3',
                                how='outer')
 
 df_extraction_total = pd.merge(df_extraction_total, df_extraction_oil,
-                               on='countryiso3',
+                               on='country_iso_3',
                                how='outer')
 
 # df names
@@ -184,7 +184,10 @@ df_merged_countries_edited = df_merged_countries_edited[df_merged_countries_edit
 df_merged_countries_edited['country_NGFS'] = df_merged_countries_edited['country_NGFS'].replace(np.nan, 'Downscaling|Countries without IEA statistics')
 
 # here is list of countries that are in NGFS but dont exist in FA:
-    # CIV (Côte d'Ivoire), HTI (Haiti), SDN (Sudan)
+    # arm, bel, ben, blr, che, civ, cod, cri, cyp, dom, eri, est, fin, 
+    # fra, gha, hkg, hnd, hrv, hti, isl, jam, jor, ken, lbn, lka, ltu,
+    # lux, lva, mar, mda, mli, mlt, mus, nam, nic, pan, prt, pry, sdn,
+    # sen, sgp, slv, sur, svk, swe, tgo, twn, uga, ury, yem
 # remove NA's in FA country list
 df_merged_countries_edited = df_merged_countries_edited[df_merged_countries_edited['country_FA'].notna()]
 
@@ -203,7 +206,7 @@ df_merged_countries_edited.reset_index(inplace = True)
 
 # In[]: USE MAPPING TO ADD EMISSSONS VALUES TO YEAR 2024 BACK TO MASTER DATA
 ############################################################################
-# Get power values added to 2020 of growth dataframe
+# Get emissions values added to 2024 of growth dataframe
 
 # -------------------
 # coal

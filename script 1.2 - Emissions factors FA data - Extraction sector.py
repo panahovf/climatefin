@@ -38,13 +38,8 @@ del directory
 
 
 # ----------------------------
-# load oilgas extraction data
-df_extraction_oilgas = pd.read_csv("1 - input/v3_oil_gas_extraction_ForwardAnalytics2024.csv")
-
-
-# ----------------------------
-# load coal extraction data
-df_extraction_coal = pd.read_csv("1 - input/v1coal-extraction_ForwardAnalytics2024.csv")
+# load oil gas coal extraction data
+df_extraction = pd.read_csv("1 - input/v2_extraction_operating_ForwardAnalytics2024.csv")
 
 
 
@@ -59,23 +54,18 @@ df_extraction_coal = pd.read_csv("1 - input/v1coal-extraction_ForwardAnalytics20
 ####################
 
 # ----------------------------
-### OIL GAS
-df_extraction_oilgas = df_extraction_oilgas[df_extraction_oilgas['status'] == "operating"]  # filter by operating
-df_extraction_oilgas = df_extraction_oilgas[df_extraction_oilgas['latest_year'] == 1]    # keep only latest year
+# oil
+df_extraction_oil = df_extraction[df_extraction['subsector_extraction'] == "Oil"]
+
+# gas
+df_extraction_gas = df_extraction[df_extraction['subsector_extraction'] == "Gas"]
+
+# coal
+df_extraction_coal = df_extraction[df_extraction['subsector_extraction']=='Coal']
 
 
-# break oil and gas separately
-df_extraction_oil = df_extraction_oilgas[df_extraction_oilgas['subsector'] == "oil"]
-df_extraction_gas = df_extraction_oilgas[df_extraction_oilgas['subsector'] == "gas"]
-
-
-del df_extraction_oilgas
-
-
-### COAL
-df_extraction_coal = df_extraction_coal[df_extraction_coal['status']=='Operating']  # filter only operating plants
-df_extraction_coal['emissionsco2e20years'] = pd.to_numeric(df_extraction_coal['emissionsco2e20years'], errors='coerce')   # 
-df_extraction_coal['activity'] = pd.to_numeric(df_extraction_coal['activity'], errors='coerce')   # 
+# ----------------------------
+del df_extraction
 
 
 
@@ -91,11 +81,11 @@ df_extraction_coal['activity'] = pd.to_numeric(df_extraction_coal['activity'], e
 # OIL --- million tonnes of CO2 per production --- million bbl/y
 
 def weighted_avg_oil(group):
-    return (group['annual_co2_calc_20yr'] * group['activity']).sum() / group['activity'].sum()
+    return (group['emissions_co2e_million_tonnes'] * group['activity']).sum() / group['activity'].sum()
 
 
 # Group by country
-df_country_CO2factor_oil = df_extraction_oil.groupby('countryiso3').apply(weighted_avg_oil)
+df_country_CO2factor_oil = df_extraction_oil.groupby('country_iso_3').apply(weighted_avg_oil)
 
 
 # Change the name for the column
@@ -119,11 +109,11 @@ df_country_CO2factor_oil = df_country_CO2factor_oil.reset_index()
 # GAS --- million tonnes of CO2 per production --- million m3/y
 
 def weighted_avg_gas(group):
-    return (group['annual_co2_calc_20yr'] * group['activity']).sum() / group['activity'].sum()
+    return (group['emissions_co2e_million_tonnes'] * group['activity']).sum() / group['activity'].sum()
 
 
 # Group by country
-df_country_CO2factor_gas = df_extraction_gas.groupby('countryiso3').apply(weighted_avg_gas)
+df_country_CO2factor_gas = df_extraction_gas.groupby('country_iso_3').apply(weighted_avg_gas)
 
 
 # Change the name for the column
@@ -147,11 +137,11 @@ df_country_CO2factor_gas = df_country_CO2factor_gas.reset_index()
 # COAL --- million tonnes of CO2 per production --- mtpa
 
 def weighted_avg_coal(group):
-    return (group['emissionsco2e20years'] * group['activity']).sum() / group['activity'].sum()
+    return (group['emissions_co2e_million_tonnes'] * group['activity']).sum() / group['activity'].sum()
 
 
 # Group by country
-df_country_CO2factor_coal = df_extraction_coal.groupby('countryiso3').apply(weighted_avg_coal)
+df_country_CO2factor_coal = df_extraction_coal.groupby('country_iso_3').apply(weighted_avg_coal)
 
 
 # Change the name for the column

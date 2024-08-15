@@ -54,7 +54,7 @@ df_ngfs_total_annual= df_ngfs_total_annual.drop(columns = ['2020', '2021', '2022
 
 
 # --------------
-# load ngfs secondary emissions
+# load ngfs secondary & primary emissions
 df_ngfs_secondary = pd.read_excel("2 - output/script 3.1/1.3 - Secondary - emissions NGFS - projection.xlsx")
 df_ngfs_primary = pd.read_excel("2 - output/script 3.2/1.3 - Primary - emissions NGFS - projection.xlsx")
 
@@ -318,13 +318,18 @@ df_ratio_netzero['Likelyhood 67%'] = var_total2050_netzero/df_ratio_netzero['Lik
 year_columns2 = [str(year) for year in range(2025, 2051)]
 
 
+# In[]
+#########################################################################
+#  1. VERSION 1: NO CHANGES TO POSITIVE GROWTH --------------------------
+#########################################################################
+
 # create a reductino factor matric
-df_reduction_netzero = df_ratio_netzero.copy()
-df_reduction_netzero.iloc[:, [1, 2]] = 1
+df_reduction_netzero_v1 = df_ratio_netzero.copy()
+df_reduction_netzero_v1.iloc[:, [1, 2]] = 1
 
 
 ########################################################
-#  1. NET ZERO: 1.5C 50% -------------------------------
+#  1.1 NET ZERO: 1.5C 50% ------------------------------
 ########################################################
 
 # --------------
@@ -449,26 +454,24 @@ for reduction_start in np.arange(lower_bound, upper_bound, step_size):
 
 else:
     print("No suitable reduction factor found within the bounds.")
-
-
-# Converged at reduction_start = 1.7990000000000015 in 1769 iterations
+# Converged at reduction_start = 1.8520000000000014 in 1822 iterations
 
 
 # --------------
 # add the factor to the dataframe
-df_reduction_netzero['Likelyhood 50%'][0] = reduction_start
+df_reduction_netzero_v1['Likelyhood 50%'][0] = reduction_start
 
 
 # --------------
 # save the annual changes datasets
-df_nz15_50_secondary_change = df_temp_secondary_netzero_change
-df_nz15_50_secondary = df_temp_secondary_netzero
+df_nz15_50_secondary_change_v1 = df_temp_secondary_netzero_change
+df_nz15_50_secondary_v1 = df_temp_secondary_netzero
 
-df_nz15_50_primary_change = df_temp_primary_netzero_change
-df_nz15_50_primary = df_temp_primary_netzero
+df_nz15_50_primary_change_v1 = df_temp_primary_netzero_change
+df_nz15_50_primary_v1 = df_temp_primary_netzero
 
-df_nz15_50_residual_change = df_temp_residual_netzero_change
-df_nz15_50_residual = df_temp_residual_netzero
+df_nz15_50_residual_change_v1 = df_temp_residual_netzero_change
+df_nz15_50_residual_v1 = df_temp_residual_netzero
 
 
 # --------------
@@ -485,7 +488,7 @@ del var_temp_total_all, var_temp_total_primary, var_temp_total_secondary, var_te
 
 
 ########################################################
-#  2. NET ZERO: 1.5C 67% -------------------------------
+#  1.2 NET ZERO: 1.5C 67% ------------------------------
 ########################################################
 
 # --------------
@@ -610,26 +613,24 @@ for reduction_start in np.arange(lower_bound, upper_bound, step_size):
 
 else:
     print("No suitable reduction factor found within the bounds.")
-
-
-# Converged at reduction_start = 3.4920000000000027 in 3411 iterations
+#Converged at reduction_start = 3.653000000000003 in 3572 iterations
 
 
 # --------------
 # add the factor to the dataframe
-df_reduction_netzero['Likelyhood 67%'][0] = reduction_start
+df_reduction_netzero_v1['Likelyhood 67%'][0] = reduction_start
 
 
 # --------------
 # save the annual changes datasets
-df_nz15_67_secondary_change = df_temp_secondary_netzero_change
-df_nz15_67_secondary = df_temp_secondary_netzero
+df_nz15_67_secondary_change_v1 = df_temp_secondary_netzero_change
+df_nz15_67_secondary_v1 = df_temp_secondary_netzero
 
-df_nz15_67_primary_change = df_temp_primary_netzero_change
-df_nz15_67_primary = df_temp_primary_netzero
+df_nz15_67_primary_change_v1 = df_temp_primary_netzero_change
+df_nz15_67_primary_v1 = df_temp_primary_netzero
 
-df_nz15_67_residual_change = df_temp_residual_netzero_change
-df_nz15_67_residual = df_temp_residual_netzero
+df_nz15_67_residual_change_v1 = df_temp_residual_netzero_change
+df_nz15_67_residual_v1 = df_temp_residual_netzero
 
 
 # --------------
@@ -646,7 +647,7 @@ del var_temp_total_all, var_temp_total_primary, var_temp_total_secondary, var_te
 
 
 ########################################################
-#  3. NET ZERO: 1.6C 67% -------------------------------
+#  1.3 NET ZERO: 1.6C 67% ------------------------------
 ########################################################
 
 # --------------
@@ -771,26 +772,24 @@ for reduction_start in np.arange(lower_bound, upper_bound, step_size):
 
 else:
     print("No suitable reduction factor found within the bounds.")
-
-
-# Converged at reduction_start = 1.3700000000000012 in 1356 iterations
+# Converged at reduction_start = 1.404000000000001 in 1390 iterations
 
 
 # --------------
 # add the factor to the dataframe
-df_reduction_netzero['Likelyhood 67%'][1] = reduction_start
+df_reduction_netzero_v1['Likelyhood 67%'][1] = reduction_start
 
 
 # --------------
 # save the annual changes datasets
-df_nz16_67_secondary_change = df_temp_secondary_netzero_change
-df_nz16_67_secondary = df_temp_secondary_netzero
+df_nz16_67_secondary_change_v1 = df_temp_secondary_netzero_change
+df_nz16_67_secondary_v1 = df_temp_secondary_netzero
 
-df_nz16_67_primary_change = df_temp_primary_netzero_change
-df_nz16_67_primary = df_temp_primary_netzero
+df_nz16_67_primary_change_v1 = df_temp_primary_netzero_change
+df_nz16_67_primary_v1 = df_temp_primary_netzero
 
-df_nz16_67_residual_change = df_temp_residual_netzero_change
-df_nz16_67_residual = df_temp_residual_netzero
+df_nz16_67_residual_change_v1 = df_temp_residual_netzero_change
+df_nz16_67_residual_v1 = df_temp_residual_netzero
 
 
 # --------------
@@ -807,53 +806,1482 @@ del var_temp_total_all, var_temp_total_primary, var_temp_total_secondary, var_te
 
 
 # In[]
+#########################################################################
+#  2. VERSION 2: DECREASE POSITIVE GROWTH RATES -------------------------
+#########################################################################
+
+### see in iterations --- all (sec, pri, res) are divide by the reduction factor when annual growth rate is positive
+
+# create a reductino factor matric
+df_reduction_netzero_v2 = df_ratio_netzero.copy()
+df_reduction_netzero_v2.iloc[:, [1, 2]] = 1
+
+
+########################################################
+#  2.1 NET ZERO: 1.5C 50% ------------------------------
+########################################################
+
+# --------------
+# set total variable
+target_value = df_carbon_bugdet['Likelyhood 50%'][0] * 1000
+tolerance = 0.01 * target_value # 1% +- buffer zone
+
+# Start with an initial guess --- % over carbon budget
+reduction_start = df_ratio_netzero['Likelyhood 50%'][0] - 1
+
+# Set initial bounds for the reduction factor --- it will iterate across all vallues by 0.001 increment --- exhaustive approach
+lower_bound = round(reduction_start / 10, 3)
+upper_bound = round(reduction_start * 10, 3)
+print((upper_bound - lower_bound)/0.001)
+# 3084
+# this shows how many iterations will run
+
+# Step size for iterating over 3 decimal places
+step_size = 0.001
+
+# set iteration variable
+iteration = 0
+
+
+# --------------
+# Iterate over the range with the specified step size
+for reduction_start in np.arange(lower_bound, upper_bound, step_size):
+    iteration += 1
+
+    ### secondary
+    # this piece updates annual percent change values by reduction factor
+    # if annual change is positive, leave as is
+    # if annual change is negative, update, but lowest it can go is -100%
+    df_temp_secondary_netzero = df_change_secondary_netzero.copy()
+    df_temp_secondary_netzero[year_columns2] = np.where(
+        df_change_secondary_netzero[year_columns2] < 0,
+        (df_change_secondary_netzero[year_columns2] * reduction_start).clip(lower=-100),
+        df_change_secondary_netzero[year_columns2] / reduction_start
+    )
+    
+    
+    # save annual changes in a separate dataframe
+    df_temp_secondary_netzero_change = df_temp_secondary_netzero.copy()
+    
+    
+    # now compute a new annaul emissions data
+    for i in range(1, len(year_columns)):
+        previous_year = year_columns[i - 1]
+        current_year = year_columns[i]
+    
+        if current_year in df_temp_secondary_netzero.columns:
+            inf_mask = np.isinf(df_temp_secondary_netzero[current_year])
+            df_temp_secondary_netzero.loc[~inf_mask, current_year] = df_temp_secondary_netzero[previous_year] * (1 + df_temp_secondary_netzero[current_year] / 100)
+            df_temp_secondary_netzero.loc[inf_mask, current_year] = df_ngfs_secondary_netzero.loc[inf_mask, current_year]
+
+
+    del i, current_year, previous_year, inf_mask
+
+
+    ### primary
+    df_temp_primary_netzero = df_change_primary_netzero.copy()
+    df_temp_primary_netzero[year_columns2] = np.where(
+        df_change_primary_netzero[year_columns2] < 0,
+        (df_change_primary_netzero[year_columns2] * reduction_start).clip(lower=-100),
+        df_change_primary_netzero[year_columns2] / reduction_start
+    )
+
+
+    df_temp_primary_netzero_change = df_temp_primary_netzero.copy()
+
+
+    for i in range(1, len(year_columns)):
+        previous_year = year_columns[i - 1]
+        current_year = year_columns[i]
+    
+        if current_year in df_temp_primary_netzero.columns:
+            inf_mask = np.isinf(df_temp_primary_netzero[current_year])
+            df_temp_primary_netzero.loc[~inf_mask, current_year] = df_temp_primary_netzero[previous_year] * (1 + df_temp_primary_netzero[current_year] / 100)
+            df_temp_primary_netzero.loc[inf_mask, current_year] = df_ngfs_primary_netzero.loc[inf_mask, current_year]
+
+
+    del i, current_year, previous_year, inf_mask
+
+
+
+    ### residual 
+    df_temp_residual_netzero = df_residual_netzero_change.copy()
+    df_temp_residual_netzero[year_columns2] = np.where(
+        df_residual_netzero_change[year_columns2] < 0,
+        (df_residual_netzero_change[year_columns2] * reduction_start).clip(lower=-100),
+        df_residual_netzero_change[year_columns2] / reduction_start
+    )
+
+
+    df_temp_residual_netzero_change = df_temp_residual_netzero.copy()
+    df_temp_residual_netzero['2024'] = df_residual_netzero['2024'].values
+
+
+    for i in range(1, len(year_columns)):
+        previous_year = year_columns[i - 1]
+        current_year = year_columns[i]
+       
+        df_temp_residual_netzero[current_year] = df_temp_residual_netzero[previous_year] * (1 + df_temp_residual_netzero[current_year] / 100)
+
+
+    del i, current_year, previous_year
+
+    
+
+    # get total emissions --- cumulative across all --- secondary, extraction, residual 
+    var_temp_total_secondary = df_temp_secondary_netzero[year_columns].sum().sum()
+    var_temp_total_primary = df_temp_primary_netzero[year_columns].sum().sum()
+    var_temp_total_residiaul = df_temp_residual_netzero[year_columns].sum().sum()
+    var_temp_total_all = var_temp_total_primary + var_temp_total_secondary + var_temp_total_residiaul
+
+
+
+    # when within tolerance/buffer --- stop
+    if abs(var_temp_total_all - target_value) <= tolerance:
+        print(f"Converged at reduction_start = {reduction_start} in {iteration} iterations")
+        break
+
+else:
+    print("No suitable reduction factor found within the bounds.")
+# Converged at reduction_start = 1.7980000000000016 in 1768 iterations
+
+
+# --------------
+# add the factor to the dataframe
+df_reduction_netzero_v2['Likelyhood 50%'][0] = reduction_start
+
+
+# --------------
+# save the annual changes datasets
+df_nz15_50_secondary_change_v2 = df_temp_secondary_netzero_change
+df_nz15_50_secondary_v2 = df_temp_secondary_netzero
+
+df_nz15_50_primary_change_v2 = df_temp_primary_netzero_change
+df_nz15_50_primary_v2 = df_temp_primary_netzero
+
+df_nz15_50_residual_change_v2 = df_temp_residual_netzero_change
+df_nz15_50_residual_v2 = df_temp_residual_netzero
+
+
+# --------------
+del iteration, lower_bound, reduction_start, step_size, target_value, tolerance, upper_bound
+del var_temp_total_all, var_temp_total_primary, var_temp_total_secondary, var_temp_total_residiaul
+
+
+
+
+
+
+
+
+
+
+########################################################
+#  2.2 NET ZERO: 1.5C 67% ------------------------------
+########################################################
+
+# --------------
+# set total variable
+target_value = df_carbon_bugdet['Likelyhood 67%'][0] * 1000
+tolerance = 0.01 * target_value # 1% +- buffer zone
+
+# Start with an initial guess --- % over carbon budget
+reduction_start = df_ratio_netzero['Likelyhood 67%'][0] - 1
+
+# Set initial bounds for the reduction factor --- it will iterate across all vallues by 0.001 increment --- exhaustive approach
+lower_bound = round(reduction_start / 10, 3)
+upper_bound = round(reduction_start * 10, 3)
+print((upper_bound - lower_bound)/0.001)
+# 8115
+# this shows how many iterations will run
+
+# Step size for iterating over 3 decimal places
+step_size = 0.001
+
+# set iteration variable
+iteration = 0
+
+
+# --------------
+# Iterate over the range with the specified step size
+for reduction_start in np.arange(lower_bound, upper_bound, step_size):
+    iteration += 1
+
+    ### secondary
+    # this piece updates annual percent change values by reduction factor
+    # if annual change is positive, leave as is
+    # if annual change is negative, update, but lowest it can go is -100%
+    df_temp_secondary_netzero = df_change_secondary_netzero.copy()
+    df_temp_secondary_netzero[year_columns2] = np.where(
+        df_change_secondary_netzero[year_columns2] < 0,
+        (df_change_secondary_netzero[year_columns2] * reduction_start).clip(lower=-100),
+        df_change_secondary_netzero[year_columns2] / reduction_start
+    )
+    
+    
+    # save annual changes in a separate dataframe
+    df_temp_secondary_netzero_change = df_temp_secondary_netzero.copy()
+    
+    
+    # now compute a new annaul emissions data
+    for i in range(1, len(year_columns)):
+        previous_year = year_columns[i - 1]
+        current_year = year_columns[i]
+    
+        if current_year in df_temp_secondary_netzero.columns:
+            inf_mask = np.isinf(df_temp_secondary_netzero[current_year])
+            df_temp_secondary_netzero.loc[~inf_mask, current_year] = df_temp_secondary_netzero[previous_year] * (1 + df_temp_secondary_netzero[current_year] / 100)
+            df_temp_secondary_netzero.loc[inf_mask, current_year] = df_ngfs_secondary_netzero.loc[inf_mask, current_year]
+
+
+    del i, current_year, previous_year, inf_mask
+
+
+    ### primary
+    df_temp_primary_netzero = df_change_primary_netzero.copy()
+    df_temp_primary_netzero[year_columns2] = np.where(
+        df_change_primary_netzero[year_columns2] < 0,
+        (df_change_primary_netzero[year_columns2] * reduction_start).clip(lower=-100),
+        df_change_primary_netzero[year_columns2] / reduction_start
+    )
+
+
+    df_temp_primary_netzero_change = df_temp_primary_netzero.copy()
+
+
+    for i in range(1, len(year_columns)):
+        previous_year = year_columns[i - 1]
+        current_year = year_columns[i]
+    
+        if current_year in df_temp_primary_netzero.columns:
+            inf_mask = np.isinf(df_temp_primary_netzero[current_year])
+            df_temp_primary_netzero.loc[~inf_mask, current_year] = df_temp_primary_netzero[previous_year] * (1 + df_temp_primary_netzero[current_year] / 100)
+            df_temp_primary_netzero.loc[inf_mask, current_year] = df_ngfs_primary_netzero.loc[inf_mask, current_year]
+
+
+    del i, current_year, previous_year, inf_mask
+
+
+
+    ### residual 
+    df_temp_residual_netzero = df_residual_netzero_change.copy()
+    df_temp_residual_netzero[year_columns2] = np.where(
+        df_residual_netzero_change[year_columns2] < 0,
+        (df_residual_netzero_change[year_columns2] * reduction_start).clip(lower=-100),
+        df_residual_netzero_change[year_columns2] / reduction_start
+    )
+
+
+    df_temp_residual_netzero_change = df_temp_residual_netzero.copy()
+    df_temp_residual_netzero['2024'] = df_residual_netzero['2024'].values
+
+
+    for i in range(1, len(year_columns)):
+        previous_year = year_columns[i - 1]
+        current_year = year_columns[i]
+       
+        df_temp_residual_netzero[current_year] = df_temp_residual_netzero[previous_year] * (1 + df_temp_residual_netzero[current_year] / 100)
+
+
+    del i, current_year, previous_year
+
+    
+
+    # get total emissions --- cumulative across all --- secondary, extraction, residual 
+    var_temp_total_secondary = df_temp_secondary_netzero[year_columns].sum().sum()
+    var_temp_total_primary = df_temp_primary_netzero[year_columns].sum().sum()
+    var_temp_total_residiaul = df_temp_residual_netzero[year_columns].sum().sum()
+    var_temp_total_all = var_temp_total_primary + var_temp_total_secondary + var_temp_total_residiaul
+
+
+
+    # when within tolerance/buffer --- stop
+    if abs(var_temp_total_all - target_value) <= tolerance:
+        print(f"Converged at reduction_start = {reduction_start} in {iteration} iterations")
+        break
+
+else:
+    print("No suitable reduction factor found within the bounds.")
+# Converged at reduction_start = 3.477000000000003 in 3396 iterations
+
+
+# --------------
+# add the factor to the dataframe
+df_reduction_netzero_v2['Likelyhood 67%'][0] = reduction_start
+
+
+# --------------
+# save the annual changes datasets
+df_nz15_67_secondary_change_v2 = df_temp_secondary_netzero_change
+df_nz15_67_secondary_v2 = df_temp_secondary_netzero
+
+df_nz15_67_primary_change_v2 = df_temp_primary_netzero_change
+df_nz15_67_primary_v2 = df_temp_primary_netzero
+
+df_nz15_67_residual_change_v2 = df_temp_residual_netzero_change
+df_nz15_67_residual_v2 = df_temp_residual_netzero
+
+
+# --------------
+del iteration, lower_bound, reduction_start, step_size, target_value, tolerance, upper_bound
+del var_temp_total_all, var_temp_total_primary, var_temp_total_secondary, var_temp_total_residiaul
+
+
+
+
+
+
+
+
+
+
+########################################################
+#  2.3 NET ZERO: 1.6C 67% ------------------------------
+########################################################
+
+# --------------
+# set total variable
+target_value = df_carbon_bugdet['Likelyhood 67%'][1] * 1000
+tolerance = 0.01 * target_value # 1% +- buffer zone
+
+# Start with an initial guess --- % over carbon budget
+reduction_start = df_ratio_netzero['Likelyhood 67%'][1] - 1
+
+# Set initial bounds for the reduction factor --- it will iterate across all vallues by 0.001 increment --- exhaustive approach
+lower_bound = round(reduction_start / 10, 3)
+upper_bound = round(reduction_start * 10, 3)
+print((upper_bound - lower_bound)/0.001)
+# 1492
+# this shows how many iterations will run
+
+# Step size for iterating over 3 decimal places
+step_size = 0.001
+
+# set iteration variable
+iteration = 0
+
+
+# --------------
+# Iterate over the range with the specified step size
+for reduction_start in np.arange(lower_bound, upper_bound, step_size):
+    iteration += 1
+
+    ### secondary
+    # this piece updates annual percent change values by reduction factor
+    # if annual change is positive, leave as is
+    # if annual change is negative, update, but lowest it can go is -100%
+    df_temp_secondary_netzero = df_change_secondary_netzero.copy()
+    df_temp_secondary_netzero[year_columns2] = np.where(
+        df_change_secondary_netzero[year_columns2] < 0,
+        (df_change_secondary_netzero[year_columns2] * reduction_start).clip(lower=-100),
+        df_change_secondary_netzero[year_columns2] / reduction_start
+    )
+    
+    
+    # save annual changes in a separate dataframe
+    df_temp_secondary_netzero_change = df_temp_secondary_netzero.copy()
+    
+    
+    # now compute a new annaul emissions data
+    for i in range(1, len(year_columns)):
+        previous_year = year_columns[i - 1]
+        current_year = year_columns[i]
+    
+        if current_year in df_temp_secondary_netzero.columns:
+            inf_mask = np.isinf(df_temp_secondary_netzero[current_year])
+            df_temp_secondary_netzero.loc[~inf_mask, current_year] = df_temp_secondary_netzero[previous_year] * (1 + df_temp_secondary_netzero[current_year] / 100)
+            df_temp_secondary_netzero.loc[inf_mask, current_year] = df_ngfs_secondary_netzero.loc[inf_mask, current_year]
+
+
+    del i, current_year, previous_year, inf_mask
+
+
+    ### primary
+    df_temp_primary_netzero = df_change_primary_netzero.copy()
+    df_temp_primary_netzero[year_columns2] = np.where(
+        df_change_primary_netzero[year_columns2] < 0,
+        (df_change_primary_netzero[year_columns2] * reduction_start).clip(lower=-100),
+        df_change_primary_netzero[year_columns2] / reduction_start
+    )
+
+
+    df_temp_primary_netzero_change = df_temp_primary_netzero.copy()
+
+
+    for i in range(1, len(year_columns)):
+        previous_year = year_columns[i - 1]
+        current_year = year_columns[i]
+    
+        if current_year in df_temp_primary_netzero.columns:
+            inf_mask = np.isinf(df_temp_primary_netzero[current_year])
+            df_temp_primary_netzero.loc[~inf_mask, current_year] = df_temp_primary_netzero[previous_year] * (1 + df_temp_primary_netzero[current_year] / 100)
+            df_temp_primary_netzero.loc[inf_mask, current_year] = df_ngfs_primary_netzero.loc[inf_mask, current_year]
+
+
+    del i, current_year, previous_year, inf_mask
+
+
+
+    ### residual 
+    df_temp_residual_netzero = df_residual_netzero_change.copy()
+    df_temp_residual_netzero[year_columns2] = np.where(
+        df_residual_netzero_change[year_columns2] < 0,
+        (df_residual_netzero_change[year_columns2] * reduction_start).clip(lower=-100),
+        df_residual_netzero_change[year_columns2] / reduction_start
+    )
+
+
+    df_temp_residual_netzero_change = df_temp_residual_netzero.copy()
+    df_temp_residual_netzero['2024'] = df_residual_netzero['2024'].values
+
+
+    for i in range(1, len(year_columns)):
+        previous_year = year_columns[i - 1]
+        current_year = year_columns[i]
+       
+        df_temp_residual_netzero[current_year] = df_temp_residual_netzero[previous_year] * (1 + df_temp_residual_netzero[current_year] / 100)
+
+
+    del i, current_year, previous_year
+
+    
+
+    # get total emissions --- cumulative across all --- secondary, extraction, residual 
+    var_temp_total_secondary = df_temp_secondary_netzero[year_columns].sum().sum()
+    var_temp_total_primary = df_temp_primary_netzero[year_columns].sum().sum()
+    var_temp_total_residiaul = df_temp_residual_netzero[year_columns].sum().sum()
+    var_temp_total_all = var_temp_total_primary + var_temp_total_secondary + var_temp_total_residiaul
+
+
+
+    # when within tolerance/buffer --- stop
+    if abs(var_temp_total_all - target_value) <= tolerance:
+        print(f"Converged at reduction_start = {reduction_start} in {iteration} iterations")
+        break
+
+else:
+    print("No suitable reduction factor found within the bounds.")
+# Converged at reduction_start = 1.3780000000000012 in 1364 iterations
+
+
+# --------------
+# add the factor to the dataframe
+df_reduction_netzero_v2['Likelyhood 67%'][1] = reduction_start
+
+
+# --------------
+# save the annual changes datasets
+df_nz16_67_secondary_change_v2 = df_temp_secondary_netzero_change
+df_nz16_67_secondary_v2 = df_temp_secondary_netzero
+
+df_nz16_67_primary_change_v2 = df_temp_primary_netzero_change
+df_nz16_67_primary_v2 = df_temp_primary_netzero
+
+df_nz16_67_residual_change_v2 = df_temp_residual_netzero_change
+df_nz16_67_residual_v2 = df_temp_residual_netzero
+
+
+# --------------
+del iteration, lower_bound, reduction_start, step_size, target_value, tolerance, upper_bound
+del var_temp_total_all, var_temp_total_primary, var_temp_total_secondary, var_temp_total_residiaul
+
+
+
+
+
+
+
+
+
+
+# In[]: CREATE CUMULATIVE EMISSIONS BY FUEL TYPE FOR SEC & PRI
+##############################################################
+
+########################
+# VERSION 1 ------------
+########################
+
+# --------------
+# CUMULATIVE
+
+# NZ 1.5C 50%
+
+# secondary
+df_nz15_50_secondary_v1_total = df_nz15_50_secondary_v1.groupby('fuel_type')[year_columns].sum()
+df_nz15_50_secondary_v1_total[year_columns] = df_nz15_50_secondary_v1_total[year_columns].cumsum(axis=1)
+
+# primary
+df_nz15_50_primary_v1_total = df_nz15_50_primary_v1.groupby('fuel_type')[year_columns].sum()
+df_nz15_50_primary_v1_total[year_columns] = df_nz15_50_primary_v1_total[year_columns].cumsum(axis=1)
+
+# residual
+df_nz15_50_residual_v1_total = df_nz15_50_residual_v1.copy()
+df_nz15_50_residual_v1_total[year_columns] = df_nz15_50_residual_v1[year_columns].cumsum(axis=1) 
+
+
+# total
+df_nz15_50_total_v1 = df_nz15_50_secondary_v1_total[year_columns].sum() + \
+                      df_nz15_50_primary_v1_total[year_columns].sum() + \
+                      df_nz15_50_residual_v1_total[year_columns]
+
+
+# --------------
+# NZ 1.5C 67%
+
+# secondary
+df_nz15_67_secondary_v1_total = df_nz15_67_secondary_v1.groupby('fuel_type')[year_columns].sum()
+df_nz15_67_secondary_v1_total[year_columns] = df_nz15_67_secondary_v1_total[year_columns].cumsum(axis=1)
+
+# primary
+df_nz15_67_primary_v1_total = df_nz15_67_primary_v1.groupby('fuel_type')[year_columns].sum()
+df_nz15_67_primary_v1_total[year_columns] = df_nz15_67_primary_v1_total[year_columns].cumsum(axis=1)
+
+# residual
+df_nz15_67_residual_v1_total = df_nz15_67_residual_v1.copy()
+df_nz15_67_residual_v1_total[year_columns] = df_nz15_67_residual_v1_total[year_columns].cumsum(axis=1) 
+
+# total
+df_nz15_67_total_v1 = df_nz15_67_secondary_v1_total[year_columns].sum() + \
+                      df_nz15_67_primary_v1_total[year_columns].sum() + \
+                      df_nz15_67_residual_v1_total[year_columns]
+
+
+# --------------
+# NZ 1.6C 67%
+
+# secondary
+df_nz16_67_secondary_v1_total = df_nz16_67_secondary_v1.groupby('fuel_type')[year_columns].sum()
+df_nz16_67_secondary_v1_total[year_columns] = df_nz16_67_secondary_v1_total[year_columns].cumsum(axis=1)
+
+# primary
+df_nz16_67_primary_v1_total = df_nz16_67_primary_v1.groupby('fuel_type')[year_columns].sum()
+df_nz16_67_primary_v1_total[year_columns] = df_nz16_67_primary_v1_total[year_columns].cumsum(axis=1)
+
+# residual
+df_nz16_67_residual_v1_total = df_nz16_67_residual_v1.copy()
+df_nz16_67_residual_v1_total[year_columns] = df_nz16_67_residual_v1_total[year_columns].cumsum(axis=1) 
+
+# total
+df_nz16_67_total_v1 = df_nz16_67_secondary_v1_total[year_columns].sum() + \
+                      df_nz16_67_primary_v1_total[year_columns].sum() + \
+                      df_nz16_67_residual_v1_total[year_columns]
+
+
+
+
+
+# --------------
+# ANNUAL
+
+# NZ 1.5C 50%
+
+# secondary
+df_nz15_50_secondary_v1_annual = df_nz15_50_secondary_v1.groupby('fuel_type')[year_columns].sum()
+
+# primary
+df_nz15_50_primary_v1_annual = df_nz15_50_primary_v1.groupby('fuel_type')[year_columns].sum()
+
+# total
+df_nz15_50_total_v1_annual = df_nz15_50_secondary_v1_annual[year_columns].sum() + \
+                      df_nz15_50_primary_v1_annual[year_columns].sum() + \
+                      df_nz15_50_residual_v1[year_columns]
+
+
+# --------------
+# NZ 1.5C 67%
+
+# secondary
+df_nz15_67_secondary_v1_annual = df_nz15_67_secondary_v1.groupby('fuel_type')[year_columns].sum()
+
+# primary
+df_nz15_67_primary_v1_annual = df_nz15_67_primary_v1.groupby('fuel_type')[year_columns].sum()
+
+# total
+df_nz15_67_total_v1_annual = df_nz15_67_secondary_v1_annual[year_columns].sum() + \
+                      df_nz15_67_primary_v1_annual[year_columns].sum() + \
+                      df_nz15_67_residual_v1[year_columns]
+
+
+# --------------
+# NZ 1.6C 67%
+
+# secondary
+df_nz16_67_secondary_v1_annual = df_nz16_67_secondary_v1.groupby('fuel_type')[year_columns].sum()
+
+# primary
+df_nz16_67_primary_v1_annual = df_nz16_67_primary_v1.groupby('fuel_type')[year_columns].sum()
+
+# total
+df_nz16_67_total_v1_annual = df_nz16_67_secondary_v1_annual[year_columns].sum() + \
+                      df_nz16_67_primary_v1_annual[year_columns].sum() + \
+                      df_nz16_67_residual_v1[year_columns]
+                      
+                      
+                      
+                      
+########################
+# VERSION 2 ------------
+########################
+
+# --------------
+# NZ 1.5C 50%
+
+# secondary
+df_nz15_50_secondary_v2_total = df_nz15_50_secondary_v2.groupby('fuel_type')[year_columns].sum()
+df_nz15_50_secondary_v2_total[year_columns] = df_nz15_50_secondary_v2_total[year_columns].cumsum(axis=1)
+
+# primary
+df_nz15_50_primary_v2_total = df_nz15_50_primary_v2.groupby('fuel_type')[year_columns].sum()
+df_nz15_50_primary_v2_total[year_columns] = df_nz15_50_primary_v2_total[year_columns].cumsum(axis=1)
+
+# residual
+df_nz15_50_residual_v2_total = df_nz15_50_residual_v2.copy()
+df_nz15_50_residual_v2_total[year_columns] = df_nz15_50_residual_v2[year_columns].cumsum(axis=1) 
+
+# total
+df_nz15_50_total_v2 = df_nz15_50_secondary_v2_total[year_columns].sum() + \
+                      df_nz15_50_primary_v2_total[year_columns].sum() + \
+                      df_nz15_50_residual_v2_total[year_columns]
+
+
+# --------------
+# NZ 1.5C 67%
+
+# secondary
+df_nz15_67_secondary_v2_total = df_nz15_67_secondary_v2.groupby('fuel_type')[year_columns].sum()
+df_nz15_67_secondary_v2_total[year_columns] = df_nz15_67_secondary_v2_total[year_columns].cumsum(axis=1)
+
+# primary
+df_nz15_67_primary_v2_total = df_nz15_67_primary_v2.groupby('fuel_type')[year_columns].sum()
+df_nz15_67_primary_v2_total[year_columns] = df_nz15_67_primary_v2_total[year_columns].cumsum(axis=1)
+
+# residual
+df_nz15_67_residual_v2_total = df_nz15_67_residual_v2.copy()
+df_nz15_67_residual_v2_total[year_columns] = df_nz15_67_residual_v2_total[year_columns].cumsum(axis=1) 
+
+# total
+df_nz15_67_total_v2 = df_nz15_67_secondary_v2_total[year_columns].sum() + \
+                      df_nz15_67_primary_v2_total[year_columns].sum() + \
+                      df_nz15_67_residual_v2_total[year_columns]
+                      
+
+# --------------
+# NZ 1.6C 67%
+
+# secondary
+df_nz16_67_secondary_v2_total = df_nz16_67_secondary_v2.groupby('fuel_type')[year_columns].sum()
+df_nz16_67_secondary_v2_total[year_columns] = df_nz16_67_secondary_v2_total[year_columns].cumsum(axis=1)
+
+# primary
+df_nz16_67_primary_v2_total = df_nz16_67_primary_v2.groupby('fuel_type')[year_columns].sum()
+df_nz16_67_primary_v2_total[year_columns] = df_nz16_67_primary_v2_total[year_columns].cumsum(axis=1)
+
+# residual
+df_nz16_67_residual_v2_total = df_nz16_67_residual_v2.copy()
+df_nz16_67_residual_v2_total[year_columns] = df_nz16_67_residual_v2_total[year_columns].cumsum(axis=1) 
+
+# total
+df_nz16_67_total_v2 = df_nz16_67_secondary_v2_total[year_columns].sum() + \
+                      df_nz16_67_primary_v2_total[year_columns].sum() + \
+                      df_nz16_67_residual_v2_total[year_columns]
+
+
+
+
+
+
+
+
+
+
+# In[11]
+
+
+#####################################################################
+#####################################################################
+#####################################################################
+#####################################################################
+########## PLOTS PLOTS PLOTS PLOTS PLOTS PLOTS PLOTS ################
+#####################################################################
+#####################################################################
+#####################################################################
+#####################################################################
+
+
+
+# In[6]:  PREPARE DATASETS
+###########################
+
+# --------------
+# Ensure all DataFrames have the same year columns
+common_years = df_nz15_50_primary_v1.columns.intersection(df_nz15_50_secondary_v1.columns).intersection(df_nz15_50_residual_v1.columns)
+
+
+# --------------
+# Align all DataFrames to have the same year columns
+
+# --------------
+# VERSION 1
+# CUMULATIVE
+# NZ 1.5C 50%
+df_nz15_50_secondary_v1_total = df_nz15_50_secondary_v1_total[common_years]
+df_nz15_50_primary_v1_total = df_nz15_50_primary_v1_total[common_years]
+df_nz15_50_residual_v1_total = df_nz15_50_residual_v1_total[common_years]
+
+# NZ 1.5C 67%
+df_nz15_67_secondary_v1_total = df_nz15_67_secondary_v1_total[common_years]
+df_nz15_67_primary_v1_total = df_nz15_67_primary_v1_total[common_years]
+df_nz15_67_residual_v1_total = df_nz15_67_residual_v1_total[common_years]
+
+# NZ 1.6C 67%
+df_nz16_67_secondary_v1_total = df_nz16_67_secondary_v1_total[common_years]
+df_nz16_67_primary_v1_total = df_nz16_67_primary_v1_total[common_years]
+df_nz16_67_residual_v1_total = df_nz16_67_residual_v1_total[common_years]
+
+
+
+# ANNUAL
+# NZ 1.5C 50%
+df_nz15_50_secondary_v1_annual = df_nz15_50_secondary_v1_annual[common_years]
+df_nz15_50_primary_v1_annual = df_nz15_50_primary_v1_annual[common_years]
+df_nz15_50_residual_v1 = df_nz15_50_residual_v1[common_years]
+
+# NZ 1.5C 67%
+df_nz15_67_secondary_v1_annual = df_nz15_67_secondary_v1_annual[common_years]
+df_nz15_67_primary_v1_annual  = df_nz15_67_primary_v1_annual[common_years]
+df_nz15_67_residual_v1 = df_nz15_67_residual_v1[common_years]
+
+# NZ 1.6C 67%
+df_nz16_67_secondary_v1_annual  = df_nz16_67_secondary_v1_annual[common_years]
+df_nz16_67_primary_v1_annual  = df_nz16_67_primary_v1_annual[common_years]
+df_nz16_67_residual_v1 = df_nz16_67_residual_v1[common_years]
+
+
+
+
+
+# --------------
+# VERSION 2
+# CUMULATIVE
+# NZ 1.5C 50%
+df_nz15_50_secondary_v2_total = df_nz15_50_secondary_v2_total[common_years]
+df_nz15_50_primary_v2_total = df_nz15_50_primary_v2_total[common_years]
+df_nz15_50_residual_v2_total = df_nz15_50_residual_v2_total[common_years]
+
+# NZ 1.5C 67%
+df_nz15_67_secondary_v2_total = df_nz15_67_secondary_v2_total[common_years]
+df_nz15_67_primary_v2_total = df_nz15_67_primary_v2_total[common_years]
+df_nz15_67_residual_v2_total = df_nz15_67_residual_v2_total[common_years]
+
+# NZ 1.6C 67%
+df_nz16_67_secondary_v2_total = df_nz16_67_secondary_v2_total[common_years]
+df_nz16_67_primary_v2_total = df_nz16_67_primary_v2_total[common_years]
+df_nz16_67_residual_v2_total = df_nz16_67_residual_v2_total[common_years]
+
+
+# --------------
+# Define colors for extraction and power components
+extraction_colors = {'Coal': '#991f17', 'Gas': '#b04238', 'Oil': '#c86558'}
+power_colors = {'Coal': '#255e7e', 'Gas': '#3d708f', 'Oil': '#6996b3'}
+
+
+
+
+
+
+
+
+
+
+# In[8]:
+
+##################################################################################################
+##################### VERSION 1: NO CHANGES TO POSITIVE ANNUAL GROWTH RATES ######################
+##################################################################################################
+
+# --------------
+### CUMULATIVE
+
+# NZ 1.5C 50%
+# Plotting
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot the stacked areas for components of df_extraction_annual_currentpolicy
+bottom = pd.Series(0, index=common_years)
+for fuel in df_nz15_50_primary_v1_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_50_primary_v1_total.loc[fuel], 
+                    label=f'{fuel} (extraction)', color=extraction_colors[fuel], alpha=0.7)
+    bottom += df_nz15_50_primary_v1_total.loc[fuel]
+
+# Plot the stacked areas for components of df_power_annual_currentpolicy on top of df_extraction_annual_currentpolicy
+for fuel in df_nz15_50_secondary_v1_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_50_secondary_v1_total.loc[fuel], 
+                    label=f'{fuel} (power)', color=power_colors[fuel], alpha=0.7)
+    bottom += df_nz15_50_secondary_v1_total.loc[fuel]
+
+# Plot the stacked area for df_residual with a dotted texture
+ax.fill_between(common_years, bottom, bottom + df_nz15_50_residual_v1_total.loc[6].values, # 6 because index value is 6
+                label='Other energy sources', color='#a4a2a8', alpha=0.5, hatch='.')
+
+# # Plot the line for df_total_annual_currentpolicy
+ax.plot(common_years, df_nz15_50_total_v1.values.flatten(), 
+        color='black', linewidth=2, label='Total energy emissions')
+
+# Customize the x-axis to show ticks every 5 years
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Formatter function to convert values to thousands
+def thousands_formatter(x, pos):
+    return f'{int(x/1000)}'    # the values are in Mt, but diving the axis by 1000 to show in Gt
+
+# Set y-axis formatter to display values in thousands
+ax = plt.gca()
+ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(258000, 358000, color='#aebe8b', alpha=0.5)
+plt.text(2, 275000, '1.5°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(408000, 508000, color='#e7daaf', alpha=0.3)
+plt.text(18, 485000, 'Carbon budget: 1.6°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Adding labels and legend
+plt.xlabel('Year',fontsize = 15 )
+plt.ylabel('GtCO2', fontsize = 15)
+plt.title('Cumulative Emissions from Energy Sector', fontsize=25, pad=60)
+plt.text(0.5, 1.05, 'Emissions from current power plants in operation are projected using modified growth rates \n from NGFS GCAM6 model to align cumulative emissions with carbon budget boundaries', transform=ax.transAxes, ha='center', fontsize=12)
+plt.text(0.5, 1.01, 'Carbon budget range represents 50%-67% likelyhood for global warming', transform=ax.transAxes, ha='center', fontsize=12)
+
+ax.legend(loc='upper left', fontsize=12)
+
+
+plt.show()
+
+
+
+
+
+# --------------
+# NZ 1.5C 67%
+# Plotting
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot the stacked areas for components of df_extraction_annual_currentpolicy
+bottom = pd.Series(0, index=common_years)
+for fuel in df_nz15_67_primary_v1_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_67_primary_v1_total.loc[fuel], 
+                    label=f'{fuel} (extraction)', color=extraction_colors[fuel], alpha=0.7)
+    bottom += df_nz15_67_primary_v1_total.loc[fuel]
+
+# Plot the stacked areas for components of df_power_annual_currentpolicy on top of df_extraction_annual_currentpolicy
+for fuel in df_nz15_67_secondary_v1_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_67_secondary_v1_total.loc[fuel], 
+                    label=f'{fuel} (power)', color=power_colors[fuel], alpha=0.7)
+    bottom += df_nz15_67_secondary_v1_total.loc[fuel]
+
+# Plot the stacked area for df_residual with a dotted texture
+ax.fill_between(common_years, bottom, bottom + df_nz15_67_residual_v1_total.loc[6].values, # 6 because index value is 6
+                label='Other energy sources', color='#a4a2a8', alpha=0.5, hatch='.')
+
+# # Plot the line for df_total_annual_currentpolicy
+ax.plot(common_years, df_nz15_67_total_v1.values.flatten(), 
+        color='black', linewidth=2, label='Total energy emissions')
+
+# Customize the x-axis to show ticks every 5 years
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Formatter function to convert values to thousands
+def thousands_formatter(x, pos):
+    return f'{int(x/1000)}'    # the values are in Mt, but diving the axis by 1000 to show in Gt
+
+# Set y-axis formatter to display values in thousands
+ax = plt.gca()
+ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(258000, 358000, color='#aebe8b', alpha=0.5)
+plt.text(2, 275000, '1.5°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(408000, 508000, color='#e7daaf', alpha=0.3)
+plt.text(18, 485000, 'Carbon budget: 1.6°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Adding labels and legend
+plt.xlabel('Year',fontsize = 15 )
+plt.ylabel('GtCO2', fontsize = 15)
+plt.title('Cumulative Emissions from Energy Sector', fontsize=25, pad=60)
+plt.text(0.5, 1.05, 'Emissions from current power plants in operation are projected using modified growth rates \n from NGFS GCAM6 model to align cumulative emissions with carbon budget boundaries', transform=ax.transAxes, ha='center', fontsize=12)
+plt.text(0.5, 1.01, 'Carbon budget range represents 50%-67% likelyhood for global warming', transform=ax.transAxes, ha='center', fontsize=12)
+
+ax.legend(loc='upper left', fontsize=12)
+
+
+plt.show()
+
+
+
+
+
+# --------------
+# NZ 1.6C 67%
+# Plotting
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot the stacked areas for components of df_extraction_annual_currentpolicy
+bottom = pd.Series(0, index=common_years)
+for fuel in df_nz16_67_primary_v1_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz16_67_primary_v1_total.loc[fuel], 
+                    label=f'{fuel} (extraction)', color=extraction_colors[fuel], alpha=0.7)
+    bottom += df_nz16_67_primary_v1_total.loc[fuel]
+
+# Plot the stacked areas for components of df_power_annual_currentpolicy on top of df_extraction_annual_currentpolicy
+for fuel in df_nz16_67_secondary_v1_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz16_67_secondary_v1_total.loc[fuel], 
+                    label=f'{fuel} (power)', color=power_colors[fuel], alpha=0.7)
+    bottom += df_nz16_67_secondary_v1_total.loc[fuel]
+
+# Plot the stacked area for df_residual with a dotted texture
+ax.fill_between(common_years, bottom, bottom + df_nz16_67_residual_v1_total.loc[6].values, # 6 because index value is 6
+                label='Other energy sources', color='#a4a2a8', alpha=0.5, hatch='.')
+
+# # Plot the line for df_total_annual_currentpolicy
+ax.plot(common_years, df_nz16_67_total_v1.values.flatten(), 
+        color='black', linewidth=2, label='Total energy emissions')
+
+# Customize the x-axis to show ticks every 5 years
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Formatter function to convert values to thousands
+def thousands_formatter(x, pos):
+    return f'{int(x/1000)}'    # the values are in Mt, but diving the axis by 1000 to show in Gt
+
+# Set y-axis formatter to display values in thousands
+ax = plt.gca()
+ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(258000, 358000, color='#aebe8b', alpha=0.5)
+plt.text(2, 275000, '1.5°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(408000, 508000, color='#e7daaf', alpha=0.3)
+plt.text(18, 485000, 'Carbon budget: 1.6°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Adding labels and legend
+plt.xlabel('Year',fontsize = 15 )
+plt.ylabel('GtCO2', fontsize = 15)
+plt.title('Cumulative Emissions from Energy Sector', fontsize=25, pad=60)
+plt.text(0.5, 1.05, 'Emissions from current power plants in operation are projected using modified growth rates \n from NGFS GCAM6 model to align cumulative emissions with carbon budget boundaries', transform=ax.transAxes, ha='center', fontsize=12)
+plt.text(0.5, 1.01, 'Carbon budget range represents 50%-67% likelyhood for global warming', transform=ax.transAxes, ha='center', fontsize=12)
+
+ax.legend(loc='upper left', fontsize=12)
+
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+# --------------
+# ANNUAL
+
+# NZ 1.5C 50%
+# Plotting
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot the stacked areas for components of df_extraction_annual_currentpolicy
+bottom = pd.Series(0, index=common_years)
+for fuel in df_nz15_50_primary_v1_annual.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_50_primary_v1_annual.loc[fuel], 
+                    label=f'{fuel} (extraction)', color=extraction_colors[fuel], alpha=0.7)
+    bottom += df_nz15_50_primary_v1_annual.loc[fuel]
+
+# Plot the stacked areas for components of df_power_annual_currentpolicy on top of df_extraction_annual_currentpolicy
+for fuel in df_nz15_50_secondary_v1_annual.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_50_secondary_v1_annual.loc[fuel], 
+                    label=f'{fuel} (power)', color=power_colors[fuel], alpha=0.7)
+    bottom += df_nz15_50_secondary_v1_annual.loc[fuel]
+
+# Plot the stacked area for df_residual with a dotted texture
+ax.fill_between(common_years, bottom, bottom + df_nz15_50_residual_v1.loc[6].values, # 6 because index value is 6
+                label='Other energy sources', color='#a4a2a8', alpha=0.5, hatch='.')
+
+# # Plot the line for df_total_annual_currentpolicy
+ax.plot(common_years, df_nz15_50_total_v1_annual.values.flatten(), 
+        color='black', linewidth=2, label='Total energy emissions')
+
+# Customize the x-axis to show ticks every 5 years
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Formatter function to convert values to thousands
+def thousands_formatter(x, pos):
+    return f'{int(x/1000)}'    # the values are in Mt, but diving the axis by 1000 to show in Gt
+
+# Set y-axis formatter to display values in thousands
+ax = plt.gca()
+ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+
+# Adding labels and legend
+plt.xlabel('Year',fontsize = 15 )
+plt.ylabel('GtCO2', fontsize = 15)
+plt.title('Annual Emissions from Energy Sector', fontsize=25, pad=60)
+plt.text(0.5, 1.05, 'Emissions from current power plants in operation are projected using modified growth rates \n from NGFS GCAM6 model to align cumulative emissions with carbon budget boundaries', transform=ax.transAxes, ha='center', fontsize=12)
+plt.text(0.5, 1.01, 'Annual emissions pathway consistent with 50% likelyhood of limiting warming to 1.5°C', transform=ax.transAxes, ha='center', fontsize=12)
+
+ax.legend(loc='upper right', fontsize=12)
+
+
+plt.show()
+
+
+
+
+
+# --------------
+# NZ 1.5C 67%
+# Plotting
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot the stacked areas for components of df_extraction_annual_currentpolicy
+bottom = pd.Series(0, index=common_years)
+for fuel in df_nz15_67_primary_v1_annual.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_67_primary_v1_annual.loc[fuel], 
+                    label=f'{fuel} (extraction)', color=extraction_colors[fuel], alpha=0.7)
+    bottom += df_nz15_67_primary_v1_annual.loc[fuel]
+
+# Plot the stacked areas for components of df_power_annual_currentpolicy on top of df_extraction_annual_currentpolicy
+for fuel in df_nz15_67_secondary_v1_annual.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_67_secondary_v1_annual.loc[fuel], 
+                    label=f'{fuel} (power)', color=power_colors[fuel], alpha=0.7)
+    bottom += df_nz15_67_secondary_v1_annual.loc[fuel]
+
+# Plot the stacked area for df_residual with a dotted texture
+ax.fill_between(common_years, bottom, bottom + df_nz15_67_residual_v1.loc[6].values, # 6 because index value is 6
+                label='Other energy sources', color='#a4a2a8', alpha=0.5, hatch='.')
+
+# # Plot the line for df_total_annual_currentpolicy
+ax.plot(common_years, df_nz15_67_total_v1_annual.values.flatten(), 
+        color='black', linewidth=2, label='Total energy emissions')
+
+# Customize the x-axis to show ticks every 5 years
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Formatter function to convert values to thousands
+def thousands_formatter(x, pos):
+    return f'{int(x/1000)}'    # the values are in Mt, but diving the axis by 1000 to show in Gt
+
+# Set y-axis formatter to display values in thousands
+ax = plt.gca()
+ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+
+# Adding labels and legend
+plt.xlabel('Year',fontsize = 15 )
+plt.ylabel('GtCO2', fontsize = 15)
+plt.title('Annual Emissions from Energy Sector', fontsize=25, pad=60)
+plt.text(0.5, 1.05, 'Emissions from current power plants in operation are projected using modified growth rates \n from NGFS GCAM6 model to align cumulative emissions with carbon budget boundaries', transform=ax.transAxes, ha='center', fontsize=12)
+plt.text(0.5, 1.01, 'Annual emissions pathway consistent with 67% likelyhood of limiting warming to 1.5°C', transform=ax.transAxes, ha='center', fontsize=12)
+
+ax.legend(loc='upper right', fontsize=12)
+
+
+plt.show()
+
+
+
+
+
+# --------------
+# NZ 1.6C 67%
+# Plotting
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot the stacked areas for components of df_extraction_annual_currentpolicy
+bottom = pd.Series(0, index=common_years)
+for fuel in df_nz16_67_primary_v1_annual.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz16_67_primary_v1_annual.loc[fuel], 
+                    label=f'{fuel} (extraction)', color=extraction_colors[fuel], alpha=0.7)
+    bottom += df_nz16_67_primary_v1_annual.loc[fuel]
+
+# Plot the stacked areas for components of df_power_annual_currentpolicy on top of df_extraction_annual_currentpolicy
+for fuel in df_nz16_67_secondary_v1_annual.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz16_67_secondary_v1_annual.loc[fuel], 
+                    label=f'{fuel} (power)', color=power_colors[fuel], alpha=0.7)
+    bottom += df_nz16_67_secondary_v1_annual.loc[fuel]
+
+# Plot the stacked area for df_residual with a dotted texture
+ax.fill_between(common_years, bottom, bottom + df_nz16_67_residual_v1.loc[6].values, # 6 because index value is 6
+                label='Other energy sources', color='#a4a2a8', alpha=0.5, hatch='.')
+
+# # Plot the line for df_total_annual_currentpolicy
+ax.plot(common_years, df_nz16_67_total_v1_annual.values.flatten(), 
+        color='black', linewidth=2, label='Total energy emissions')
+
+# Customize the x-axis to show ticks every 5 years
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Formatter function to convert values to thousands
+def thousands_formatter(x, pos):
+    return f'{int(x/1000)}'    # the values are in Mt, but diving the axis by 1000 to show in Gt
+
+# Set y-axis formatter to display values in thousands
+ax = plt.gca()
+ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+
+# Adding labels and legend
+plt.xlabel('Year',fontsize = 15 )
+plt.ylabel('GtCO2', fontsize = 15)
+plt.title('Annual Emissions from Energy Sector', fontsize=25, pad=60)
+plt.text(0.5, 1.05, 'Emissions from current power plants in operation are projected using modified growth rates \n from NGFS GCAM6 model to align cumulative emissions with carbon budget boundaries', transform=ax.transAxes, ha='center', fontsize=12)
+plt.text(0.5, 1.01, 'Annual emissions pathway consistent with 67% likelyhood of limiting warming to 1.6°C', transform=ax.transAxes, ha='center', fontsize=12)
+
+ax.legend(loc='upper right', fontsize=12)
+
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+# In[]
+##################################################################################################
+##################### VERSION 2: POSITIVE ANNUAL GROWTH RATES REDUCED ############################
+##################################################################################################
+
+# --------------
+# NZ 1.5C 50%
+# Plotting
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot the stacked areas for components of df_extraction_annual_currentpolicy
+bottom = pd.Series(0, index=common_years)
+for fuel in df_nz15_50_primary_v2_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_50_primary_v2_total.loc[fuel], 
+                    label=f'{fuel} (extraction)', color=extraction_colors[fuel], alpha=0.7)
+    bottom += df_nz15_50_primary_v2_total.loc[fuel]
+
+# Plot the stacked areas for components of df_power_annual_currentpolicy on top of df_extraction_annual_currentpolicy
+for fuel in df_nz15_50_secondary_v2_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_50_secondary_v2_total.loc[fuel], 
+                    label=f'{fuel} (power)', color=power_colors[fuel], alpha=0.7)
+    bottom += df_nz15_50_secondary_v2_total.loc[fuel]
+
+# Plot the stacked area for df_residual with a dotted texture
+ax.fill_between(common_years, bottom, bottom + df_nz15_50_residual_v2_total.loc[6].values, # 6 because index value is 6
+                label='Other energy sources', color='#a4a2a8', alpha=0.5, hatch='.')
+
+# # Plot the line for df_total_annual_currentpolicy
+ax.plot(common_years, df_nz15_50_total_v2.values.flatten(), 
+        color='black', linewidth=2, label='Total energy emissions')
+
+# Customize the x-axis to show ticks every 5 years
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Formatter function to convert values to thousands
+def thousands_formatter(x, pos):
+    return f'{int(x/1000)}'    # the values are in Mt, but diving the axis by 1000 to show in Gt
+
+# Set y-axis formatter to display values in thousands
+ax = plt.gca()
+ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(258000, 358000, color='#aebe8b', alpha=0.5)
+plt.text(2, 275000, '1.5°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(408000, 508000, color='#e7daaf', alpha=0.3)
+plt.text(18, 485000, 'Carbon budget: 1.6°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Adding labels and legend
+plt.xlabel('Year',fontsize = 15 )
+plt.ylabel('GtCO2', fontsize = 15)
+plt.title('Cumulative Emissions from Energy Sector', fontsize=25, pad=60)
+plt.text(0.5, 1.05, 'Emissions from current power plants in operation are projected using modified growth rates \n from NGFS GCAM6 model to align cumulative emissions with carbon budget boundaries', transform=ax.transAxes, ha='center', fontsize=12)
+plt.text(0.5, 1.01, 'Carbon budget range represents 50%-67% likelyhood for global warming', transform=ax.transAxes, ha='center', fontsize=12)
+
+ax.legend(loc='upper left', fontsize=12)
+
+
+plt.show()
+
+
+
+
+
+# --------------
+# NZ 1.5C 67%
+# Plotting
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot the stacked areas for components of df_extraction_annual_currentpolicy
+bottom = pd.Series(0, index=common_years)
+for fuel in df_nz15_67_primary_v2_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_67_primary_v2_total.loc[fuel], 
+                    label=f'{fuel} (extraction)', color=extraction_colors[fuel], alpha=0.7)
+    bottom += df_nz15_67_primary_v2_total.loc[fuel]
+
+# Plot the stacked areas for components of df_power_annual_currentpolicy on top of df_extraction_annual_currentpolicy
+for fuel in df_nz15_67_secondary_v2_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz15_67_secondary_v2_total.loc[fuel], 
+                    label=f'{fuel} (power)', color=power_colors[fuel], alpha=0.7)
+    bottom += df_nz15_67_secondary_v2_total.loc[fuel]
+
+# Plot the stacked area for df_residual with a dotted texture
+ax.fill_between(common_years, bottom, bottom + df_nz15_67_residual_v2_total.loc[6].values, # 6 because index value is 6
+                label='Other energy sources', color='#a4a2a8', alpha=0.5, hatch='.')
+
+# # Plot the line for df_total_annual_currentpolicy
+ax.plot(common_years, df_nz15_67_total_v2.values.flatten(), 
+        color='black', linewidth=2, label='Total energy emissions')
+
+# Customize the x-axis to show ticks every 5 years
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Formatter function to convert values to thousands
+def thousands_formatter(x, pos):
+    return f'{int(x/1000)}'    # the values are in Mt, but diving the axis by 1000 to show in Gt
+
+# Set y-axis formatter to display values in thousands
+ax = plt.gca()
+ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(258000, 358000, color='#aebe8b', alpha=0.5)
+plt.text(2, 275000, '1.5°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(408000, 508000, color='#e7daaf', alpha=0.3)
+plt.text(18, 485000, 'Carbon budget: 1.6°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Adding labels and legend
+plt.xlabel('Year',fontsize = 15 )
+plt.ylabel('GtCO2', fontsize = 15)
+plt.title('Cumulative Emissions from Energy Sector', fontsize=25, pad=60)
+plt.text(0.5, 1.05, 'Emissions from current power plants in operation are projected using modified growth rates \n from NGFS GCAM6 model to align cumulative emissions with carbon budget boundaries', transform=ax.transAxes, ha='center', fontsize=12)
+plt.text(0.5, 1.01, 'Carbon budget range represents 50%-67% likelyhood for global warming', transform=ax.transAxes, ha='center', fontsize=12)
+
+ax.legend(loc='upper left', fontsize=12)
+
+
+plt.show()
+
+
+
+
+
+# --------------
+# NZ 1.6C 67%
+# Plotting
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot the stacked areas for components of df_extraction_annual_currentpolicy
+bottom = pd.Series(0, index=common_years)
+for fuel in df_nz16_67_primary_v2_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz16_67_primary_v2_total.loc[fuel], 
+                    label=f'{fuel} (extraction)', color=extraction_colors[fuel], alpha=0.7)
+    bottom += df_nz16_67_primary_v2_total.loc[fuel]
+
+# Plot the stacked areas for components of df_power_annual_currentpolicy on top of df_extraction_annual_currentpolicy
+for fuel in df_nz16_67_secondary_v2_total.index:
+    ax.fill_between(common_years, bottom, bottom + df_nz16_67_secondary_v2_total.loc[fuel], 
+                    label=f'{fuel} (power)', color=power_colors[fuel], alpha=0.7)
+    bottom += df_nz16_67_secondary_v2_total.loc[fuel]
+
+# Plot the stacked area for df_residual with a dotted texture
+ax.fill_between(common_years, bottom, bottom + df_nz16_67_residual_v2_total.loc[6].values, # 6 because index value is 6
+                label='Other energy sources', color='#a4a2a8', alpha=0.5, hatch='.')
+
+# # Plot the line for df_total_annual_currentpolicy
+ax.plot(common_years, df_nz16_67_total_v2.values.flatten(), 
+        color='black', linewidth=2, label='Total energy emissions')
+
+# Customize the x-axis to show ticks every 5 years
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Formatter function to convert values to thousands
+def thousands_formatter(x, pos):
+    return f'{int(x/1000)}'    # the values are in Mt, but diving the axis by 1000 to show in Gt
+
+# Set y-axis formatter to display values in thousands
+ax = plt.gca()
+ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(258000, 358000, color='#aebe8b', alpha=0.5)
+plt.text(2, 275000, '1.5°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(408000, 508000, color='#e7daaf', alpha=0.3)
+plt.text(18, 485000, 'Carbon budget: 1.6°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Adding labels and legend
+plt.xlabel('Year',fontsize = 15 )
+plt.ylabel('GtCO2', fontsize = 15)
+plt.title('Cumulative Emissions from Energy Sector', fontsize=25, pad=60)
+plt.text(0.5, 1.05, 'Emissions from current power plants in operation are projected using modified growth rates \n from NGFS GCAM6 model to align cumulative emissions with carbon budget boundaries', transform=ax.transAxes, ha='center', fontsize=12)
+plt.text(0.5, 1.01, 'Carbon budget range represents 50%-67% likelyhood for global warming', transform=ax.transAxes, ha='center', fontsize=12)
+
+ax.legend(loc='upper left', fontsize=12)
+
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+# In[]
 # export data
 
 # --------------
-df_reduction_netzero.to_excel('2 - output/script 4.2/1.1 - Net Zero - Reduction factors.xlsx', index=False)
+# redcution factors
+df_reduction_netzero_v1.to_excel('2 - output/script 4.2/1.1 - Net Zero - Reduction factors - v1 - positive growth no change.xlsx', index=False)
+df_reduction_netzero_v2.to_excel('2 - output/script 4.2/1.2 - Net Zero - Reduction factors - v2 - positive growth reduced.xlsx', index=False)
+
+# cumulative emissions ratios
+df_ratio_netzero.to_excel('2 - output/script 4.2/1.3 - Emissions ratios to carbon budget - Net Zero.xlsx', index=False)
+df_ratio_currentpolicy.to_excel('2 - output/script 4.2/1.4 - Emissions ratios to carbon budget - Current Policy.xlsx', index=False)
 
 
 # --------------
-# Net zero 1.5C 50%
+# redisuals
+df_residual_netzero.to_excel('2 - output/script 4.2/2.1 - Residuals - Net Zero - annual emissions.xlsx', index=False)
+df_residual_netzero_change.to_excel('2 - output/script 4.2/2.2 - Residuals - Net Zero - change.xlsx', index=False)
+
+df_residual_currentpolicy.to_excel('2 - output/script 4.2/2.3 - Residuals - Current Policy - annual emissions.xlsx', index=False)
+df_residual_currentpolicy_change.to_excel('2 - output/script 4.2/2.4 - Residuals - Current Policy - change.xlsx', index=False)
+                                    
+
+# --------------
+# VERSION 1
+
+### Net zero 1.5C 50%
 # emissions
-df_nz15_50_secondary.to_excel('2 - output/script 4.2/2.1 - NZ-15-50 - Secondary.xlsx', index=False)
-df_nz15_50_primary.to_excel('2 - output/script 4.2/2.2 - NZ-15-50 - Primary.xlsx', index=False)
-df_nz15_50_residual.to_excel('2 - output/script 4.2/2.3 - NZ-15-50 - Residual.xlsx', index=False)
+df_nz15_50_secondary_v1.to_excel('2 - output/script 4.2/3.1 - NZ-15-50 - v1 - Secondary - annual.xlsx', index=False)
+df_nz15_50_primary_v1.to_excel('2 - output/script 4.2/3.2 - NZ-15-50 - v1 - Primary - annual.xlsx', index=False)
+df_nz15_50_residual_v1.to_excel('2 - output/script 4.2/3.3 - NZ-15-50 - v1 - Residual - annual.xlsx', index=False)
 
 # change
-df_nz15_50_secondary_change.to_excel('2 - output/script 4.2/2.4 - NZ-15-50 - Secondary - Change.xlsx', index=False)
-df_nz15_50_primary_change.to_excel('2 - output/script 4.2/2.5 - NZ-15-50 - Primary - Change.xlsx', index=False)
-df_nz15_50_residual_change.to_excel('2 - output/script 4.2/2.6 - NZ-15-50 - Residual - Change.xlsx', index=False)
+df_nz15_50_secondary_change_v1.to_excel('2 - output/script 4.2/3.4 - NZ-15-50 - v1 - Secondary - Change.xlsx', index=False)
+df_nz15_50_primary_change_v1.to_excel('2 - output/script 4.2/3.5 - NZ-15-50 - v1 - Primary - Change.xlsx', index=False)
+df_nz15_50_residual_change_v1.to_excel('2 - output/script 4.2/3.6 - NZ-15-50 - v1 - Residual - Change.xlsx', index=False)
+
+# cumulative
+df_nz15_50_secondary_v1_total.to_excel('2 - output/script 4.2/3.7 - NZ-15-50 - v1 - Secondary - cumulative.xlsx', index=False)
+df_nz15_50_primary_v1_total.to_excel('2 - output/script 4.2/3.8 - NZ-15-50 - v1 - Primary - cumulative.xlsx', index=False)
+df_nz15_50_residual_v1_total.to_excel('2 - output/script 4.2/3.9 - NZ-15-50 - v1 - Residual - cumulative.xlsx', index=False)
+df_nz15_50_total_v1.to_excel('2 - output/script 4.2/3.10 - NZ-15-50 - v1 - Total - cumulative.xlsx', index=False)
+
+
+### Net zero 1.5C 67%
+# emissions
+df_nz15_67_secondary_v1.to_excel('2 - output/script 4.2/4.1 - NZ-15-67 - v1 - Secondary - annual.xlsx', index=False)
+df_nz15_67_primary_v1.to_excel('2 - output/script 4.2/4.2 - NZ-15-67 - v1 - Primary - annual.xlsx', index=False)
+df_nz15_67_residual_v1.to_excel('2 - output/script 4.2/4.3 - NZ-15-67 - v1 - Residual - annual.xlsx', index=False)
+
+# change
+df_nz15_67_secondary_change_v1.to_excel('2 - output/script 4.2/4.4 - NZ-15-67 - v1 - Secondary - Change.xlsx', index=False)
+df_nz15_67_primary_change_v1.to_excel('2 - output/script 4.2/4.5 - NZ-15-67 - v1 - Primary - Change.xlsx', index=False)
+df_nz15_67_residual_change_v1.to_excel('2 - output/script 4.2/4.6 - NZ-15-67 - v1 - Residual - Change.xlsx', index=False)
+
+# cumulative
+df_nz15_67_secondary_v1_total.to_excel('2 - output/script 4.2/4.7 - NZ-15-67 - v1 - Secondary - cumulative.xlsx', index=False)
+df_nz15_67_primary_v1_total.to_excel('2 - output/script 4.2/4.8 - NZ-15-67 - v1 - Primary - cumulative.xlsx', index=False)
+df_nz15_67_residual_v1_total.to_excel('2 - output/script 4.2/4.9 - NZ-15-67 - v1 - Residual - cumulative.xlsx', index=False)
+df_nz15_67_total_v1.to_excel('2 - output/script 4.2/4.10 - NZ-15-67 - v1 - Total - cumulative.xlsx', index=False)
+
+
+### Net zero 1.6C 67%
+# emissions
+df_nz16_67_secondary_v1.to_excel('2 - output/script 4.2/5.1 - NZ-16-67 - v1 - Secondary - annual.xlsx', index=False)
+df_nz16_67_primary_v1.to_excel('2 - output/script 4.2/5.2 - NZ-16-67 - v1 - Primary - annual.xlsx', index=False)
+df_nz16_67_residual_v1.to_excel('2 - output/script 4.2/5.3 - NZ-16-67 - v1 - Residual - annual.xlsx', index=False)
+
+# change
+df_nz16_67_secondary_change_v1.to_excel('2 - output/script 4.2/5.4 - NZ-16-67 - v1 - Secondary - Change.xlsx', index=False)
+df_nz16_67_primary_change_v1.to_excel('2 - output/script 4.2/5.5 - NZ-16-67 - v1 - Primary - Change.xlsx', index=False)
+df_nz16_67_residual_change_v1.to_excel('2 - output/script 4.2/5.6 - NZ-16-67 - v1 - Residual - Change.xlsx', index=False)
+
+# cumulative
+df_nz16_67_secondary_v1_total.to_excel('2 - output/script 4.2/5.7 - NZ-16-67 - v1 - Secondary - cumulative.xlsx', index=False)
+df_nz16_67_primary_v1_total.to_excel('2 - output/script 4.2/5.8 - NZ-16-67 - v1 - Primary - cumulative.xlsx', index=False)
+df_nz16_67_residual_v1_total.to_excel('2 - output/script 4.2/5.9 - NZ-16-67 - v1 - Residual - cumulative.xlsx', index=False)
+df_nz16_67_total_v1.to_excel('2 - output/script 4.2/5.10 - NZ-16-67 - v1 - Total - cumulative.xlsx', index=False)
 
 
 # --------------
-# Net zero 1.5C 67%
+# VERSION 2
+
+### Net zero 1.5C 50%
 # emissions
-df_nz15_67_secondary.to_excel('2 - output/script 4.2/3.1 - NZ-15-67 - Secondary.xlsx', index=False)
-df_nz15_67_primary.to_excel('2 - output/script 4.2/3.2 - NZ-15-67 - Primary.xlsx', index=False)
-df_nz15_67_residual.to_excel('2 - output/script 4.2/3.3 - NZ-15-67 - Residual.xlsx', index=False)
+df_nz15_50_secondary_v2.to_excel('2 - output/script 4.2/6.1 - NZ-15-50 - v2 - Secondary - annual.xlsx', index=False)
+df_nz15_50_primary_v2.to_excel('2 - output/script 4.2/6.2 - NZ-15-50 - Primary - v2 - annual.xlsx', index=False)
+df_nz15_50_residual_v2.to_excel('2 - output/script 4.2/6.3 - NZ-15-50 - Residual - v2 - annual.xlsx', index=False)
 
 # change
-df_nz15_67_secondary_change.to_excel('2 - output/script 4.2/3.4 - NZ-15-67 - Secondary - Change.xlsx', index=False)
-df_nz15_67_primary_change.to_excel('2 - output/script 4.2/3.5 - NZ-15-67 - Primary - Change.xlsx', index=False)
-df_nz15_67_residual_change.to_excel('2 - output/script 4.2/3.6 - NZ-15-67 - Residual - Change.xlsx', index=False)
+df_nz15_50_secondary_change_v2.to_excel('2 - output/script 4.2/6.4 - NZ-15-50 - v2 - Secondary - Change.xlsx', index=False)
+df_nz15_50_primary_change_v2.to_excel('2 - output/script 4.2/6.5 - NZ-15-50 - v2 - Primary - Change.xlsx', index=False)
+df_nz15_50_residual_change_v2.to_excel('2 - output/script 4.2/6.6 - NZ-15-50 - v2 - Residual - Change.xlsx', index=False)
+
+# cumulative
+df_nz15_50_secondary_v2_total.to_excel('2 - output/script 4.2/6.7 - NZ-15-50 - v2 - Secondary - cumulative.xlsx', index=False)
+df_nz15_50_primary_v2_total.to_excel('2 - output/script 4.2/6.8 - NZ-15-50 - v2 - Primary - cumulative.xlsx', index=False)
+df_nz15_50_residual_v2_total.to_excel('2 - output/script 4.2/6.9 - NZ-15-50 - v2 - Residual - cumulative.xlsx', index=False)
+df_nz15_50_total_v2.to_excel('2 - output/script 4.2/6.10 - NZ-15-50 - v2 - Total - cumulative.xlsx', index=False)
 
 
-# --------------
-# Net zero 1.6C 67%
+### Net zero 1.5C 67%
 # emissions
-df_nz16_67_secondary.to_excel('2 - output/script 4.2/4.1 - NZ-16-67 - Secondary.xlsx', index=False)
-df_nz16_67_primary.to_excel('2 - output/script 4.2/4.2 - NZ-16-67 - Primary.xlsx', index=False)
-df_nz16_67_residual.to_excel('2 - output/script 4.2/4.3 - NZ-16-67 - Residual.xlsx', index=False)
+df_nz15_67_secondary_v2.to_excel('2 - output/script 4.2/7.1 - NZ-15-67 - v2 - Secondary - annual.xlsx', index=False)
+df_nz15_67_primary_v2.to_excel('2 - output/script 4.2/7.2 - NZ-15-67 - v2 - Primary - annual.xlsx', index=False)
+df_nz15_67_residual_v2.to_excel('2 - output/script 4.2/7.3 - NZ-15-67 - v2 - Residual - annual.xlsx', index=False)
 
 # change
-df_nz16_67_secondary_change.to_excel('2 - output/script 4.2/4.4 - NZ-16-67 - Secondary - Change.xlsx', index=False)
-df_nz16_67_primary_change.to_excel('2 - output/script 4.2/4.5 - NZ-16-67 - Primary - Change.xlsx', index=False)
-df_nz16_67_residual_change.to_excel('2 - output/script 4.2/4.6 - NZ-16-67 - Residual - Change.xlsx', index=False)
+df_nz15_67_secondary_change_v2.to_excel('2 - output/script 4.2/7.4 - NZ-15-67 - v2 - Secondary - Change.xlsx', index=False)
+df_nz15_67_primary_change_v2.to_excel('2 - output/script 4.2/7.5 - NZ-15-67 - v2 - Primary - Change.xlsx', index=False)
+df_nz15_67_residual_change_v2.to_excel('2 - output/script 4.2/7.6 - NZ-15-67 - v2 - Residual - Change.xlsx', index=False)
+
+# cumulative
+df_nz15_67_secondary_v2_total.to_excel('2 - output/script 4.2/7.7 - NZ-15-67 - v2 - Secondary - cumulative.xlsx', index=False)
+df_nz15_67_primary_v2_total.to_excel('2 - output/script 4.2/7.8 - NZ-15-67 - v2 - Primary - cumulative.xlsx', index=False)
+df_nz15_67_residual_v2_total.to_excel('2 - output/script 4.2/7.9 - NZ-15-67 - v2 - Residual - cumulative.xlsx', index=False)
+df_nz15_67_total_v2.to_excel('2 - output/script 4.2/7.10 - NZ-15-67 - v2 - Total - cumulative.xlsx', index=False)
 
 
+### Net zero 1.6C 67%
+# emissions
+df_nz16_67_secondary_v2.to_excel('2 - output/script 4.2/8.1 - NZ-16-67 - v2 - Secondary - annual.xlsx', index=False)
+df_nz16_67_primary_v2.to_excel('2 - output/script 4.2/8.2 - NZ-16-67 - v2 - Primary - annual.xlsx', index=False)
+df_nz16_67_residual_v2.to_excel('2 - output/script 4.2/8.3 - NZ-16-67 - v2 - Residual - annual.xlsx', index=False)
 
+# change
+df_nz16_67_secondary_change_v2.to_excel('2 - output/script 4.2/8.4 - NZ-16-67 - v2 - Secondary - Change.xlsx', index=False)
+df_nz16_67_primary_change_v2.to_excel('2 - output/script 4.2/8.5 - NZ-16-67 - v2 - Primary - Change.xlsx', index=False)
+df_nz16_67_residual_change_v2.to_excel('2 - output/script 4.2/8.6 - NZ-16-67 - v2 - Residual - Change.xlsx', index=False)
 
+# cumulative
+df_nz16_67_secondary_v2_total.to_excel('2 - output/script 4.2/8.7 - NZ-16-67 - v2 - Secondary - cumulative.xlsx', index=False)
+df_nz16_67_primary_v2_total.to_excel('2 - output/script 4.2/8.8 - NZ-16-67 - v2 - Primary - cumulative.xlsx', index=False)
+df_nz16_67_residual_v2_total.to_excel('2 - output/script 4.2/8.9 - NZ-16-67 - v2 - Residual - cumulative.xlsx', index=False)
+df_nz16_67_total_v2.to_excel('2 - output/script 4.2/8.10 - NZ-16-67 - v2 -Total - cumulative.xlsx', index=False)
 
 
 

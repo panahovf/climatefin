@@ -524,3 +524,75 @@ ax.legend(loc='upper left')
 
 
 plt.show()
+
+
+
+
+# --------------
+# CUMULATIVE V2
+# Plotting
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot the stacked areas for components of df_extraction_annual_currentpolicy
+bottom = pd.Series(0, index=common_years)
+for fuel in df_extraction_cumulative_netzero.index:
+    ax.fill_between(common_years, bottom, bottom + df_extraction_cumulative_netzero.loc[fuel], 
+                    label=f'{fuel} (extraction)', color=extraction_colors[fuel], alpha=0.7)
+    bottom += df_extraction_cumulative_netzero.loc[fuel]
+
+# Plot the stacked areas for components of df_power_annual_currentpolicy on top of df_extraction_annual_currentpolicy
+for fuel in df_power_cumulative_netzero.index:
+    ax.fill_between(common_years, bottom, bottom + df_power_cumulative_netzero.loc[fuel], 
+                    label=f'{fuel} (power)', color=power_colors[fuel], alpha=0.7)
+    bottom += df_power_cumulative_netzero.loc[fuel]
+
+# Plot the stacked area for df_residual with a dotted texture
+ax.fill_between(common_years, bottom, bottom + df_residual_cumulative_netzero.loc['Net Zero 2050'], 
+                label='Other energy sources', color='#a4a2a8', alpha=0.5, hatch='.')
+
+# Plot the line for df_total_annual_currentpolicy
+df_total_cumulative_netzero.loc['Net Zero 2050'].plot(kind='line', ax=ax, 
+                                                           color='black', linewidth=2, label='Total energy emissions')
+
+# Customize the x-axis to show ticks every 5 years
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Formatter function to convert values to thousands
+def thousands_formatter(x, pos):
+    return f'{int(x/1000)}'    # the values are in Mt, but diving the axis by 1000 to show in Gt
+
+# Set y-axis formatter to display values in thousands
+ax = plt.gca()
+ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(258000, 358000, color='#aebe8b', alpha=0.5)
+plt.text(2, 275000, '1.5°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Add a shaded region between 400 and 580 on the y-axis
+plt.axhspan(408000, 508000, color='#e7daaf', alpha=0.3)
+plt.text(14, 485000, 'Carbon budget: 1.6°C warming', color='black', fontsize=12, ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
+
+# Adding labels and legend
+plt.xlabel('Year', fontsize=15)
+plt.ylabel('GtCO2', fontsize=15)
+plt.title('Cumulative Emissions from Energy Sector', fontsize=20, pad=30)
+plt.text(0.5, 1.01, 'NGFS GCAM6 model\'s growth rates are applied for projections; Scenario: Net Zero 2050', transform=ax.transAxes, ha='center', fontsize=12)
+ax.legend(loc='upper left', fontsize=12)
+
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
