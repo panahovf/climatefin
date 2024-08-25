@@ -1606,14 +1606,14 @@ power_colors = {'Coal': '#255e7e', 'Gas': '#3d708f', 'Oil': '#6996b3'}
 # Plotting
 fig, ax = plt.subplots(figsize=(12, 8))
 
-# Plot the stacked areas for components of df_extraction_annual_currentpolicy
+# Plot the stacked areas for components of df_nz15_50_primary_v1_total
 bottom = pd.Series(0, index=common_years)
 for fuel in df_nz15_50_primary_v1_total.index:
     ax.fill_between(common_years, bottom, bottom + df_nz15_50_primary_v1_total.loc[fuel], 
                     label=f'{fuel} (extraction)', color=extraction_colors[fuel], alpha=0.7)
     bottom += df_nz15_50_primary_v1_total.loc[fuel]
 
-# Plot the stacked areas for components of df_power_annual_currentpolicy on top of df_extraction_annual_currentpolicy
+# Plot the stacked areas for components of df_nz15_50_secondary_v1_total on top of df_nz15_50_primary_v1_total
 for fuel in df_nz15_50_secondary_v1_total.index:
     ax.fill_between(common_years, bottom, bottom + df_nz15_50_secondary_v1_total.loc[fuel], 
                     label=f'{fuel} (power)', color=power_colors[fuel], alpha=0.7)
@@ -2175,9 +2175,10 @@ df_residual_currentpolicy_change.to_excel('2 - output/script 4.2/2.4 - Residuals
 
 ### Net zero 1.5C 50%
 # emissions
-df_nz15_50_secondary_v1.to_excel('2 - output/script 4.2/3.1 - NZ-15-50 - v1 - Secondary - annual.xlsx', index=False)
-df_nz15_50_primary_v1.to_excel('2 - output/script 4.2/3.2 - NZ-15-50 - v1 - Primary - annual.xlsx', index=False)
-df_nz15_50_residual_v1.to_excel('2 - output/script 4.2/3.3 - NZ-15-50 - v1 - Residual - annual.xlsx', index=False)
+df_nz15_50_secondary_v1.to_excel('2 - output/script 4.2/3.1 - NZ-15-50 - v1 - Secondary - annual.xlsx')
+df_nz15_50_primary_v1.to_excel('2 - output/script 4.2/3.2 - NZ-15-50 - v1 - Primary - annual.xlsx')
+df_nz15_50_residual_v1.to_excel('2 - output/script 4.2/3.3 - NZ-15-50 - v1 - Residual - annual.xlsx')
+df_nz15_50_total_v1_annual.to_excel('2 - output/script 4.2/3 - NZ-15-50 - v1 - Total - annual.xlsx')
 
 # change
 df_nz15_50_secondary_change_v1.to_excel('2 - output/script 4.2/3.4 - NZ-15-50 - v1 - Secondary - Change.xlsx', index=False)
@@ -2185,10 +2186,10 @@ df_nz15_50_primary_change_v1.to_excel('2 - output/script 4.2/3.5 - NZ-15-50 - v1
 df_nz15_50_residual_change_v1.to_excel('2 - output/script 4.2/3.6 - NZ-15-50 - v1 - Residual - Change.xlsx', index=False)
 
 # cumulative
-df_nz15_50_secondary_v1_total.to_excel('2 - output/script 4.2/3.7 - NZ-15-50 - v1 - Secondary - cumulative.xlsx', index=False)
-df_nz15_50_primary_v1_total.to_excel('2 - output/script 4.2/3.8 - NZ-15-50 - v1 - Primary - cumulative.xlsx', index=False)
-df_nz15_50_residual_v1_total.to_excel('2 - output/script 4.2/3.9 - NZ-15-50 - v1 - Residual - cumulative.xlsx', index=False)
-df_nz15_50_total_v1.to_excel('2 - output/script 4.2/3.10 - NZ-15-50 - v1 - Total - cumulative.xlsx', index=False)
+df_nz15_50_secondary_v1_total.to_excel('2 - output/script 4.2/3.7 - NZ-15-50 - v1 - Secondary - cumulative.xlsx')
+df_nz15_50_primary_v1_total.to_excel('2 - output/script 4.2/3.8 - NZ-15-50 - v1 - Primary - cumulative.xlsx')
+df_nz15_50_residual_v1_total.to_excel('2 - output/script 4.2/3.9 - NZ-15-50 - v1 - Residual - cumulative.xlsx')
+df_nz15_50_total_v1.to_excel('2 - output/script 4.2/3.10 - NZ-15-50 - v1 - Total - cumulative.xlsx')
 
 
 ### Net zero 1.5C 67%
