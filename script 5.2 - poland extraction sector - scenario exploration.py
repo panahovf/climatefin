@@ -413,7 +413,7 @@ del temp_currentpolicy, temp_netzero, temp_nz15_50, temp_nz15_67
 
 
 # --------------
-# Production
+# Production changes
 
 # create diff datasets for each scenario
 df_poland_currentpolicy_production_diff = df_poland_currentpolicy_production.copy()
@@ -427,8 +427,6 @@ df_poland_nz15_67_production_diff[common_years] = df_poland_nz15_67_production_d
 
 df_poland_nz15_50_production_diff = df_poland_nz15_50_production.copy()
 df_poland_nz15_50_production_diff[common_years] = df_poland_nz15_50_production_diff[common_years].diff(axis=1)
-
-
 
 
 # now combine scenarios by fuel type
@@ -461,7 +459,6 @@ df_poland_production_diff_cumulative_coal[common_years] = df_poland_production_d
 
 
 
-
 # 2 - gas
 # create dataframe to host the scenarios
 df_poland_production_diff_gas = df_poland_reduction_emissions.copy()
@@ -491,8 +488,6 @@ df_poland_production_diff_cumulative_gas[common_years] = df_poland_production_di
 
 
 
-
-
 # 3 - oil
 # create dataframe to host the scenarios
 df_poland_production_diff_oil = df_poland_reduction_emissions.copy()
@@ -519,6 +514,101 @@ df_poland_production_diff_oil.loc[df_poland_production_diff_oil['scenario'] == "
 # cumulative
 df_poland_production_diff_cumulative_oil = df_poland_production_diff_oil.copy()
 df_poland_production_diff_cumulative_oil[common_years] = df_poland_production_diff_cumulative_oil[common_years].cumsum(axis=1)
+
+
+
+
+
+# --------------
+# Production levels
+
+# 1 - coal
+# create dataframe to host the scenarios
+df_poland_production_coal = df_poland_reduction_emissions.copy()
+
+
+# add diff scenarios
+df_poland_production_coal.loc[df_poland_production_coal['scenario'] == "Current Policies", common_years] = (
+    df_poland_currentpolicy_production.loc[df_poland_currentpolicy_production['fuel_type'] == "Coal", common_years].values
+    )
+
+df_poland_production_coal.loc[df_poland_production_coal['scenario'] == "Net Zero", common_years] = (
+    df_poland_netzero_production.loc[df_poland_netzero_production['fuel_type'] == "Coal", common_years].values
+    )
+
+df_poland_production_coal.loc[df_poland_production_coal['scenario'] == "Modified Net Zero: 1.5°C 67% likelyhood", common_years] = (
+    df_poland_nz15_67_production.loc[df_poland_nz15_67_production['fuel_type'] == "Coal", common_years].values
+    )
+
+df_poland_production_coal.loc[df_poland_production_coal['scenario'] == "Modified Net Zero: 1.5°C 50% likelyhood", common_years] = (
+    df_poland_nz15_50_production.loc[df_poland_nz15_50_production['fuel_type'] == "Coal", common_years].values
+    )
+
+
+# cumulative
+df_poland_production_cumulative_coal = df_poland_production_coal.copy()
+df_poland_production_cumulative_coal[common_years] = df_poland_production_cumulative_coal[common_years].cumsum(axis=1)
+
+
+
+
+# 2 - gas
+# create dataframe to host the scenarios
+df_poland_production_gas = df_poland_reduction_emissions.copy()
+
+
+# add diff scenarios
+df_poland_production_gas.loc[df_poland_production_gas['scenario'] == "Current Policies", common_years] = (
+    df_poland_currentpolicy_production.loc[df_poland_currentpolicy_production['fuel_type'] == "Gas", common_years].values
+    )
+
+df_poland_production_gas.loc[df_poland_production_gas['scenario'] == "Net Zero", common_years] = (
+    df_poland_netzero_production.loc[df_poland_netzero_production['fuel_type'] == "Gas", common_years].values
+    )
+
+df_poland_production_gas.loc[df_poland_production_gas['scenario'] == "Modified Net Zero: 1.5°C 67% likelyhood", common_years] = (
+    df_poland_nz15_67_production.loc[df_poland_nz15_67_production['fuel_type'] == "Gas", common_years].values
+    )
+
+df_poland_production_gas.loc[df_poland_production_gas['scenario'] == "Modified Net Zero: 1.5°C 50% likelyhood", common_years] = (
+    df_poland_nz15_50_production.loc[df_poland_nz15_50_production['fuel_type'] == "Gas", common_years].values
+    )
+
+
+# cumulative
+df_poland_production_cumulative_gas = df_poland_production_gas.copy()
+df_poland_production_cumulative_gas[common_years] = df_poland_production_cumulative_gas[common_years].cumsum(axis=1)
+
+
+
+
+
+# 3 - oil
+# create dataframe to host the scenarios
+df_poland_production_oil = df_poland_reduction_emissions.copy()
+
+
+# add diff scenarios
+df_poland_production_oil.loc[df_poland_production_oil['scenario'] == "Current Policies", common_years] = (
+    df_poland_currentpolicy_production.loc[df_poland_currentpolicy_production['fuel_type'] == "Oil", common_years].values
+    )
+
+df_poland_production_oil.loc[df_poland_production_oil['scenario'] == "Net Zero", common_years] = (
+    df_poland_netzero_production.loc[df_poland_netzero_production['fuel_type'] == "Oil", common_years].values
+    )
+
+df_poland_production_oil.loc[df_poland_production_oil['scenario'] == "Modified Net Zero: 1.5°C 67% likelyhood", common_years] = (
+    df_poland_nz15_67_production.loc[df_poland_nz15_67_production['fuel_type'] == "Oil", common_years].values
+    )
+
+df_poland_production_oil.loc[df_poland_production_oil['scenario'] == "Modified Net Zero: 1.5°C 50% likelyhood", common_years] = (
+    df_poland_nz15_50_production.loc[df_poland_nz15_50_production['fuel_type'] == "Oil", common_years].values
+    )
+
+
+# cumulative
+df_poland_production_cumulative_oil = df_poland_production_oil.copy()
+df_poland_production_cumulative_oil[common_years] = df_poland_production_cumulative_oil[common_years].cumsum(axis=1)
 
 
 
@@ -1276,6 +1366,198 @@ plt.xticks([str(year) for year in range(2025, 2051, 5)])
 plt.xlabel('Year', fontsize=15)
 plt.ylabel('Million bbl/y', fontsize=15)  # Adjust the label to the correct metric
 plt.title('Poland Oil Extraction: Cumulative Year-over-year Production Change', fontsize=20, pad=60)
+plt.text(0.5, 1.05, 'Net Zero scenario has been adjusted from NGFS GCAM6 model to align global cumulative \n emissions with global carbon budget limiting warming to 1.5°C with 50% & 67% likelyhood', transform=ax.transAxes, ha='center', fontsize=12)
+
+# Add a legend
+ax.legend(loc='best', fontsize=12)
+
+# Display the plot
+plt.show()
+
+
+
+
+
+
+
+
+
+
+##################################################################################################
+##################### ANNUAL REDUCTIONS BY FUELS #################################################
+##################################################################################################
+
+# --------------
+### 1 . coal
+
+# --------------
+# 6.1 coal - ANNUAL
+
+# Create the plot
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot each scenario as a separate line
+for i, row in df_poland_production_coal.iterrows():
+    ax.plot(years, row[1:], label=row['scenario'], color=scenario_colors[i])
+
+# Customize the x-axis to show ticks every year
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Add labels and title
+plt.xlabel('Year', fontsize=15)
+plt.ylabel('Million tons per annum', fontsize=15)  # Adjust the label to the correct metric
+plt.title('Poland Coal Extraction: Annual Production Levels', fontsize=20, pad=60)
+plt.text(0.5, 1.05, 'Net Zero scenario has been adjusted from NGFS GCAM6 model to align global cumulative \n emissions with global carbon budget limiting warming to 1.5°C with 50% & 67% likelyhood', transform=ax.transAxes, ha='center', fontsize=12)
+
+# Add a legend
+ax.legend(loc='best', fontsize=12)
+
+# Display the plot
+plt.show()
+
+
+
+
+
+# --------------
+# 6.2 coal - CUMULATIVE
+
+# Create the plot
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot each scenario as a separate line
+for i, row in df_poland_production_cumulative_coal.iterrows():
+    ax.plot(years, row[1:], label=row['scenario'], color=scenario_colors[i])
+
+# Customize the x-axis to show ticks every year
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Add labels and title
+plt.xlabel('Year', fontsize=15)
+plt.ylabel('Million tons per annum', fontsize=15)  # Adjust the label to the correct metric
+plt.title('Poland Coal Extraction: Cumulative Production Levels', fontsize=20, pad=60)
+plt.text(0.5, 1.05, 'Net Zero scenario has been adjusted from NGFS GCAM6 model to align global cumulative \n emissions with global carbon budget limiting warming to 1.5°C with 50% & 67% likelyhood', transform=ax.transAxes, ha='center', fontsize=12)
+
+# Add a legend
+ax.legend(loc='best', fontsize=12)
+
+# Display the plot
+plt.show()
+
+
+
+
+
+# --------------
+### 2 . gas
+
+# --------------
+# 5.3 gas - ANNUAL
+
+# Create the plot
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot each scenario as a separate line
+for i, row in df_poland_production_gas.iterrows():
+    ax.plot(years, row[1:], label=row['scenario'], color=scenario_colors[i])
+
+# Customize the x-axis to show ticks every year
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Add labels and title
+plt.xlabel('Year', fontsize=15)
+plt.ylabel('Million m³/y', fontsize=15)  # Adjust the label to the correct metric
+plt.title('Poland Gas Extraction: Annual Production Levels', fontsize=20, pad=60)
+plt.text(0.5, 1.05, 'Net Zero scenario has been adjusted from NGFS GCAM6 model to align global cumulative \n emissions with global carbon budget limiting warming to 1.5°C with 50% & 67% likelyhood', transform=ax.transAxes, ha='center', fontsize=12)
+
+# Add a legend
+ax.legend(loc='best', fontsize=12)
+
+# Display the plot
+plt.show()
+
+
+
+
+
+# --------------
+# 5.4 gas - CUMULATIVE
+
+# Create the plot
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot each scenario as a separate line
+for i, row in df_poland_production_cumulative_gas.iterrows():
+    ax.plot(years, row[1:], label=row['scenario'], color=scenario_colors[i])
+
+# Customize the x-axis to show ticks every year
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Add labels and title
+plt.xlabel('Year', fontsize=15)
+plt.ylabel('Million m³/y', fontsize=15)  # Adjust the label to the correct metric
+plt.title('Poland Gas Extraction: Cumulative Production Levels', fontsize=20, pad=60)
+plt.text(0.5, 1.05, 'Net Zero scenario has been adjusted from NGFS GCAM6 model to align global cumulative \n emissions with global carbon budget limiting warming to 1.5°C with 50% & 67% likelyhood', transform=ax.transAxes, ha='center', fontsize=12)
+
+# Add a legend
+ax.legend(loc='best', fontsize=12)
+
+# Display the plot
+plt.show()
+
+
+
+
+
+# --------------
+### 3 . oil
+
+# --------------
+# 5.5 oil - ANNUAL
+
+# Create the plot
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot each scenario as a separate line
+for i, row in df_poland_production_oil.iterrows():
+    ax.plot(years, row[1:], label=row['scenario'], color=scenario_colors[i])
+
+# Customize the x-axis to show ticks every year
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Add labels and title
+plt.xlabel('Year', fontsize=15)
+plt.ylabel('Million bbl/y', fontsize=15)  # Adjust the label to the correct metric
+plt.title('Poland Oil Extraction: Annual Production Levels', fontsize=20, pad=60)
+plt.text(0.5, 1.05, 'Net Zero scenario has been adjusted from NGFS GCAM6 model to align global cumulative \n emissions with global carbon budget limiting warming to 1.5°C with 50% & 67% likelyhood', transform=ax.transAxes, ha='center', fontsize=12)
+
+# Add a legend
+ax.legend(loc='best', fontsize=12)
+
+# Display the plot
+plt.show()
+
+
+
+
+
+# --------------
+# 5.6 oil - CUMULATIVE
+
+# Create the plot
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot each scenario as a separate line
+for i, row in df_poland_production_cumulative_oil.iterrows():
+    ax.plot(years, row[1:], label=row['scenario'], color=scenario_colors[i])
+
+# Customize the x-axis to show ticks every year
+plt.xticks([str(year) for year in range(2025, 2051, 5)])
+
+# Add labels and title
+plt.xlabel('Year', fontsize=15)
+plt.ylabel('Million bbl/y', fontsize=15)  # Adjust the label to the correct metric
+plt.title('Poland Oil Extraction: Cumulative Production Levels', fontsize=20, pad=60)
 plt.text(0.5, 1.05, 'Net Zero scenario has been adjusted from NGFS GCAM6 model to align global cumulative \n emissions with global carbon budget limiting warming to 1.5°C with 50% & 67% likelyhood', transform=ax.transAxes, ha='center', fontsize=12)
 
 # Add a legend
