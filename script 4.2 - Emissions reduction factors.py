@@ -2286,3 +2286,8 @@ df_nz16_67_total_v2.to_excel('2 - output/script 4.2/8.10 - NZ-16-67 - v2 -Total 
 
 
 
+### Current policy & Net zero - by country
+# emissions
+df_emissions_secondary_currentpolicy.to_excel('2 - output/script 4.2/9.1 - Current policy - Secondary - annual.xlsx', index=False)
+df_emissions_secondary_netzero.to_excel('2 - output/script 4.2/9.2 - Net zero - Secondary - annual.xlsx', index=False)
+
