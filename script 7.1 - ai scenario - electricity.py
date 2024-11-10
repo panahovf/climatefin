@@ -398,6 +398,7 @@ df_electricity_cpfaai_h_global = df_electricity_cpfaai_h.groupby('Variable')[yea
 df_electricity_cpfaai_l_global = df_electricity_cpfaai_l.groupby('Variable')[years_2024].sum().reset_index()
 df_electricity_cpfaai_b_global = df_electricity_cpfaai_b.groupby('Variable')[years_2024].sum().reset_index()
 
+df_electricity_cpfa_global = df_electricity_cpfa.groupby('Variable')[years_2024].sum().reset_index()
 
 
 
@@ -510,10 +511,10 @@ df_electricity_cpai_h_global.to_excel('2 - output/script 7.1 - ai scenarios - el
 df_electricity_cpai_l_global.to_excel('2 - output/script 7.1 - ai scenarios - electricity generation/7.3.4 - electricity generation - global by type - cp ai - low.xlsx', index=False)
 
 # electricity global by type --- CP FA
-df_electricity_cp_global.to_excel('2 - output/script 7.1 - ai scenarios - electricity generation/7.4.1 - electricity generation - global by type - cp fa.xlsx', index=False)
-df_electricity_cpai_b_global.to_excel('2 - output/script 7.1 - ai scenarios - electricity generation/7.4.2 - electricity generation - global by type - cp fa ai - base.xlsx', index=False)
-df_electricity_cpai_h_global.to_excel('2 - output/script 7.1 - ai scenarios - electricity generation/7.4.3 - electricity generation - global by type - cp fa ai - high.xlsx', index=False)
-df_electricity_cpai_l_global.to_excel('2 - output/script 7.1 - ai scenarios - electricity generation/7.4.4 - electricity generation - global by type - cp fa ai - low.xlsx', index=False)
+df_electricity_cpfa_global.to_excel('2 - output/script 7.1 - ai scenarios - electricity generation/7.4.1 - electricity generation - global by type - cp fa.xlsx', index=False)
+df_electricity_cpfaai_b_global.to_excel('2 - output/script 7.1 - ai scenarios - electricity generation/7.4.2 - electricity generation - global by type - cp fa ai - base.xlsx', index=False)
+df_electricity_cpfaai_h_global.to_excel('2 - output/script 7.1 - ai scenarios - electricity generation/7.4.3 - electricity generation - global by type - cp fa ai - high.xlsx', index=False)
+df_electricity_cpfaai_l_global.to_excel('2 - output/script 7.1 - ai scenarios - electricity generation/7.4.4 - electricity generation - global by type - cp fa ai - low.xlsx', index=False)
 
 
 # other data

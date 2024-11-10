@@ -54,7 +54,7 @@ df_electricity_cpfaai_l = pd.read_excel('2 - output/script 7.1 - ai scenarios - 
 # ---------------------------- 
 # LOAD NZ 1.5C 50% SCENARIO & CP SCENARIOS
 df_nz1550v2_emissions = pd.read_excel('2 - output/script 4.2/6.1 - NZ-15-50 - v2 - Secondary - annual.xlsx')
-
+df_cp_emissions = pd.read_excel('2 - output/script 4.2/9.1 - Current policy - Secondary - annual.xlsx')
 
 
 
