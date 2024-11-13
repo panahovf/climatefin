@@ -1,6 +1,6 @@
 # In[1]:
 # Date: Sep 2, 2024
-# Project: Map pollution level in 2050 Poland: CP vs NZ 1.5C 67% adjusted
+# Project: Plots: Global + EMDEs + Countries
 # Author: Farhad Panahov
 
 
@@ -110,11 +110,12 @@ colors = {
 
 
 
-
+# In[11]
 ##################################################################################################
 ##################### SECTION 1: ANNUAL EMISSISON ################################################
 ##################################################################################################
 
+# --------------
 # Layout: 2 rows, 5 columns grid
 fig = plt.figure(figsize=(15, 9))  # Adjusted figure size
 gs = fig.add_gridspec(2, 5, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1, 1])
@@ -188,15 +189,79 @@ plt.show()
 
 
 
+# --------------
+# Layout: EMDE + countries (IN, VN, ID, TR, PL, KZ)
+fig = plt.figure(figsize=(12, 6))  # Adjusted figure size
+gs = fig.add_gridspec(2, 4, height_ratios=[1, 1], width_ratios=[2, 1, 1, 1])
+
+
+# Function to plot each country
+def plot_country(ax, df_country, country_name, loc, ylabel=None):
+    ax.plot(df_country.index, df_country['ghg_annual_cp'], label='NGFS Current Policies', color=colors['Current Policies'])
+    ax.plot(df_country.index, df_country['ghg_annual_nz'], label='NGFS Net Zero 2050', color=colors['Net Zero 2050'])
+    ax.plot(df_country.index, df_country['ghg_annual_nznew'], label='Carbon budget consistent Net Zero*', color=colors['Carbon Budget Consistent Net Zero'])
+    ax.set_xticks([str(year) for year in range(2030, 2051, 10)])
+    ax.set_title(f'{country_name}', fontsize=14, fontweight='bold', pad=10)
+    ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_2dec))
+
+    # Set the y-axis label if specified
+    if ylabel:
+        ax.set_ylabel(ylabel, fontsize=12)
+    
+# Plot countries in a 1 + 3x2 layout
+
+# First graph
+ax_emde = fig.add_subplot(gs[0:2, 0])
+plot_country(ax_emde, df_country_emde, 'EMDEs', 'upper right',  ylabel='GtCO2eq')
+
+# countries --- first row
+ax_ind = fig.add_subplot(gs[0, 1])
+plot_country(ax_ind, df_country_ind, 'India', 'upper left')
+
+ax_vnm = fig.add_subplot(gs[0, 2])
+plot_country(ax_vnm, df_country_vnm, 'Vietnam', 'upper left')
+
+ax_idn = fig.add_subplot(gs[0, 3])
+plot_country(ax_idn, df_country_idn, 'Indonesia', 'upper left')
+
+# Second row
+ax_tur = fig.add_subplot(gs[1, 1])
+plot_country(ax_tur, df_country_tur, 'Türkiye', 'upper right')
+
+ax_pol = fig.add_subplot(gs[1, 2])
+plot_country(ax_pol, df_country_pol, 'Poland', 'upper left')
+
+ax_kaz = fig.add_subplot(gs[1, 3])
+plot_country(ax_kaz, df_country_kaz, 'Kazakhstan', 'upper left')  # Replace df_country_new with actual data
+
+# Main title
+fig.suptitle('Annual Emissions from Power Sector by Scenario', fontsize=16, fontweight='bold', y=0.98)
+
+# Legend for all charts
+handles, labels = ax_emde.get_legend_handles_labels()
+fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, 0.05), fontsize=10)
+
+# Adjust layout
+plt.subplots_adjust(top=0.85, bottom=0.2, hspace=0.6, wspace=0.3)
+
+# Show the plot
+plt.show()
 
 
 
 
 
+
+
+
+
+
+# In[11]
 ##################################################################################################
 ##################### SECTION 2: CUMULATIVE EMISSISON ############################################
 ##################################################################################################
 
+# --------------
 # Layout: 2 rows, 5 columns grid
 fig = plt.figure(figsize=(15, 9))  # Adjusted figure size
 gs = fig.add_gridspec(2, 5, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1, 1])
@@ -275,13 +340,13 @@ plt.show()
 
 
 
+# In[11]
 ##################################################################################################
 ##################### SECTION 3: AVOIDED EMISSIONS ###############################################
 ##################################################################################################
 
 # --------------
 # ANNUAL
-
 # Layout: 2 rows, 5 columns grid
 fig = plt.figure(figsize=(15, 9))  # Adjusted figure size
 gs = fig.add_gridspec(2, 5, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1, 1])
@@ -355,7 +420,6 @@ plt.show()
 
 # --------------
 # CUMULATIVE
-
 # Layout: 2 rows, 5 columns grid
 fig = plt.figure(figsize=(15, 9))  # Adjusted figure size for 2x5 layout
 gs = fig.add_gridspec(2, 5, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1, 1])
@@ -432,10 +496,12 @@ plt.show()
 
 
 
+# In[11]
 ##################################################################################################
 ##################### SECTION 4: ANNUAL CAPACITY #################################################
 ##################################################################################################
 
+# --------------
 # Layout: 2 rows, 5 columns grid
 fig = plt.figure(figsize=(15, 9))  # Adjusted figure size for 2x5 layout
 gs = fig.add_gridspec(2, 5, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1, 1])
@@ -514,13 +580,13 @@ plt.show()
 
 
 
+# In[11]
 ##################################################################################################
 ##################### SECTION 5: AVOIDED CAPACITY ################################################
 ##################################################################################################
 
 # --------------
 # ANNUAL
-
 # Layout: 2 rows, 5 columns grid
 fig = plt.figure(figsize=(15, 9))  # Adjusted figure size for 2x5 layout
 gs = fig.add_gridspec(2, 5, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1, 1])
@@ -592,11 +658,8 @@ plt.show()
 
 
 
-
-
 # --------------
 # CUMULATIVE
-
 # Layout: 2 rows, 5 columns grid
 fig = plt.figure(figsize=(15, 9))  # Adjusted figure size for 2x5 layout
 gs = fig.add_gridspec(2, 5, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1, 1])
@@ -670,10 +733,15 @@ plt.show()
 
 
 
+
+
+
+# In[11]
 ##################################################################################################
 ##################### SECTION 6: BY FUEL: EMISSIONS ##############################################
 ##################################################################################################
 
+# --------------
 # Ensure the years_columns array has the correct length for country data
 years_columns_countries = years_columns[:len(df_emissions_currentpolicy_deu.columns[8:])]
 years_columns_global = years_columns[:len(df_emissions_currentpolicy_global.columns[1:])]  # For global & emde, adjust the slicing
@@ -705,6 +773,11 @@ def plot_country_emissions(ax, df_current_policy, df_nz_policy, country_name, yl
     if ylabel:
         ax.set_ylabel(ylabel, fontsize=12)
 
+
+
+
+
+# --------------
 # Layout: 2 rows, 5 columns grid
 fig = plt.figure(figsize=(15, 9))  # Adjusted figure size for 2x5 layout
 gs = fig.add_gridspec(2, 5, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1, 1])
@@ -764,6 +837,47 @@ plt.show()
 
 
 
+# --------------
+# Layout: EMDE + countries (IN, VN, ID, TR, PL, KZ)
+fig = plt.figure(figsize=(14, 7))  # Adjusted figure size
+gs = fig.add_gridspec(2, 4, height_ratios=[1, 1], width_ratios=[2, 1, 1, 1])
+
+# Single graph
+ax_emde = fig.add_subplot(gs[0:2, 0])
+plot_country_emissions(ax_emde, df_emissions_currentpolicy_emde, df_emissions_nz1550v2_emde, 'EMDEs', ylabel="GtCO2eq", is_global=True)
+
+# First row
+ax_ind = fig.add_subplot(gs[0, 1])
+plot_country_emissions(ax_ind, df_emissions_currentpolicy_ind, df_emissions_nz1550v2_ind, 'India')
+
+ax_vnm = fig.add_subplot(gs[0, 2])
+plot_country_emissions(ax_vnm, df_emissions_currentpolicy_vnm, df_emissions_nz1550v2_vnm, 'Vietnam')
+
+ax_idn = fig.add_subplot(gs[0, 3])
+plot_country_emissions(ax_idn, df_emissions_currentpolicy_idn, df_emissions_nz1550v2_idn, 'Indonesia')
+
+# Second row
+ax_tur = fig.add_subplot(gs[1, 1])
+plot_country_emissions(ax_tur, df_emissions_currentpolicy_tur, df_emissions_nz1550v2_tur, 'Türkiye')
+
+ax_pol = fig.add_subplot(gs[1, 2])
+plot_country_emissions(ax_pol, df_emissions_currentpolicy_pol, df_emissions_nz1550v2_pol, 'Poland')
+
+ax_kaz = fig.add_subplot(gs[1, 3])
+plot_country_emissions(ax_kaz, df_emissions_currentpolicy_kaz, df_emissions_nz1550v2_kaz, 'Kazakhstan')
+
+# Main title
+fig.suptitle('Annual Emissions from Power Sector by Scenario and Fuel Type', fontsize=16, fontweight='bold', y=0.98)
+
+# Legend for all charts (handles from one plot)
+handles, labels = ax_global.get_legend_handles_labels()
+fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, 0.07), fontsize=10)
+
+# Adjust the spacing to move the charts lower and create space between rows
+plt.subplots_adjust(top=0.85, bottom=0.2, hspace=0.6, wspace=0.3)
+
+# Show the plot
+plt.show()
 
 
 
@@ -772,13 +886,15 @@ plt.show()
 
 
 
+
+
+# In[11]
 ##################################################################################################
 ##################### SECTION 7: BY FUEL: AVOIDED CAPACITY --- ANNUAL & CUMULATIVE ###############
 ##################################################################################################
 
 # --------------
 # ANNUAL
-
 # Ensure the years_columns array has the correct length for country and global data
 years_columns_countries = years_columns[:len(df_byfuel_avoided_annual_deu.columns[8:])]
 years_columns_global = years_columns[:len(df_byfuel_avoided_annual_global.columns[1:])]  # For global, adjust the slicing
@@ -864,7 +980,6 @@ plt.show()
 
 # --------------
 # CUMULATIVE
-
 # Ensure the years_columns array has the correct length for country and global data
 years_columns_countries = years_columns[:len(df_byfuel_avoided_annual_deu.columns[8:])]
 years_columns_global = years_columns[:len(df_byfuel_avoided_annual_global.columns[1:])]  # For global, adjust the slicing
