@@ -26,6 +26,7 @@
 
 # 1 --- COAL
 # https://www.convertunits.com/from/EJ/to/tonne+of+coal+equivalent
+# https://www.iea.org/data-and-statistics/data-tools/unit-converter
 # https://www.eia.gov/environment/emissions/co2_vol_mass.php
 # 1 EJ to tonne of coal equivalent = 34120842.37536 tonne of coal equivalent = 34.1208423754 million tonnes of coal; 
 # 1 tonne of coal = 1.10231 short ton
@@ -35,6 +36,7 @@
 # 2 --- OIL
 # https://www.epa.gov/energy/greenhouse-gases-equivalencies-calculator-calculations-and-references
 # https://www.kylesconverter.com/energy,-work,-and-heat/exajoules-to-million-barrels-of-oil-equivalent
+# www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2022-approximate-conversion-factors.pdf
 # 1 EJ = 163452108.5322 barrel of oil (BOE) = 163.4521085322 million barrels; 
 # 0.43 metric tons CO2/barrel
 
@@ -42,6 +44,7 @@
 # 3 --- GAS
 # https://www.enbridgegas.com/ontario/business-industrial/incentives-conservation/energy-calculators/Greenhouse-Gas-Emissions#:~:text=It%20is%20also%20assumed%20that,2%2C%20page%20254%2D255.
 # https://www.eia.gov/environment/emissions/co2_vol_mass.php
+# www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2022-approximate-conversion-factors.pdf
 # 1 EJ = 27.93 billion cubic meters of natural gas
 # 1 m3 = 1.932 kg CO2
 
@@ -164,7 +167,7 @@ df_gcam = pd.merge(df_gcam, df_regions[['alpha-3', 'gca_region']],
 
 df_gcam = df_gcam.drop('alpha-3', axis=1)
 
-
+# 
 # ---------------------
 # add development levels
 df_gcam['development_level'] = np.nan
@@ -392,6 +395,24 @@ del index, row, emissions_factor_coal, emissions_factor_gas, emissions_factor_oi
 
 
 
+# In[9]: GET SECONDARY CURRENT POLICY & NZ 2050
+###############################################
+
+# Current Policies
+df_gcam_emissions_secondary_cp = df_gcam_emissions.loc[(df_gcam_emissions['Scenario'] == 'Current Policies')]
+df_gcam_emissions_secondary_cp = df_gcam_emissions_secondary_cp.loc[(df_gcam_emissions_secondary_cp['Variable'] == 'Secondary Energy|Electricity|Coal')| (df_gcam_emissions_secondary_cp['Variable'] == 'Secondary Energy|Electricity|Gas')|(df_gcam_emissions_secondary_cp['Variable'] == 'Secondary Energy|Electricity|Oil')]
+
+
+# Net Zero 2050
+df_gcam_emissions_secondary_nz = df_gcam_emissions.loc[(df_gcam_emissions['Scenario'] == 'Net Zero 2050')]
+df_gcam_emissions_secondary_nz = df_gcam_emissions_secondary_nz.loc[(df_gcam_emissions_secondary_nz['Variable'] == 'Secondary Energy|Electricity|Coal')| (df_gcam_emissions_secondary_nz['Variable'] == 'Secondary Energy|Electricity|Gas')|(df_gcam_emissions_secondary_nz['Variable'] == 'Secondary Energy|Electricity|Oil')]
+
+
+
+
+
+
+
 # In[9]: GET REGIONS, FUEL TYPE
 ###############################
 
@@ -607,7 +628,7 @@ df_gcam_ghg_energy = df_gcam_ghg_energy.groupby(['Scenario'])[year_columns2].sum
 
 df_comparison_secondary = {
     'NGFS': [10.321, 2.748, 0.615],  # Initial values for NGFS --- df_emissions_blobal_bysource above
-    'Ford Analytics': [10.085, 3.41, 0.641]  # Initial values from Moritz
+    'Forward Analytics': [10.085, 3.41, 0.641]  # Initial values from Moritz
 }
 
 # Define the index for the rows corresponding to coal, oil, and gas
@@ -635,7 +656,7 @@ df_comparison_total = {
 }
 
 # Define the index for the rows corresponding to coal, oil, and gas
-df_comparison_total = pd.DataFrame(df_comparison_total, index=['NGFS Primary Energy\n(author\'s estimate)','NGFS Energy', 'NGFS Total', 'EIA Fuel Combustion', 'OWID Fossil Fuels'])
+df_comparison_total = pd.DataFrame(df_comparison_total, index=['NGFS Primary Energy\n(author\'s estimate)','NGFS Energy', 'NGFS Total', 'IEA Fuel Combustion', 'OWID Fossil Fuels'])
 
 
 
@@ -1117,3 +1138,5 @@ df_emissions_byregion_currentpolicy_secondary.to_excel('2 - output/script 2/6.2 
 df_emissions_byregion_netzero_primary.to_excel('2 - output/script 2/7.1 - GCAM - emissions - netzero - primary.xlsx', index=False)
 df_emissions_byregion_netzero_secondary.to_excel('2 - output/script 2/7.2 - GCAM - emissions - netzero - secondary.xlsx', index=False)
 
+df_gcam_emissions_secondary_cp.to_excel('2 - output/script 2/8.1 - GCAM - emissions by country & fuel type - secondary - current policies.xlsx', index=False)
+df_gcam_emissions_secondary_nz.to_excel('2 - output/script 2/8.2 - GCAM - emissions by country & fuel type - secondary - net zero 2050.xlsx', index=False)

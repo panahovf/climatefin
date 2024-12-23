@@ -190,7 +190,7 @@ plt.show()
 
 
 # --------------
-# Layout: EMDE + countries (IN, VN, ID, TR, PL, KZ)
+# Layout: DEVELOPING UNFCC + countries (IN, VN, ID, BD, ZA, KZ)
 fig = plt.figure(figsize=(12, 6))  # Adjusted figure size
 gs = fig.add_gridspec(2, 4, height_ratios=[1, 1], width_ratios=[2, 1, 1, 1])
 
@@ -211,8 +211,8 @@ def plot_country(ax, df_country, country_name, loc, ylabel=None):
 # Plot countries in a 1 + 3x2 layout
 
 # First graph
-ax_emde = fig.add_subplot(gs[0:2, 0])
-plot_country(ax_emde, df_country_emde, 'EMDEs', 'upper right',  ylabel='GtCO2eq')
+ax_devunfccc = fig.add_subplot(gs[0:2, 0])
+plot_country(ax_devunfccc, df_country_devunfccc, 'Developing Recipients', 'upper right',  ylabel='GtCO2eq')
 
 # countries --- first row
 ax_ind = fig.add_subplot(gs[0, 1])
@@ -225,11 +225,11 @@ ax_idn = fig.add_subplot(gs[0, 3])
 plot_country(ax_idn, df_country_idn, 'Indonesia', 'upper left')
 
 # Second row
-ax_tur = fig.add_subplot(gs[1, 1])
-plot_country(ax_tur, df_country_tur, 'Türkiye', 'upper right')
+ax_bgd = fig.add_subplot(gs[1, 1])
+plot_country(ax_bgd, df_country_bgd, 'Bangladesh', 'upper right')
 
-ax_pol = fig.add_subplot(gs[1, 2])
-plot_country(ax_pol, df_country_pol, 'Poland', 'upper left')
+ax_zaf = fig.add_subplot(gs[1, 2])
+plot_country(ax_zaf, df_country_zaf, 'South Africa', 'upper left')
 
 ax_kaz = fig.add_subplot(gs[1, 3])
 plot_country(ax_kaz, df_country_kaz, 'Kazakhstan', 'upper left')  # Replace df_country_new with actual data
@@ -238,7 +238,7 @@ plot_country(ax_kaz, df_country_kaz, 'Kazakhstan', 'upper left')  # Replace df_c
 fig.suptitle('Annual Emissions from Power Sector by Scenario', fontsize=16, fontweight='bold', y=0.98)
 
 # Legend for all charts
-handles, labels = ax_emde.get_legend_handles_labels()
+handles, labels = ax_devunfccc.get_legend_handles_labels()
 fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, 0.05), fontsize=10)
 
 # Adjust layout
@@ -838,13 +838,13 @@ plt.show()
 
 
 # --------------
-# Layout: EMDE + countries (IN, VN, ID, TR, PL, KZ)
+# Layout: DEVELOPING UNFCC + countries (IN, VN, ID, BD, ZA, KZ)
 fig = plt.figure(figsize=(14, 7))  # Adjusted figure size
 gs = fig.add_gridspec(2, 4, height_ratios=[1, 1], width_ratios=[2, 1, 1, 1])
 
 # Single graph
-ax_emde = fig.add_subplot(gs[0:2, 0])
-plot_country_emissions(ax_emde, df_emissions_currentpolicy_emde, df_emissions_nz1550v2_emde, 'EMDEs', ylabel="GtCO2eq", is_global=True)
+ax_devunfccc = fig.add_subplot(gs[0:2, 0])
+plot_country_emissions(ax_devunfccc, df_emissions_currentpolicy_devunfccc, df_emissions_nz1550v2_devunfccc, 'Developing Recipients', ylabel="GtCO2eq", is_global=True)
 
 # First row
 ax_ind = fig.add_subplot(gs[0, 1])
@@ -857,11 +857,11 @@ ax_idn = fig.add_subplot(gs[0, 3])
 plot_country_emissions(ax_idn, df_emissions_currentpolicy_idn, df_emissions_nz1550v2_idn, 'Indonesia')
 
 # Second row
-ax_tur = fig.add_subplot(gs[1, 1])
-plot_country_emissions(ax_tur, df_emissions_currentpolicy_tur, df_emissions_nz1550v2_tur, 'Türkiye')
+ax_bgd = fig.add_subplot(gs[1, 1])
+plot_country_emissions(ax_bgd, df_emissions_currentpolicy_bgd, df_emissions_nz1550v2_bgd, 'Bangladesh')
 
-ax_pol = fig.add_subplot(gs[1, 2])
-plot_country_emissions(ax_pol, df_emissions_currentpolicy_pol, df_emissions_nz1550v2_pol, 'Poland')
+ax_zaf = fig.add_subplot(gs[1, 2])
+plot_country_emissions(ax_zaf, df_emissions_currentpolicy_zaf, df_emissions_nz1550v2_zaf, 'South Africa')
 
 ax_kaz = fig.add_subplot(gs[1, 3])
 plot_country_emissions(ax_kaz, df_emissions_currentpolicy_kaz, df_emissions_nz1550v2_kaz, 'Kazakhstan')
@@ -869,12 +869,15 @@ plot_country_emissions(ax_kaz, df_emissions_currentpolicy_kaz, df_emissions_nz15
 # Main title
 fig.suptitle('Annual Emissions from Power Sector by Scenario and Fuel Type', fontsize=16, fontweight='bold', y=0.98)
 
+# Subtitle
+fig.text(0.5, 0.91, 'Solid line: Carbon budget consistent Net Zero | Dotted line: Current Policies', ha='center', fontsize=12)
+
 # Legend for all charts (handles from one plot)
-handles, labels = ax_global.get_legend_handles_labels()
+handles, labels = ax_devunfccc.get_legend_handles_labels()
 fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, 0.07), fontsize=10)
 
 # Adjust the spacing to move the charts lower and create space between rows
-plt.subplots_adjust(top=0.85, bottom=0.2, hspace=0.6, wspace=0.3)
+plt.subplots_adjust(top=0.83, bottom=0.2, hspace=0.6, wspace=0.3)
 
 # Show the plot
 plt.show()

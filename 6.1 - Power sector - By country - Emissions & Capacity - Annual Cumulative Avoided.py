@@ -62,13 +62,18 @@ temp_directory = r'C:\Users\panah\OneDrive\Desktop\Work\2 - RA - Climate fin\2 -
 df_country_developing = pd.read_excel(temp_directory + r'\2 - developing.xlsx')
 df_country_emerging = pd.read_excel(temp_directory + r'\3 - emerging.xlsx')
 
+df_country_unfccc = pd.read_excel('1 - input/Country Datasets/UNFCCC classification.xlsx')
+df_country_unfccc_dev = df_country_unfccc[df_country_unfccc['classification'] == "Developing"]
+
 # get and combine lists
 v_countrycodes_developing = list(df_country_developing['alpha-3'].unique())
 v_countrycodes_emerging = list(df_country_emerging['alpha-3'].unique())
-v_countrycodes = v_countrycodes_developing + v_countrycodes_emerging
+v_countrycodes_emde = v_countrycodes_developing + v_countrycodes_emerging
+
+v_countrycodes_unfccc_dev = list(df_country_unfccc_dev['iso_3'].unique())
 
 # delete
-del temp_directory, df_country_developing, df_country_emerging, v_countrycodes_developing, v_countrycodes_emerging
+del temp_directory, df_country_developing, df_country_emerging, df_country_unfccc, df_country_unfccc_dev, v_countrycodes_developing, v_countrycodes_emerging
 
 
 
@@ -92,7 +97,10 @@ df_emissions_currentpolicy_vnm = df_emissions_currentpolicy[df_emissions_current
 df_emissions_currentpolicy_deu = df_emissions_currentpolicy[df_emissions_currentpolicy["Region"] == "DEU"]
 df_emissions_currentpolicy_pol = df_emissions_currentpolicy[df_emissions_currentpolicy["Region"] == "POL"]
 df_emissions_currentpolicy_kaz = df_emissions_currentpolicy[df_emissions_currentpolicy["Region"] == "KAZ"]
-df_emissions_currentpolicy_emde = df_emissions_currentpolicy[df_emissions_currentpolicy["Region"].isin(v_countrycodes)].groupby('fuel_type')[years_columns].sum().reset_index()
+df_emissions_currentpolicy_zaf = df_emissions_currentpolicy[df_emissions_currentpolicy["Region"] == "ZAF"]
+df_emissions_currentpolicy_bgd = df_emissions_currentpolicy[df_emissions_currentpolicy["Region"] == "BGD"]
+df_emissions_currentpolicy_emde = df_emissions_currentpolicy[df_emissions_currentpolicy["Region"].isin(v_countrycodes_emde)].groupby('fuel_type')[years_columns].sum().reset_index()
+df_emissions_currentpolicy_devunfccc = df_emissions_currentpolicy[df_emissions_currentpolicy["Region"].isin(v_countrycodes_unfccc_dev)].groupby('fuel_type')[years_columns].sum().reset_index()
 df_emissions_currentpolicy_global = df_emissions_currentpolicy.groupby('fuel_type')[years_columns].sum().reset_index()
 
 
@@ -106,7 +114,10 @@ df_emissions_netzero_vnm = df_emissions_netzero[df_emissions_netzero["Region"] =
 df_emissions_netzero_deu = df_emissions_netzero[df_emissions_netzero["Region"] == "DEU"]
 df_emissions_netzero_pol = df_emissions_netzero[df_emissions_netzero["Region"] == "POL"]
 df_emissions_netzero_kaz = df_emissions_netzero[df_emissions_netzero["Region"] == "KAZ"]
-df_emissions_netzero_emde = df_emissions_netzero[df_emissions_netzero["Region"].isin(v_countrycodes)].groupby('fuel_type')[years_columns].sum().reset_index()
+df_emissions_netzero_zaf = df_emissions_netzero[df_emissions_netzero["Region"] == "ZAF"]
+df_emissions_netzero_bgd = df_emissions_netzero[df_emissions_netzero["Region"] == "BGD"]
+df_emissions_netzero_emde = df_emissions_netzero[df_emissions_netzero["Region"].isin(v_countrycodes_emde)].groupby('fuel_type')[years_columns].sum().reset_index()
+df_emissions_netzero_devunfccc = df_emissions_netzero[df_emissions_netzero["Region"].isin(v_countrycodes_unfccc_dev)].groupby('fuel_type')[years_columns].sum().reset_index()
 df_emissions_netzero_global = df_emissions_netzero.groupby('fuel_type')[years_columns].sum().reset_index()
 
 
@@ -121,7 +132,10 @@ df_emissions_nz1550v2_vnm = df_emissions_nz1550v2[df_emissions_nz1550v2["Region"
 df_emissions_nz1550v2_deu = df_emissions_nz1550v2[df_emissions_nz1550v2["Region"] == "DEU"]
 df_emissions_nz1550v2_pol = df_emissions_nz1550v2[df_emissions_nz1550v2["Region"] == "POL"]
 df_emissions_nz1550v2_kaz = df_emissions_nz1550v2[df_emissions_nz1550v2["Region"] == "KAZ"]
-df_emissions_nz1550v2_emde = df_emissions_nz1550v2[df_emissions_nz1550v2["Region"].isin(v_countrycodes)].groupby('fuel_type')[years_columns].sum().reset_index()
+df_emissions_nz1550v2_zaf = df_emissions_nz1550v2[df_emissions_nz1550v2["Region"] == "ZAF"]
+df_emissions_nz1550v2_bgd = df_emissions_nz1550v2[df_emissions_nz1550v2["Region"] == "BGD"]
+df_emissions_nz1550v2_emde = df_emissions_nz1550v2[df_emissions_nz1550v2["Region"].isin(v_countrycodes_emde)].groupby('fuel_type')[years_columns].sum().reset_index()
+df_emissions_nz1550v2_devunfccc = df_emissions_nz1550v2[df_emissions_nz1550v2["Region"].isin(v_countrycodes_unfccc_dev)].groupby('fuel_type')[years_columns].sum().reset_index()
 df_emissions_nz1550v2_global = df_emissions_nz1550v2.groupby('fuel_type')[years_columns].sum().reset_index()
 
 
@@ -203,7 +217,10 @@ df_totalcapacity_currentpolicy_usa = df_emissions_currentpolicy_usa.copy()
 df_totalcapacity_currentpolicy_vnm = df_emissions_currentpolicy_vnm.copy()
 df_totalcapacity_currentpolicy_pol = df_emissions_currentpolicy_pol.copy()
 df_totalcapacity_currentpolicy_kaz = df_emissions_currentpolicy_kaz.copy()
-df_totalcapacity_currentpolicy_emde = df_emissions_currentpolicy.copy()[df_emissions_currentpolicy['Region'].isin(v_countrycodes)]
+df_totalcapacity_currentpolicy_zaf = df_emissions_currentpolicy_zaf.copy()
+df_totalcapacity_currentpolicy_bgd = df_emissions_currentpolicy_bgd.copy()
+df_totalcapacity_currentpolicy_emde = df_emissions_currentpolicy.copy()[df_emissions_currentpolicy['Region'].isin(v_countrycodes_emde)]
+df_totalcapacity_currentpolicy_devunfccc = df_emissions_currentpolicy.copy()[df_emissions_currentpolicy['Region'].isin(v_countrycodes_unfccc_dev)]
 df_totalcapacity_currentpolicy_global = df_emissions_currentpolicy.copy()
 
 
@@ -215,7 +232,10 @@ df_totalcapacity_netzero_usa = df_emissions_netzero_usa.copy()
 df_totalcapacity_netzero_vnm = df_emissions_netzero_vnm.copy()
 df_totalcapacity_netzero_pol = df_emissions_netzero_pol.copy()
 df_totalcapacity_netzero_kaz = df_emissions_netzero_kaz.copy()
-df_totalcapacity_netzero_emde = df_emissions_netzero.copy()[df_emissions_currentpolicy['Region'].isin(v_countrycodes)]
+df_totalcapacity_netzero_zaf = df_emissions_netzero_zaf.copy()
+df_totalcapacity_netzero_bgd = df_emissions_netzero_bgd.copy()
+df_totalcapacity_netzero_emde = df_emissions_netzero.copy()[df_emissions_netzero['Region'].isin(v_countrycodes_emde)]
+df_totalcapacity_netzero_devunfccc = df_emissions_netzero.copy()[df_emissions_netzero['Region'].isin(v_countrycodes_unfccc_dev)]
 df_totalcapacity_netzero_global = df_emissions_netzero.copy()
 
 
@@ -227,7 +247,10 @@ df_totalcapacity_nz1550v2_usa = df_emissions_nz1550v2_usa.copy()
 df_totalcapacity_nz1550v2_vnm = df_emissions_nz1550v2_vnm.copy()
 df_totalcapacity_nz1550v2_pol = df_emissions_nz1550v2_pol.copy()
 df_totalcapacity_nz1550v2_kaz = df_emissions_nz1550v2_kaz.copy()
-df_totalcapacity_nz1550v2_emde = df_emissions_nz1550v2.copy()[df_emissions_currentpolicy['Region'].isin(v_countrycodes)]
+df_totalcapacity_nz1550v2_zaf = df_emissions_nz1550v2_zaf.copy()
+df_totalcapacity_nz1550v2_bgd = df_emissions_nz1550v2_bgd.copy()
+df_totalcapacity_nz1550v2_emde = df_emissions_nz1550v2.copy()[df_emissions_nz1550v2['Region'].isin(v_countrycodes_emde)]
+df_totalcapacity_nz1550v2_devunfccc = df_emissions_nz1550v2.copy()[df_emissions_nz1550v2['Region'].isin(v_countrycodes_unfccc_dev)]
 df_totalcapacity_nz1550v2_global = df_emissions_nz1550v2.copy()
 
 
@@ -297,11 +320,32 @@ df_totalcapacity_currentpolicy_kaz.loc[df_totalcapacity_currentpolicy_kaz['fuel_
     .div(df_totalcapacity_currentpolicy_kaz['Region'].map(df_power_coal_utilization), axis=0)
     )
 
+df_totalcapacity_currentpolicy_zaf.loc[df_totalcapacity_currentpolicy_zaf['fuel_type'] == "Coal", years_columns] = ( 
+    df_totalcapacity_currentpolicy_zaf.loc[df_totalcapacity_currentpolicy_zaf['fuel_type'] == "Coal", years_columns]
+    .div(df_totalcapacity_currentpolicy_zaf['Region'].map(df_power_coal_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_currentpolicy_zaf['Region'].map(df_power_coal_utilization), axis=0)
+    )
+
+df_totalcapacity_currentpolicy_bgd.loc[df_totalcapacity_currentpolicy_bgd['fuel_type'] == "Coal", years_columns] = ( 
+    df_totalcapacity_currentpolicy_bgd.loc[df_totalcapacity_currentpolicy_bgd['fuel_type'] == "Coal", years_columns]
+    .div(df_totalcapacity_currentpolicy_bgd['Region'].map(df_power_coal_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_currentpolicy_bgd['Region'].map(df_power_coal_utilization), axis=0)
+    )
+
 df_totalcapacity_currentpolicy_emde.loc[df_totalcapacity_currentpolicy_emde['fuel_type'] == "Coal", years_columns] = ( 
     df_totalcapacity_currentpolicy_emde.loc[df_totalcapacity_currentpolicy_emde['fuel_type'] == "Coal", years_columns]
     .div(df_totalcapacity_currentpolicy_emde['Region'].map(df_power_coal_intensity), axis=0)
     .div((24*365))
     .div(df_totalcapacity_currentpolicy_emde['Region'].map(df_power_coal_utilization), axis=0)
+    )
+
+df_totalcapacity_currentpolicy_devunfccc.loc[df_totalcapacity_currentpolicy_devunfccc['fuel_type'] == "Coal", years_columns] = ( 
+    df_totalcapacity_currentpolicy_devunfccc.loc[df_totalcapacity_currentpolicy_devunfccc['fuel_type'] == "Coal", years_columns]
+    .div(df_totalcapacity_currentpolicy_devunfccc['Region'].map(df_power_coal_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_currentpolicy_devunfccc['Region'].map(df_power_coal_utilization), axis=0)
     )
 
 df_totalcapacity_currentpolicy_global.loc[df_totalcapacity_currentpolicy_global['fuel_type'] == "Coal", years_columns] = ( 
@@ -370,11 +414,32 @@ df_totalcapacity_currentpolicy_kaz.loc[df_totalcapacity_currentpolicy_kaz['fuel_
     .div(df_totalcapacity_currentpolicy_kaz['Region'].map(df_power_gas_utilization), axis=0)
     )
 
+df_totalcapacity_currentpolicy_zaf.loc[df_totalcapacity_currentpolicy_zaf['fuel_type'] == "Gas", years_columns] = ( 
+    df_totalcapacity_currentpolicy_zaf.loc[df_totalcapacity_currentpolicy_zaf['fuel_type'] == "Gas", years_columns]
+    .div(df_totalcapacity_currentpolicy_zaf['Region'].map(df_power_gas_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_currentpolicy_zaf['Region'].map(df_power_gas_utilization), axis=0)
+    )
+
+df_totalcapacity_currentpolicy_bgd.loc[df_totalcapacity_currentpolicy_bgd['fuel_type'] == "Gas", years_columns] = ( 
+    df_totalcapacity_currentpolicy_bgd.loc[df_totalcapacity_currentpolicy_bgd['fuel_type'] == "Gas", years_columns]
+    .div(df_totalcapacity_currentpolicy_bgd['Region'].map(df_power_gas_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_currentpolicy_bgd['Region'].map(df_power_gas_utilization), axis=0)
+    )
+
 df_totalcapacity_currentpolicy_emde.loc[df_totalcapacity_currentpolicy_emde['fuel_type'] == "Gas", years_columns] = ( 
     df_totalcapacity_currentpolicy_emde.loc[df_totalcapacity_currentpolicy_emde['fuel_type'] == "Gas", years_columns]
     .div(df_totalcapacity_currentpolicy_emde['Region'].map(df_power_gas_intensity), axis=0)
     .div((24*365))
     .div(df_totalcapacity_currentpolicy_emde['Region'].map(df_power_gas_utilization), axis=0)
+    )
+
+df_totalcapacity_currentpolicy_devunfccc.loc[df_totalcapacity_currentpolicy_devunfccc['fuel_type'] == "Gas", years_columns] = ( 
+    df_totalcapacity_currentpolicy_devunfccc.loc[df_totalcapacity_currentpolicy_devunfccc['fuel_type'] == "Gas", years_columns]
+    .div(df_totalcapacity_currentpolicy_devunfccc['Region'].map(df_power_gas_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_currentpolicy_devunfccc['Region'].map(df_power_gas_utilization), axis=0)
     )
 
 df_totalcapacity_currentpolicy_global.loc[df_totalcapacity_currentpolicy_global['fuel_type'] == "Gas", years_columns] = ( 
@@ -442,6 +507,20 @@ df_totalcapacity_currentpolicy_kaz.loc[df_totalcapacity_currentpolicy_kaz['fuel_
     .div(df_totalcapacity_currentpolicy_kaz['Region'].map(df_power_oil_utilization), axis=0)
     )
 
+df_totalcapacity_currentpolicy_zaf.loc[df_totalcapacity_currentpolicy_zaf['fuel_type'] == "Oil", years_columns] = ( 
+    df_totalcapacity_currentpolicy_zaf.loc[df_totalcapacity_currentpolicy_zaf['fuel_type'] == "Oil", years_columns]
+    .div(df_totalcapacity_currentpolicy_zaf['Region'].map(df_power_oil_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_currentpolicy_zaf['Region'].map(df_power_oil_utilization), axis=0)
+    )
+
+df_totalcapacity_currentpolicy_bgd.loc[df_totalcapacity_currentpolicy_bgd['fuel_type'] == "Oil", years_columns] = ( 
+    df_totalcapacity_currentpolicy_bgd.loc[df_totalcapacity_currentpolicy_bgd['fuel_type'] == "Oil", years_columns]
+    .div(df_totalcapacity_currentpolicy_bgd['Region'].map(df_power_oil_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_currentpolicy_bgd['Region'].map(df_power_oil_utilization), axis=0)
+    )
+
 df_totalcapacity_currentpolicy_emde.loc[df_totalcapacity_currentpolicy_emde['fuel_type'] == "Oil", years_columns] = ( 
     df_totalcapacity_currentpolicy_emde.loc[df_totalcapacity_currentpolicy_emde['fuel_type'] == "Oil", years_columns]
     .div(df_totalcapacity_currentpolicy_emde['Region'].map(df_power_oil_intensity), axis=0)
@@ -449,6 +528,14 @@ df_totalcapacity_currentpolicy_emde.loc[df_totalcapacity_currentpolicy_emde['fue
     .div(df_totalcapacity_currentpolicy_emde['Region'].map(df_power_oil_utilization), axis=0)
     )
 df_totalcapacity_currentpolicy_emde = df_totalcapacity_currentpolicy_emde.groupby('fuel_type')[years_columns].sum().reset_index()
+
+df_totalcapacity_currentpolicy_devunfccc.loc[df_totalcapacity_currentpolicy_devunfccc['fuel_type'] == "Oil", years_columns] = ( 
+    df_totalcapacity_currentpolicy_devunfccc.loc[df_totalcapacity_currentpolicy_devunfccc['fuel_type'] == "Oil", years_columns]
+    .div(df_totalcapacity_currentpolicy_devunfccc['Region'].map(df_power_oil_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_currentpolicy_devunfccc['Region'].map(df_power_oil_utilization), axis=0)
+    )
+df_totalcapacity_currentpolicy_devunfccc = df_totalcapacity_currentpolicy_devunfccc.groupby('fuel_type')[years_columns].sum().reset_index()
 
 df_totalcapacity_currentpolicy_global.loc[df_totalcapacity_currentpolicy_global['fuel_type'] == "Oil", years_columns] = ( 
     df_totalcapacity_currentpolicy_global.loc[df_totalcapacity_currentpolicy_global['fuel_type'] == "Oil", years_columns]
@@ -524,11 +611,32 @@ df_totalcapacity_netzero_kaz.loc[df_totalcapacity_netzero_kaz['fuel_type'] == "C
     .div(df_totalcapacity_netzero_kaz['Region'].map(df_power_coal_utilization), axis=0)
     )
 
+df_totalcapacity_netzero_zaf.loc[df_totalcapacity_netzero_zaf['fuel_type'] == "Coal", years_columns] = ( 
+    df_totalcapacity_netzero_zaf.loc[df_totalcapacity_netzero_zaf['fuel_type'] == "Coal", years_columns]
+    .div(df_totalcapacity_netzero_zaf['Region'].map(df_power_coal_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_netzero_zaf['Region'].map(df_power_coal_utilization), axis=0)
+    )
+
+df_totalcapacity_netzero_bgd.loc[df_totalcapacity_netzero_bgd['fuel_type'] == "Coal", years_columns] = ( 
+    df_totalcapacity_netzero_bgd.loc[df_totalcapacity_netzero_bgd['fuel_type'] == "Coal", years_columns]
+    .div(df_totalcapacity_netzero_bgd['Region'].map(df_power_coal_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_netzero_bgd['Region'].map(df_power_coal_utilization), axis=0)
+    )
+
 df_totalcapacity_netzero_emde.loc[df_totalcapacity_netzero_emde['fuel_type'] == "Coal", years_columns] = ( 
     df_totalcapacity_netzero_emde.loc[df_totalcapacity_netzero_emde['fuel_type'] == "Coal", years_columns]
     .div(df_totalcapacity_netzero_emde['Region'].map(df_power_coal_intensity), axis=0)
     .div((24*365))
     .div(df_totalcapacity_netzero_emde['Region'].map(df_power_coal_utilization), axis=0)
+    )
+
+df_totalcapacity_netzero_devunfccc.loc[df_totalcapacity_netzero_devunfccc['fuel_type'] == "Coal", years_columns] = ( 
+    df_totalcapacity_netzero_devunfccc.loc[df_totalcapacity_netzero_devunfccc['fuel_type'] == "Coal", years_columns]
+    .div(df_totalcapacity_netzero_devunfccc['Region'].map(df_power_coal_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_netzero_devunfccc['Region'].map(df_power_coal_utilization), axis=0)
     )
 
 df_totalcapacity_netzero_global.loc[df_totalcapacity_netzero_global['fuel_type'] == "Coal", years_columns] = ( 
@@ -597,11 +705,32 @@ df_totalcapacity_netzero_kaz.loc[df_totalcapacity_netzero_kaz['fuel_type'] == "G
     .div(df_totalcapacity_netzero_kaz['Region'].map(df_power_gas_utilization), axis=0)
     )
 
+df_totalcapacity_netzero_zaf.loc[df_totalcapacity_netzero_zaf['fuel_type'] == "Gas", years_columns] = ( 
+    df_totalcapacity_netzero_zaf.loc[df_totalcapacity_netzero_zaf['fuel_type'] == "Gas", years_columns]
+    .div(df_totalcapacity_netzero_zaf['Region'].map(df_power_gas_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_netzero_zaf['Region'].map(df_power_gas_utilization), axis=0)
+    )
+
+df_totalcapacity_netzero_bgd.loc[df_totalcapacity_netzero_bgd['fuel_type'] == "Gas", years_columns] = ( 
+    df_totalcapacity_netzero_bgd.loc[df_totalcapacity_netzero_bgd['fuel_type'] == "Gas", years_columns]
+    .div(df_totalcapacity_netzero_bgd['Region'].map(df_power_gas_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_netzero_bgd['Region'].map(df_power_gas_utilization), axis=0)
+    )
+
 df_totalcapacity_netzero_emde.loc[df_totalcapacity_netzero_emde['fuel_type'] == "Gas", years_columns] = ( 
     df_totalcapacity_netzero_emde.loc[df_totalcapacity_netzero_emde['fuel_type'] == "Gas", years_columns]
     .div(df_totalcapacity_netzero_emde['Region'].map(df_power_gas_intensity), axis=0)
     .div((24*365))
     .div(df_totalcapacity_netzero_emde['Region'].map(df_power_gas_utilization), axis=0)
+    )
+
+df_totalcapacity_netzero_devunfccc.loc[df_totalcapacity_netzero_devunfccc['fuel_type'] == "Gas", years_columns] = ( 
+    df_totalcapacity_netzero_devunfccc.loc[df_totalcapacity_netzero_devunfccc['fuel_type'] == "Gas", years_columns]
+    .div(df_totalcapacity_netzero_devunfccc['Region'].map(df_power_gas_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_netzero_devunfccc['Region'].map(df_power_gas_utilization), axis=0)
     )
 
 df_totalcapacity_netzero_global.loc[df_totalcapacity_netzero_global['fuel_type'] == "Gas", years_columns] = ( 
@@ -669,6 +798,20 @@ df_totalcapacity_netzero_kaz.loc[df_totalcapacity_netzero_kaz['fuel_type'] == "O
     .div(df_totalcapacity_netzero_kaz['Region'].map(df_power_oil_utilization), axis=0)
     )
 
+df_totalcapacity_netzero_zaf.loc[df_totalcapacity_netzero_zaf['fuel_type'] == "Oil", years_columns] = ( 
+    df_totalcapacity_netzero_zaf.loc[df_totalcapacity_netzero_zaf['fuel_type'] == "Oil", years_columns]
+    .div(df_totalcapacity_netzero_zaf['Region'].map(df_power_oil_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_netzero_zaf['Region'].map(df_power_oil_utilization), axis=0)
+    )
+
+df_totalcapacity_netzero_bgd.loc[df_totalcapacity_netzero_bgd['fuel_type'] == "Oil", years_columns] = ( 
+    df_totalcapacity_netzero_bgd.loc[df_totalcapacity_netzero_bgd['fuel_type'] == "Oil", years_columns]
+    .div(df_totalcapacity_netzero_bgd['Region'].map(df_power_oil_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_netzero_bgd['Region'].map(df_power_oil_utilization), axis=0)
+    )
+
 df_totalcapacity_netzero_emde.loc[df_totalcapacity_netzero_emde['fuel_type'] == "Oil", years_columns] = ( 
     df_totalcapacity_netzero_emde.loc[df_totalcapacity_netzero_emde['fuel_type'] == "Oil", years_columns]
     .div(df_totalcapacity_netzero_emde['Region'].map(df_power_oil_intensity), axis=0)
@@ -676,6 +819,14 @@ df_totalcapacity_netzero_emde.loc[df_totalcapacity_netzero_emde['fuel_type'] == 
     .div(df_totalcapacity_netzero_emde['Region'].map(df_power_oil_utilization), axis=0)
     )
 df_totalcapacity_netzero_emde = df_totalcapacity_netzero_emde.groupby('fuel_type')[years_columns].sum().reset_index()
+
+df_totalcapacity_netzero_devunfccc.loc[df_totalcapacity_netzero_devunfccc['fuel_type'] == "Oil", years_columns] = ( 
+    df_totalcapacity_netzero_devunfccc.loc[df_totalcapacity_netzero_devunfccc['fuel_type'] == "Oil", years_columns]
+    .div(df_totalcapacity_netzero_devunfccc['Region'].map(df_power_oil_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_netzero_devunfccc['Region'].map(df_power_oil_utilization), axis=0)
+    )
+df_totalcapacity_netzero_devunfccc = df_totalcapacity_netzero_devunfccc.groupby('fuel_type')[years_columns].sum().reset_index()
 
 df_totalcapacity_netzero_global.loc[df_totalcapacity_netzero_global['fuel_type'] == "Oil", years_columns] = ( 
     df_totalcapacity_netzero_global.loc[df_totalcapacity_netzero_global['fuel_type'] == "Oil", years_columns]
@@ -752,11 +903,32 @@ df_totalcapacity_nz1550v2_kaz.loc[df_totalcapacity_nz1550v2_kaz['fuel_type'] == 
     .div(df_totalcapacity_nz1550v2_kaz['Region'].map(df_power_coal_utilization), axis=0)
     )
 
+df_totalcapacity_nz1550v2_zaf.loc[df_totalcapacity_nz1550v2_zaf['fuel_type'] == "Coal", years_columns] = ( 
+    df_totalcapacity_nz1550v2_zaf.loc[df_totalcapacity_nz1550v2_zaf['fuel_type'] == "Coal", years_columns]
+    .div(df_totalcapacity_nz1550v2_zaf['Region'].map(df_power_coal_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_nz1550v2_zaf['Region'].map(df_power_coal_utilization), axis=0)
+    )
+
+df_totalcapacity_nz1550v2_bgd.loc[df_totalcapacity_nz1550v2_bgd['fuel_type'] == "Coal", years_columns] = ( 
+    df_totalcapacity_nz1550v2_bgd.loc[df_totalcapacity_nz1550v2_bgd['fuel_type'] == "Coal", years_columns]
+    .div(df_totalcapacity_nz1550v2_bgd['Region'].map(df_power_coal_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_nz1550v2_bgd['Region'].map(df_power_coal_utilization), axis=0)
+    )
+
 df_totalcapacity_nz1550v2_emde.loc[df_totalcapacity_nz1550v2_emde['fuel_type'] == "Coal", years_columns] = ( 
     df_totalcapacity_nz1550v2_emde.loc[df_totalcapacity_nz1550v2_emde['fuel_type'] == "Coal", years_columns]
     .div(df_totalcapacity_nz1550v2_emde['Region'].map(df_power_coal_intensity), axis=0)
     .div((24*365))
     .div(df_totalcapacity_nz1550v2_emde['Region'].map(df_power_coal_utilization), axis=0)
+    )
+
+df_totalcapacity_nz1550v2_devunfccc.loc[df_totalcapacity_nz1550v2_devunfccc['fuel_type'] == "Coal", years_columns] = ( 
+    df_totalcapacity_nz1550v2_devunfccc.loc[df_totalcapacity_nz1550v2_devunfccc['fuel_type'] == "Coal", years_columns]
+    .div(df_totalcapacity_nz1550v2_devunfccc['Region'].map(df_power_coal_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_nz1550v2_devunfccc['Region'].map(df_power_coal_utilization), axis=0)
     )
 
 df_totalcapacity_nz1550v2_global.loc[df_totalcapacity_nz1550v2_global['fuel_type'] == "Coal", years_columns] = ( 
@@ -825,11 +997,32 @@ df_totalcapacity_nz1550v2_kaz.loc[df_totalcapacity_nz1550v2_kaz['fuel_type'] == 
     .div(df_totalcapacity_nz1550v2_kaz['Region'].map(df_power_gas_utilization), axis=0)
     )
 
+df_totalcapacity_nz1550v2_zaf.loc[df_totalcapacity_nz1550v2_zaf['fuel_type'] == "Gas", years_columns] = ( 
+    df_totalcapacity_nz1550v2_zaf.loc[df_totalcapacity_nz1550v2_zaf['fuel_type'] == "Gas", years_columns]
+    .div(df_totalcapacity_nz1550v2_zaf['Region'].map(df_power_gas_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_nz1550v2_zaf['Region'].map(df_power_gas_utilization), axis=0)
+    )
+
+df_totalcapacity_nz1550v2_bgd.loc[df_totalcapacity_nz1550v2_bgd['fuel_type'] == "Gas", years_columns] = ( 
+    df_totalcapacity_nz1550v2_bgd.loc[df_totalcapacity_nz1550v2_bgd['fuel_type'] == "Gas", years_columns]
+    .div(df_totalcapacity_nz1550v2_bgd['Region'].map(df_power_gas_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_nz1550v2_bgd['Region'].map(df_power_gas_utilization), axis=0)
+    )
+
 df_totalcapacity_nz1550v2_emde.loc[df_totalcapacity_nz1550v2_emde['fuel_type'] == "Gas", years_columns] = ( 
     df_totalcapacity_nz1550v2_emde.loc[df_totalcapacity_nz1550v2_emde['fuel_type'] == "Gas", years_columns]
     .div(df_totalcapacity_nz1550v2_emde['Region'].map(df_power_gas_intensity), axis=0)
     .div((24*365))
     .div(df_totalcapacity_nz1550v2_emde['Region'].map(df_power_gas_utilization), axis=0)
+    )
+
+df_totalcapacity_nz1550v2_devunfccc.loc[df_totalcapacity_nz1550v2_devunfccc['fuel_type'] == "Gas", years_columns] = ( 
+    df_totalcapacity_nz1550v2_devunfccc.loc[df_totalcapacity_nz1550v2_devunfccc['fuel_type'] == "Gas", years_columns]
+    .div(df_totalcapacity_nz1550v2_devunfccc['Region'].map(df_power_gas_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_nz1550v2_devunfccc['Region'].map(df_power_gas_utilization), axis=0)
     )
 
 df_totalcapacity_nz1550v2_global.loc[df_totalcapacity_nz1550v2_global['fuel_type'] == "Gas", years_columns] = ( 
@@ -899,6 +1092,20 @@ df_totalcapacity_nz1550v2_kaz.loc[df_totalcapacity_nz1550v2_kaz['fuel_type'] == 
     .div(df_totalcapacity_nz1550v2_kaz['Region'].map(df_power_oil_utilization), axis=0)
     )
 
+df_totalcapacity_nz1550v2_zaf.loc[df_totalcapacity_nz1550v2_zaf['fuel_type'] == "Oil", years_columns] = ( 
+    df_totalcapacity_nz1550v2_zaf.loc[df_totalcapacity_nz1550v2_zaf['fuel_type'] == "Oil", years_columns]
+    .div(df_totalcapacity_nz1550v2_zaf['Region'].map(df_power_oil_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_nz1550v2_zaf['Region'].map(df_power_oil_utilization), axis=0)
+    )
+
+df_totalcapacity_nz1550v2_bgd.loc[df_totalcapacity_nz1550v2_bgd['fuel_type'] == "Oil", years_columns] = ( 
+    df_totalcapacity_nz1550v2_bgd.loc[df_totalcapacity_nz1550v2_bgd['fuel_type'] == "Oil", years_columns]
+    .div(df_totalcapacity_nz1550v2_bgd['Region'].map(df_power_oil_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_nz1550v2_bgd['Region'].map(df_power_oil_utilization), axis=0)
+    )
+
 df_totalcapacity_nz1550v2_emde.loc[df_totalcapacity_nz1550v2_emde['fuel_type'] == "Oil", years_columns] = ( 
     df_totalcapacity_nz1550v2_emde.loc[df_totalcapacity_nz1550v2_emde['fuel_type'] == "Oil", years_columns]
     .div(df_totalcapacity_nz1550v2_emde['Region'].map(df_power_oil_intensity), axis=0)
@@ -906,6 +1113,14 @@ df_totalcapacity_nz1550v2_emde.loc[df_totalcapacity_nz1550v2_emde['fuel_type'] =
     .div(df_totalcapacity_nz1550v2_emde['Region'].map(df_power_oil_utilization), axis=0)
     )
 df_totalcapacity_nz1550v2_emde = df_totalcapacity_nz1550v2_emde.groupby('fuel_type')[years_columns].sum().reset_index()
+
+df_totalcapacity_nz1550v2_devunfccc.loc[df_totalcapacity_nz1550v2_devunfccc['fuel_type'] == "Oil", years_columns] = ( 
+    df_totalcapacity_nz1550v2_devunfccc.loc[df_totalcapacity_nz1550v2_devunfccc['fuel_type'] == "Oil", years_columns]
+    .div(df_totalcapacity_nz1550v2_devunfccc['Region'].map(df_power_oil_intensity), axis=0)
+    .div((24*365))
+    .div(df_totalcapacity_nz1550v2_devunfccc['Region'].map(df_power_oil_utilization), axis=0)
+    )
+df_totalcapacity_nz1550v2_devunfccc = df_totalcapacity_nz1550v2_devunfccc.groupby('fuel_type')[years_columns].sum().reset_index()
 
 df_totalcapacity_nz1550v2_global.loc[df_totalcapacity_nz1550v2_global['fuel_type'] == "Oil", years_columns] = ( 
     df_totalcapacity_nz1550v2_global.loc[df_totalcapacity_nz1550v2_global['fuel_type'] == "Oil", years_columns]
@@ -942,7 +1157,7 @@ new_column_names = ['ghg_annual_cp', 'ghg_annual_nz', 'ghg_annual_nznew', 'ghg_a
 
 
 # List of country codes to iterate over
-temp_country_codes = ['deu', 'idn', 'ind', 'tur', 'usa', 'vnm','pol', 'kaz', 'emde', 'global']
+temp_country_codes = ['deu', 'idn', 'ind', 'tur', 'usa', 'vnm','pol', 'kaz', 'zaf', 'bgd', 'emde', 'devunfccc', 'global']
 
 # Dictionary to store each country's DataFrame
 temp_country_dfs = {}
@@ -1009,7 +1224,10 @@ df_country_usa = temp_country_dfs['usa']
 df_country_vnm = temp_country_dfs['vnm']
 df_country_pol = temp_country_dfs['pol']
 df_country_kaz = temp_country_dfs['kaz']
+df_country_zaf = temp_country_dfs['zaf']
+df_country_bgd = temp_country_dfs['bgd']
 df_country_emde = temp_country_dfs['emde']
+df_country_devunfccc = temp_country_dfs['devunfccc']
 df_country_global = temp_country_dfs['global']
 
 
@@ -1017,7 +1235,7 @@ df_country_global = temp_country_dfs['global']
 # delete
 del temp_combined, temp_country_codes, temp_country_dfs, country_code, new_column_names
 del temp_emissions_avoided_annual, temp_emissions_avoided_cumulative, temp_emissions_currentpolicy_annual, temp_emissions_currentpolicy_cumulative, temp_emissions_netzero_annual, temp_emissions_netzero_cumulative, temp_emissions_nz1550v2_annual, temp_emissions_nz1550v2_cumulative
-del temp_totalcapacity_avoided_annual, temp_totalcapacity_currentpolicy_annual, temp_totalcapacity_netzero_annual, temp_totalcapacity_nz1550v2_annual
+del temp_totalcapacity_avoided_annual, temp_totalcapacity_avoided_cumulative, temp_totalcapacity_currentpolicy_annual, temp_totalcapacity_netzero_annual, temp_totalcapacity_nz1550v2_annual
 del temp_emissions_currentpolicy, temp_emissions_netzero, temp_emissions_nz1550v2, temp_totalcapacity_currentpolicy, temp_totalcapacity_netzero, temp_totalcapacity_nz1550v2
 
 
@@ -1042,7 +1260,10 @@ df_byfuel_avoided_annual_usa = df_totalcapacity_nz1550v2_usa.assign(**df_totalca
 df_byfuel_avoided_annual_vnm = df_totalcapacity_nz1550v2_vnm.assign(**df_totalcapacity_nz1550v2_vnm[years_columns].diff(axis=1))
 df_byfuel_avoided_annual_pol = df_totalcapacity_nz1550v2_pol.assign(**df_totalcapacity_nz1550v2_pol[years_columns].diff(axis=1))
 df_byfuel_avoided_annual_kaz = df_totalcapacity_nz1550v2_kaz.assign(**df_totalcapacity_nz1550v2_kaz[years_columns].diff(axis=1))
+df_byfuel_avoided_annual_zaf = df_totalcapacity_nz1550v2_zaf.assign(**df_totalcapacity_nz1550v2_zaf[years_columns].diff(axis=1))
+df_byfuel_avoided_annual_bgd = df_totalcapacity_nz1550v2_bgd.assign(**df_totalcapacity_nz1550v2_bgd[years_columns].diff(axis=1))
 df_byfuel_avoided_annual_emde = df_totalcapacity_nz1550v2_emde.assign(**df_totalcapacity_nz1550v2_emde[years_columns].diff(axis=1))
+df_byfuel_avoided_annual_devunfccc = df_totalcapacity_nz1550v2_devunfccc.assign(**df_totalcapacity_nz1550v2_devunfccc[years_columns].diff(axis=1))
 df_byfuel_avoided_annual_global = df_totalcapacity_nz1550v2_global.assign(**df_totalcapacity_nz1550v2_global[years_columns].diff(axis=1))
 
 
@@ -1055,7 +1276,10 @@ df_byfuel_avoided_cumulative_usa = df_byfuel_avoided_annual_usa.copy().assign(**
 df_byfuel_avoided_cumulative_vnm = df_byfuel_avoided_annual_vnm.copy().assign(**{col: df_byfuel_avoided_annual_vnm[years_columns].cumsum(axis=1)[col] for col in years_columns})
 df_byfuel_avoided_cumulative_pol = df_byfuel_avoided_annual_pol.copy().assign(**{col: df_byfuel_avoided_annual_pol[years_columns].cumsum(axis=1)[col] for col in years_columns})
 df_byfuel_avoided_cumulative_kaz = df_byfuel_avoided_annual_kaz.copy().assign(**{col: df_byfuel_avoided_annual_kaz[years_columns].cumsum(axis=1)[col] for col in years_columns})
+df_byfuel_avoided_cumulative_zaf = df_byfuel_avoided_annual_zaf.copy().assign(**{col: df_byfuel_avoided_annual_zaf[years_columns].cumsum(axis=1)[col] for col in years_columns})
+df_byfuel_avoided_cumulative_bgd = df_byfuel_avoided_annual_bgd.copy().assign(**{col: df_byfuel_avoided_annual_bgd[years_columns].cumsum(axis=1)[col] for col in years_columns})
 df_byfuel_avoided_cumulative_emde = df_byfuel_avoided_annual_emde.copy().assign(**{col: df_byfuel_avoided_annual_emde[years_columns].cumsum(axis=1)[col] for col in years_columns})
+df_byfuel_avoided_cumulative_devunfccc = df_byfuel_avoided_annual_devunfccc.copy().assign(**{col: df_byfuel_avoided_annual_devunfccc[years_columns].cumsum(axis=1)[col] for col in years_columns})
 df_byfuel_avoided_cumulative_global = df_byfuel_avoided_annual_global.copy().assign(**{col: df_byfuel_avoided_annual_global[years_columns].cumsum(axis=1)[col] for col in years_columns})
 
 
@@ -1079,6 +1303,9 @@ df_country_pol.to_excel('2 - output/script 6.1 - Power sector - By country - Emi
 df_country_kaz.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/1.8 - country - KAZ.xlsx', index = False)
 df_country_emde.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/1.9 - country - EMDE.xlsx', index = False)
 df_country_global.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/1.10 - country - GLOBAL.xlsx', index = False)
+df_country_zaf.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/1.11 - country - ZAF.xlsx', index = False)
+df_country_bgd.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/1.12 - country - BGD.xlsx', index = False)
+df_country_devunfccc.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/1.13 - country - DEVUNFCCC.xlsx', index = False)
 
 
 # --------------
@@ -1093,6 +1320,9 @@ df_emissions_currentpolicy_pol.to_excel('2 - output/script 6.1 - Power sector - 
 df_emissions_currentpolicy_kaz.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/2.8 - emissions - current policy - KAZ.xlsx', index = False)
 df_emissions_currentpolicy_emde.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/2.9 - emissions - current policy - EMDE.xlsx', index = False)
 df_emissions_currentpolicy_global.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/2.10 - emissions - current policy - GLOBAL.xlsx', index = False)
+df_emissions_currentpolicy_zaf.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/2.11 - emissions - current policy - ZAF.xlsx', index = False)
+df_emissions_currentpolicy_bgd.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/2.12 - emissions - current policy - BGD.xlsx', index = False)
+df_emissions_currentpolicy_devunfccc.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/2.13 - emissions - current policy - DEVUNFCCC.xlsx', index = False)
 
 
 # emissions  - netzero
@@ -1106,7 +1336,9 @@ df_emissions_netzero_pol.to_excel('2 - output/script 6.1 - Power sector - By cou
 df_emissions_netzero_kaz.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/3.8 - emissions - netzero - KAZ.xlsx', index = False)
 df_emissions_netzero_emde.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/3.9 - emissions - netzero - EMDE.xlsx', index = False)
 df_emissions_netzero_global.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/3.10 - emissions - netzero - GLOBAL.xlsx', index = False)
-
+df_emissions_netzero_zaf.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/3.11 - emissions - netzero - ZAF.xlsx', index = False)
+df_emissions_netzero_bgd.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/3.12 - emissions - netzero - BGD.xlsx', index = False)
+df_emissions_netzero_devunfccc.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/3.13 - emissions - netzero - DEVUNFCCC.xlsx', index = False)
 
 # emissions  - net zero 1.5C 50%
 df_emissions_nz1550v2_deu.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/4.1 - emissions - net zero 15C 50% - DEU.xlsx', index = False)
@@ -1119,7 +1351,9 @@ df_emissions_nz1550v2_pol.to_excel('2 - output/script 6.1 - Power sector - By co
 df_emissions_nz1550v2_kaz.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/4.8 - emissions - net zero 15C 50% - KAZ.xlsx', index = False)
 df_emissions_nz1550v2_emde.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/4.9 - emissions - net zero 15C 50% - EMDE.xlsx', index = False)
 df_emissions_nz1550v2_global.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/4.10 - emissions - net zero 15C 50% - GLOBAL.xlsx', index = False)
-
+df_emissions_nz1550v2_zaf.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/4.11 - emissions - net zero 15C 50% - ZAF.xlsx', index = False)
+df_emissions_nz1550v2_bgd.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/4.12 - emissions - net zero 15C 50% - BGD.xlsx', index = False)
+df_emissions_nz1550v2_devunfccc.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/4.13 - emissions - net zero 15C 50% - DEVUNFCCC.xlsx', index = False)
 
 # --------------
 # total capacity  - current policy
@@ -1133,6 +1367,9 @@ df_totalcapacity_currentpolicy_pol.to_excel('2 - output/script 6.1 - Power secto
 df_totalcapacity_currentpolicy_kaz.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/5.8 - total capacity - current policy - KAZ.xlsx', index = False)
 df_totalcapacity_currentpolicy_emde.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/5.9 - total capacity - current policy - EMDE.xlsx', index = False)
 df_totalcapacity_currentpolicy_global.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/5.10 - total capacity - current policy - GLOBAL.xlsx', index = False)
+df_totalcapacity_currentpolicy_zaf.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/5.11 - total capacity - current policy - ZAF.xlsx', index = False)
+df_totalcapacity_currentpolicy_bgd.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/5.12 - total capacity - current policy - BGD.xlsx', index = False)
+df_totalcapacity_currentpolicy_devunfccc.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/5.13 - total capacity - current policy - DEVUNFCCC.xlsx', index = False)
 
 
 # total capacity   - netzero
@@ -1146,6 +1383,9 @@ df_totalcapacity_netzero_pol.to_excel('2 - output/script 6.1 - Power sector - By
 df_totalcapacity_netzero_kaz.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/6.8 - total capacity - netzero - KAZ.xlsx', index = False)
 df_totalcapacity_netzero_emde.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/6.9 - total capacity - netzero - EMDE.xlsx', index = False)
 df_totalcapacity_netzero_global.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/6.10 - total capacity - netzero - GLOBAL.xlsx', index = False)
+df_totalcapacity_netzero_zaf.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/6.11 - total capacity - netzero - ZAF.xlsx', index = False)
+df_totalcapacity_netzero_bgd.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/6.12 - total capacity - netzero - BGD.xlsx', index = False)
+df_totalcapacity_netzero_devunfccc.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/6.13 - total capacity - netzero - DEVUNFCCC.xlsx', index = False)
 
 
 # total capacity   - net zero 1.5C 50%
@@ -1159,6 +1399,9 @@ df_totalcapacity_nz1550v2_pol.to_excel('2 - output/script 6.1 - Power sector - B
 df_totalcapacity_nz1550v2_kaz.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/7.8 - total capacity - net zero 15C 50% - KAZ.xlsx', index = False)
 df_totalcapacity_nz1550v2_emde.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/7.9 - total capacity - net zero 15C 50% - EMDE.xlsx', index = False)
 df_totalcapacity_nz1550v2_global.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/7.10 - total capacity - net zero 15C 50% - GLOBAL.xlsx', index = False)
+df_totalcapacity_nz1550v2_zaf.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/7.11 - total capacity - net zero 15C 50% - ZAF.xlsx', index = False)
+df_totalcapacity_nz1550v2_bgd.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/7.12 - total capacity - net zero 15C 50% - BGD.xlsx', index = False)
+df_totalcapacity_nz1550v2_devunfccc.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/7.13 - total capacity - net zero 15C 50% - DEVUNFCCC.xlsx', index = False)
 
 
 # --------------
@@ -1173,6 +1416,9 @@ df_byfuel_avoided_annual_pol.to_excel('2 - output/script 6.1 - Power sector - By
 df_byfuel_avoided_annual_kaz.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/8.8 - avoided capacity - annual - KAZ.xlsx', index = False)
 df_byfuel_avoided_annual_emde.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/8.9 - avoided capacity - annual - EMDE.xlsx', index = False)
 df_byfuel_avoided_annual_global.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/8.10 - avoided capacity - annual - GLOBAL.xlsx', index = False)
+df_byfuel_avoided_annual_zaf.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/8.11 - avoided capacity - annual - ZAF.xlsx', index = False)
+df_byfuel_avoided_annual_bgd.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/8.12 - avoided capacity - annual - BGD.xlsx', index = False)
+df_byfuel_avoided_annual_devunfccc.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/8.13 - avoided capacity - annual - DEVUNFCCC.xlsx', index = False)
 
 # by fuel --- cumulative avoided
 df_byfuel_avoided_cumulative_deu.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/9.1 - avoided capacity - cumulative - DEU.xlsx', index = False)
@@ -1185,6 +1431,9 @@ df_byfuel_avoided_cumulative_pol.to_excel('2 - output/script 6.1 - Power sector 
 df_byfuel_avoided_cumulative_kaz.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/9.8 - avoided capacity - cumulative - KAZ.xlsx', index = False)
 df_byfuel_avoided_cumulative_emde.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/9.9 - avoided capacity - cumulative - EMDE.xlsx', index = False)
 df_byfuel_avoided_cumulative_global.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/9.10 - avoided capacity - cumulative - GLOBAL.xlsx', index = False)
+df_byfuel_avoided_cumulative_zaf.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/9.11 - avoided capacity - cumulative - ZAF.xlsx', index = False)
+df_byfuel_avoided_cumulative_bgd.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/9.12 - avoided capacity - cumulative - BGD.xlsx', index = False)
+df_byfuel_avoided_cumulative_devunfccc.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/9.13 - avoided capacity - cumulative - DEVUNFCCC.xlsx', index = False)
 
 
 
