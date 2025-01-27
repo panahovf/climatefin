@@ -89,7 +89,7 @@ del temp_directory, df_country_developing, df_country_emerging, df_country_unfcc
 years_columns = [str(year) for year in range(2024, 2051)]
 
 # countries
-regions = ["USA", "TUR", "IND", "IDN", "VNM", "DEU", "POL", "KAZ", "ZAF", "BGD", "CHN", "MEX", "IRN", "THA"]
+regions = ["USA", "TUR", "IND", "IDN", "VNM", "DEU", "POL", "KAZ", "ZAF", "BGD", "CHN", "MEX", "IRN", "THA", "EGY"]
 regions_with_extras = regions + ["emde", "devunfccc", "dopunfccc", "global"]
 
 
@@ -539,6 +539,7 @@ df_country_chn.to_excel('2 - output/script 6.1 - Power sector - By country - Emi
 df_country_mex.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/1.16 - country - MEX.xlsx', index = False)
 df_country_irn.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/1.17 - country - IRN.xlsx', index = False)
 df_country_tha.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/1.18 - country - THA.xlsx', index = False)
+df_country_egy.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/1.19 - country - EGY.xlsx', index = False)
 
 
 
@@ -563,6 +564,7 @@ df_emissions_currentpolicy_chn.to_excel('2 - output/script 6.1 - Power sector - 
 df_emissions_currentpolicy_mex.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/2.16 - emissions - current policy - MEX.xlsx', index = False)
 df_emissions_currentpolicy_irn.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/2.17 - emissions - current policy - IRN.xlsx', index = False)
 df_emissions_currentpolicy_tha.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/2.18 - emissions - current policy - THA.xlsx', index = False)
+df_emissions_currentpolicy_egy.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/2.19 - emissions - current policy - EGY.xlsx', index = False)
 
 
 
@@ -585,6 +587,7 @@ df_emissions_netzero_chn.to_excel('2 - output/script 6.1 - Power sector - By cou
 df_emissions_netzero_mex.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/3.16 - emissions - netzero - MEX.xlsx', index = False)
 df_emissions_netzero_irn.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/3.17 - emissions - netzero - IRN.xlsx', index = False)
 df_emissions_netzero_tha.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/3.18 - emissions - netzero - THA.xlsx', index = False)
+df_emissions_netzero_egy.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/3.19 - emissions - netzero - EGY.xlsx', index = False)
 
 
 
@@ -607,6 +610,7 @@ df_emissions_nz1550v2_chn.to_excel('2 - output/script 6.1 - Power sector - By co
 df_emissions_nz1550v2_mex.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/4.16 - emissions - net zero 15C 50% - MEX.xlsx', index = False)
 df_emissions_nz1550v2_irn.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/4.17 - emissions - net zero 15C 50% - IRN.xlsx', index = False)
 df_emissions_nz1550v2_tha.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/4.18 - emissions - net zero 15C 50% - THA.xlsx', index = False)
+df_emissions_nz1550v2_egy.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/4.19 - emissions - net zero 15C 50% - EGY.xlsx', index = False)
 
 
 
@@ -630,6 +634,7 @@ df_totalcapacity_currentpolicy_chn.to_excel('2 - output/script 6.1 - Power secto
 df_totalcapacity_currentpolicy_mex.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/5.16 - total capacity - current policy - MEX.xlsx', index = False)
 df_totalcapacity_currentpolicy_irn.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/5.17 - total capacity - current policy - IRN.xlsx', index = False)
 df_totalcapacity_currentpolicy_tha.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/5.18 - total capacity - current policy - THA.xlsx', index = False)
+df_totalcapacity_currentpolicy_egy.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/5.19 - total capacity - current policy - EGY.xlsx', index = False)
 
 
 
@@ -652,6 +657,7 @@ df_totalcapacity_netzero_chn.to_excel('2 - output/script 6.1 - Power sector - By
 df_totalcapacity_netzero_mex.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/6.16 - total capacity - netzero - MEX.xlsx', index = False)
 df_totalcapacity_netzero_irn.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/6.17 - total capacity - netzero - IRN.xlsx', index = False)
 df_totalcapacity_netzero_tha.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/6.18 - total capacity - netzero - THA.xlsx', index = False)
+df_totalcapacity_netzero_egy.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/6.19 - total capacity - netzero - EGY.xlsx', index = False)
 
 
 
@@ -674,6 +680,7 @@ df_totalcapacity_nz1550v2_chn.to_excel('2 - output/script 6.1 - Power sector - B
 df_totalcapacity_nz1550v2_mex.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/7.16 - total capacity - net zero 15C 50% - MEX.xlsx', index = False)
 df_totalcapacity_nz1550v2_irn.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/7.17 - total capacity - net zero 15C 50% - IRN.xlsx', index = False)
 df_totalcapacity_nz1550v2_tha.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/7.18 - total capacity - net zero 15C 50% - THA.xlsx', index = False)
+df_totalcapacity_nz1550v2_egy.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/7.19 - total capacity - net zero 15C 50% - EGY.xlsx', index = False)
 
 
 
@@ -697,6 +704,7 @@ df_byfuel_avoided_annual_chn.to_excel('2 - output/script 6.1 - Power sector - By
 df_byfuel_avoided_annual_mex.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/8.16 - avoided capacity - annual - MEX.xlsx', index = False)
 df_byfuel_avoided_annual_irn.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/8.17 - avoided capacity - annual - IRN.xlsx', index = False)
 df_byfuel_avoided_annual_tha.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/8.18 - avoided capacity - annual - THA.xlsx', index = False)
+df_byfuel_avoided_annual_egy.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/8.19 - avoided capacity - annual - EGY.xlsx', index = False)
 
 
 
@@ -719,7 +727,7 @@ df_byfuel_avoided_cumulative_chn.to_excel('2 - output/script 6.1 - Power sector 
 df_byfuel_avoided_cumulative_mex.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/9.16 - avoided capacity - cumulative - MEX.xlsx', index = False)
 df_byfuel_avoided_cumulative_irn.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/9.17 - avoided capacity - cumulative - IRN.xlsx', index = False)
 df_byfuel_avoided_cumulative_tha.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/9.18 - avoided capacity - cumulative - THA.xlsx', index = False)
-
+df_byfuel_avoided_cumulative_egy.to_excel('2 - output/script 6.1 - Power sector - By country - Emissions & Capacity - Annual Cumulative Avoided/9.19 - avoided capacity - cumulative - EGY.xlsx', index = False)
 
 
 
