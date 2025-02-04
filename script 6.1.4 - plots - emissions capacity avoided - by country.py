@@ -25,6 +25,7 @@ import matplotlib.gridspec as gridspec
 import scienceplots
 import seaborn as sns
 from matplotlib.ticker import MaxNLocator
+from matplotlib.lines import Line2D
 
 
 
@@ -464,88 +465,88 @@ plt.show()
 ##################### SECTION 5: AVOIDED CAPACITY ################################################
 ##################################################################################################
 
-# Function to plot both annual and cumulative avoided emissions on the same axes
-def plot_combined(ax, df_country, region_name, ylabel_left=None, ylabel_right=None):
-    # Plot annual avoided emissions on the left y-axis
-    line1, = ax.plot(df_country.index, abs(df_country['capacity_annaul_avoided']), label='Annual Avoided Capacity', color=colors['Annual'])
-    ax.set_xticks([str(year) for year in range(2030, 2051, 10)])
-    ax.set_title(f'{region_name}', fontsize=12, fontweight='bold', pad=10)
-    ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
-    if ylabel_left:
-        ax.set_ylabel(ylabel_left, fontsize=10)
+# # Function to plot both annual and cumulative avoided emissions on the same axes
+# def plot_combined(ax, df_country, region_name, ylabel_left=None, ylabel_right=None):
+#     # Plot annual avoided emissions on the left y-axis
+#     line1, = ax.plot(df_country.index, abs(df_country['capacity_annaul_avoided']), label='Annual Avoided Capacity', color=colors['Annual'])
+#     ax.set_xticks([str(year) for year in range(2030, 2051, 10)])
+#     ax.set_title(f'{region_name}', fontsize=12, fontweight='bold', pad=10)
+#     ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
+#     if ylabel_left:
+#         ax.set_ylabel(ylabel_left, fontsize=10)
 
-    # Create a twin y-axis for cumulative avoided emissions
-    ax2 = ax.twinx()
-    line2, = ax2.plot(df_country.index, abs(df_country['capacity_cumulative_avoided']), label='Cumulative Avoided Capacity', color=colors['Cumulative'], linestyle='--')
-    ax2.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
-    if ylabel_right:
-        ax2.set_ylabel(ylabel_right, fontsize=10)
+#     # Create a twin y-axis for cumulative avoided emissions
+#     ax2 = ax.twinx()
+#     line2, = ax2.plot(df_country.index, abs(df_country['capacity_cumulative_avoided']), label='Cumulative Avoided Capacity', color=colors['Cumulative'], linestyle='--')
+#     ax2.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
+#     if ylabel_right:
+#         ax2.set_ylabel(ylabel_right, fontsize=10)
 
-    return [line1, line2]
+#     return [line1, line2]
 
-# -------------------------
-# First Graph: Global, DOPUNFCCC, DEVUNFCCC
-fig1, axes1 = plt.subplots(1, 3, figsize=(12, 5))
+# # -------------------------
+# # First Graph: Global, DOPUNFCCC, DEVUNFCCC
+# fig1, axes1 = plt.subplots(1, 3, figsize=(12, 5))
 
-# Collect handles for the legend
-handles = []
-handles += plot_combined(axes1[0], df_country_global, 'Global', ylabel_left='Annual (GW)')
-handles += plot_combined(axes1[1], df_country_dopunfccc, 'Developed Countries')
-handles += plot_combined(axes1[2], df_country_devunfccc, 'Developing Countries', ylabel_right='Cumulative (GW)')
+# # Collect handles for the legend
+# handles = []
+# handles += plot_combined(axes1[0], df_country_global, 'Global', ylabel_left='Annual (GW)')
+# handles += plot_combined(axes1[1], df_country_dopunfccc, 'Developed Countries')
+# handles += plot_combined(axes1[2], df_country_devunfccc, 'Developing Countries', ylabel_right='Cumulative (GW)')
 
-# Main title for the first graph
-fig1.suptitle('Fossil Fuel Capacity Reduction in Power Sector: \n Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
+# # Main title for the first graph
+# fig1.suptitle('Fossil Fuel Capacity Reduction in Power Sector: \n Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
 
-# Subtitle
-#fig1.text(0.5, 0.90, 'Emissions from current power plants in operation projected using NGFS GCAM6 model growth rates', ha='center', fontsize=12)
-#fig1.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
-
-
-# Single legend for the first graph
-labels = ['Annual Capacity Reduction (Left axis)', 'Cumulative Capacity Reduction (Right axis)']
-fig1.legend(handles, labels, loc='lower center', ncol=2, bbox_to_anchor=(0.5, -0.1), fontsize=10)
-
-# Adjust layout
-fig1.subplots_adjust(top=0.80, bottom=0.05, hspace=0.4, wspace=0.6)
-plt.show()
+# # Subtitle
+# #fig1.text(0.5, 0.90, 'Emissions from current power plants in operation projected using NGFS GCAM6 model growth rates', ha='center', fontsize=12)
+# #fig1.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
 
 
+# # Single legend for the first graph
+# labels = ['Annual Capacity Reduction (Left axis)', 'Cumulative Capacity Reduction (Right axis)']
+# fig1.legend(handles, labels, loc='lower center', ncol=2, bbox_to_anchor=(0.5, -0.1), fontsize=10)
 
-# -------------------------
-# Second Graph: 8 Countries
-fig2 = plt.figure(figsize=(12, 6))  # Adjusted figure size
-gs2 = fig2.add_gridspec(2, 4, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1])
-
-# Collect handles for the legend
-handles = []
-
-# First row
-handles += plot_combined(fig2.add_subplot(gs2[0, 0]), df_country_ind, 'India', ylabel_left='Annual (GW)')
-handles += plot_combined(fig2.add_subplot(gs2[0, 1]), df_country_idn, 'Indonesia')
-handles += plot_combined(fig2.add_subplot(gs2[0, 2]), df_country_zaf, 'South Africa')
-handles += plot_combined(fig2.add_subplot(gs2[0, 3]), df_country_mex, 'Mexico', ylabel_right='Cumulative (GW)')
-
-# Second row
-handles += plot_combined(fig2.add_subplot(gs2[1, 0]), df_country_vnm, 'Viet Nam', ylabel_left='Annual (GW)')
-handles += plot_combined(fig2.add_subplot(gs2[1, 1]), df_country_irn, 'Iran')
-handles += plot_combined(fig2.add_subplot(gs2[1, 2]), df_country_tha, 'Thailand')
-handles += plot_combined(fig2.add_subplot(gs2[1, 3]), df_country_egy, 'Egypt', ylabel_right='Cumulative (GW)')
-
-# Main title for the second graph
-fig2.suptitle('Fossil Fuel Capacity Reduction in Power Sector: \n Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
-
-# Subtitle
-#fig2.text(0.5, 0.90, 'Emissions from current power plants in operation projected using NGFS GCAM6 model growth rates', ha='center', fontsize=12)
-#fig2.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
+# # Adjust layout
+# fig1.subplots_adjust(top=0.80, bottom=0.05, hspace=0.4, wspace=0.6)
+# plt.show()
 
 
-# Single legend for the second graph
-labels = ['Annual Capacity Reduction (Left axis)', 'Cumulative Capacity Reduction (Right axis)']
-fig2.legend(handles, labels, loc='lower center', ncol=2, bbox_to_anchor=(0.5, -0.1), fontsize=10)
 
-# Adjust layout
-plt.subplots_adjust(top=0.8, bottom=0.05, hspace=0.4, wspace=0.6)
-plt.show()
+# # -------------------------
+# # Second Graph: 8 Countries
+# fig2 = plt.figure(figsize=(12, 6))  # Adjusted figure size
+# gs2 = fig2.add_gridspec(2, 4, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1])
+
+# # Collect handles for the legend
+# handles = []
+
+# # First row
+# handles += plot_combined(fig2.add_subplot(gs2[0, 0]), df_country_ind, 'India', ylabel_left='Annual (GW)')
+# handles += plot_combined(fig2.add_subplot(gs2[0, 1]), df_country_idn, 'Indonesia')
+# handles += plot_combined(fig2.add_subplot(gs2[0, 2]), df_country_zaf, 'South Africa')
+# handles += plot_combined(fig2.add_subplot(gs2[0, 3]), df_country_mex, 'Mexico', ylabel_right='Cumulative (GW)')
+
+# # Second row
+# handles += plot_combined(fig2.add_subplot(gs2[1, 0]), df_country_vnm, 'Viet Nam', ylabel_left='Annual (GW)')
+# handles += plot_combined(fig2.add_subplot(gs2[1, 1]), df_country_irn, 'Iran')
+# handles += plot_combined(fig2.add_subplot(gs2[1, 2]), df_country_tha, 'Thailand')
+# handles += plot_combined(fig2.add_subplot(gs2[1, 3]), df_country_egy, 'Egypt', ylabel_right='Cumulative (GW)')
+
+# # Main title for the second graph
+# fig2.suptitle('Fossil Fuel Capacity Reduction in Power Sector: \n Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
+
+# # Subtitle
+# #fig2.text(0.5, 0.90, 'Emissions from current power plants in operation projected using NGFS GCAM6 model growth rates', ha='center', fontsize=12)
+# #fig2.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
+
+
+# # Single legend for the second graph
+# labels = ['Annual Capacity Reduction (Left axis)', 'Cumulative Capacity Reduction (Right axis)']
+# fig2.legend(handles, labels, loc='lower center', ncol=2, bbox_to_anchor=(0.5, -0.1), fontsize=10)
+
+# # Adjust layout
+# plt.subplots_adjust(top=0.8, bottom=0.05, hspace=0.4, wspace=0.6)
+# plt.show()
 
 
 
@@ -698,505 +699,113 @@ plt.show()
 ##################### SECTION 7: BY FUEL: AVOIDED CAPACITY --- ANNUAL & CUMULATIVE ###############
 ##################################################################################################
 
-# --------------
-# ANNUAL
-# Ensure the years_columns array has the correct length for country and global data
-years_columns_countries = years_columns[:len(df_byfuel_avoided_annual_ind.columns[8:])]
-years_columns_global = years_columns[:len(df_byfuel_avoided_annual_global.columns[1:])]  # For global, adjust the slicing
-
-# Function to plot avoided emissions by fuel type for each country or global
-def plot_country_avoided_emissions(ax, df_annual, country_name, ylabel=None, is_global=False):
-    # Adjust starting column based on whether it's global or country data
-    start_col = 1 if is_global else 8  # Use 1 for global, 8 for countries
+# Function to plot both annual and cumulative avoided emissions on the same axes
+def plot_combined_emissions(ax, df_annual, df_cumulative, region_name, ylabel_left=None, ylabel_right=None, is_global=False):
+    # Adjust starting columns for annual and cumulative data
+    start_col_annual = 1 if is_global else 8
+    start_col_cumulative = 1 if is_global else 8
     years_columns = years_columns_global if is_global else years_columns_countries
-    
-    # Plot Annual avoided emissions (dotted lines) on primary y-axis
+
+    # Plot Annual avoided emissions on the left y-axis
     for fuel in df_annual['fuel_type'].unique():
         fuel_data = df_annual[df_annual['fuel_type'] == fuel]
-        ax.plot(years_columns, abs(fuel_data.iloc[0, start_col:]), color=colors.get(fuel, 'grey'), label=fuel)
+        ax.plot(years_columns, abs(fuel_data.iloc[0, start_col_annual:]), label=f'{fuel}', color=colors.get(fuel, 'grey'))
 
-    # Customize the x-axis for primary y-axis
     ax.set_xticks([str(year) for year in range(2030, 2051, 10)])
+    ax.set_title(f'{region_name}', fontsize=12, fontweight='bold', pad=10)
     ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
+    if ylabel_left:
+        ax.set_ylabel(ylabel_left, fontsize=10)
 
-    # Set the title and labels
-    ax.set_title(f'{country_name}', fontsize=14, fontweight='bold', pad=10)
-    
-    # Set the y-axis label if specified
-    if ylabel:
-        ax.set_ylabel(ylabel, fontsize=12)
-
-
-# --------------
-# First Graph: Global, DOPUNFCCC, DEVUNFCCC
-fig = plt.figure(figsize=(12, 5))  # Adjusted figure size for 2x5 layout
-gs = fig.add_gridspec(1, 3, height_ratios=[1], width_ratios=[1, 1, 1])
-
-
-# First row
-ax_global = fig.add_subplot(gs[0, 0])
-plot_country_avoided_emissions(ax_global, df_byfuel_avoided_annual_global, 'Global', ylabel="GW", is_global= True)
-
-ax_dopunfccc = fig.add_subplot(gs[0, 1])
-plot_country_avoided_emissions(ax_dopunfccc, df_byfuel_avoided_annual_dopunfccc, 'Developed Countries', is_global= True)
-
-ax_devunfccc = fig.add_subplot(gs[0, 2])
-plot_country_avoided_emissions(ax_devunfccc, df_byfuel_avoided_annual_devunfccc, 'Developing Countries', is_global= True)
-
-# Main title
-fig.suptitle('Annual Avoided Fossil Fuel Capacity in Power Sector:\n Current Policies vs Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
-
-# Subtitle
-#fig.text(0.5, 0.93, 'Emissions from current power plants in operation are projected using growth rates from NGFS GCAM6 model', ha='center', fontsize=12)
-#fig.text(0.5, 0.90, 'Solid line: Carbon budget consistent Net Zero* | Dotted line: Current Policies', ha='center', fontsize=12)
-#fig.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
-
-# Legend for all charts (handles from one plot)
-handles, labels = ax_global.get_legend_handles_labels()
-fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, -0.1), fontsize=10)
-
-# Adjust the spacing to move the charts lower and create space between rows
-plt.subplots_adjust(top=0.80, bottom=0.05, hspace=0.4, wspace=0.6)
-
-# Show the plot
-plt.show()
-
-
-
-# --------------
-# Second Graph: 8 Countries
-fig = plt.figure(figsize=(12, 6))  # Adjusted figure size for 2x5 layout
-gs = fig.add_gridspec(2, 4, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1])
-
-
-# First row
-ax_ind = fig.add_subplot(gs[0, 0])
-plot_country_avoided_emissions(ax_ind, df_byfuel_avoided_annual_ind, 'India', ylabel="GW")
-
-ax_idn = fig.add_subplot(gs[0, 1])
-plot_country_avoided_emissions(ax_idn, df_byfuel_avoided_annual_idn, 'Indonesia')
-
-ax_zaf = fig.add_subplot(gs[0, 2])
-plot_country_avoided_emissions(ax_zaf, df_byfuel_avoided_annual_zaf, 'South Africa')
-
-ax_mex = fig.add_subplot(gs[0, 3])
-plot_country_avoided_emissions(ax_mex, df_byfuel_avoided_annual_mex, 'Mexico')
-
-# Second row
-ax_vnm = fig.add_subplot(gs[1, 0])
-plot_country_avoided_emissions(ax_vnm, df_byfuel_avoided_annual_vnm, 'Viet Nam', ylabel="GW")
-
-ax_irn = fig.add_subplot(gs[1, 1])
-plot_country_avoided_emissions(ax_irn, df_byfuel_avoided_annual_irn, 'Iran')
-
-ax_tha = fig.add_subplot(gs[1, 2])
-plot_country_avoided_emissions(ax_tha, df_byfuel_avoided_annual_tha, 'Thailand')
-
-ax_egy = fig.add_subplot(gs[1, 3])
-plot_country_avoided_emissions(ax_egy, df_byfuel_avoided_annual_egy, 'Egypt')
-
-# Main title
-fig.suptitle('Annual Avoided Fossil Fuel Capacity in Power Sector:\n Current Policies vs Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
-
-# Subtitle
-#fig.text(0.5, 0.93, 'Emissions from current power plants in operation are projected using growth rates from NGFS GCAM6 model', ha='center', fontsize=12)
-#fig.text(0.5, 0.90, 'Solid line: Carbon budget consistent Net Zero* | Dotted line: Current Policies', ha='center', fontsize=12)
-#fig.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
-
-# Legend for all charts (handles from one plot)
-handles, labels = ax_ind.get_legend_handles_labels()
-fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, -0.1), fontsize=10)
-
-# Adjust the spacing to move the charts lower and create space between rows
-plt.subplots_adjust(top=0.80, bottom=0.05, hspace=0.4, wspace=0.6)
-
-# Show the plot
-plt.show()
-
-
-
-
-
-
-
-
-# --------------
-# CUMULATIVE
-# Ensure the years_columns array has the correct length for country and global data
-years_columns_countries = years_columns[:len(df_byfuel_avoided_annual_ind.columns[8:])]
-years_columns_global = years_columns[:len(df_byfuel_avoided_annual_global.columns[1:])]  # For global, adjust the slicing
-
-# Function to plot avoided emissions by fuel type for each country or global
-def plot_country_avoided_emissions(ax, df_cumulative, country_name, ylabel=None, is_global=False):
-    # Adjust starting column based on whether it's global or country data
-    start_col = 1 if is_global else 8
-    years_columns = years_columns_global if is_global else years_columns_countries
-    
-    # Plot cumulative avoided emissions for each fuel type
+    # Create a twin y-axis for cumulative avoided emissions
+    ax2 = ax.twinx()
     for fuel in df_cumulative['fuel_type'].unique():
         fuel_data = df_cumulative[df_cumulative['fuel_type'] == fuel]
-        ax.plot(years_columns, abs(fuel_data.iloc[0, start_col:]), color=colors.get(fuel, 'grey'), label=fuel)
+        ax2.plot(years_columns, abs(fuel_data.iloc[0, start_col_cumulative:]), label=f'Cumulative: {fuel}', color=colors.get(fuel, 'grey'), linestyle='--')
 
-    # Customize the x-axis and format y-axis
-    ax.set_xticks([str(year) for year in range(2030, 2051, 10)])
-    ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
+    ax2.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
+    if ylabel_right:
+        ax2.set_ylabel(ylabel_right, fontsize=10)
 
-    # Set the title and labels
-    ax.set_title(f'{country_name}', fontsize=14, fontweight='bold', pad=10)
-    
-    # Set the y-axis label if specified
-    if ylabel:
-        ax.set_ylabel(ylabel, fontsize=12)
+    return ax, ax2
 
+# -------------------------
+# First Graph: Global, Developed, Developing
+fig, axes = plt.subplots(1, 3, figsize=(12, 5))
 
-# --------------
-# First Graph: Global, DOPUNFCCC, DEVUNFCCC
-fig = plt.figure(figsize=(12, 5))  # Adjusted figure size for 2x5 layout
-gs = fig.add_gridspec(1, 3, height_ratios=[1], width_ratios=[1, 1, 1])
+# Plot for Global
+plot_combined_emissions(axes[0], df_byfuel_avoided_annual_global, df_byfuel_avoided_cumulative_global,
+                        'Global', ylabel_left='Annual (GW)', is_global=True)
 
+# Plot for Developed Countries
+plot_combined_emissions(axes[1], df_byfuel_avoided_annual_dopunfccc, df_byfuel_avoided_cumulative_dopunfccc,
+                        'Developed Countries', is_global=True)
 
-# First row
-ax_global = fig.add_subplot(gs[0, 0])
-plot_country_avoided_emissions(ax_global, df_byfuel_avoided_cumulative_global, 'Global', ylabel="GW", is_global= True)
-
-ax_dopunfccc = fig.add_subplot(gs[0, 1])
-plot_country_avoided_emissions(ax_dopunfccc, df_byfuel_avoided_cumulative_dopunfccc, 'Developed Countries', is_global= True)
-
-ax_devunfccc = fig.add_subplot(gs[0, 2])
-plot_country_avoided_emissions(ax_devunfccc, df_byfuel_avoided_cumulative_devunfccc, 'Developing Countries', is_global= True)
+# Plot for Developing Countries
+plot_combined_emissions(axes[2], df_byfuel_avoided_annual_devunfccc, df_byfuel_avoided_cumulative_devunfccc,
+                        'Developing Countries', ylabel_right='Cumulative (GW)', is_global=True)
 
 # Main title
-fig.suptitle('Cumulative Avoided Fossil Fuel Capacity in Power Sector:\n Current Policies vs Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
+fig.suptitle('Fossil Fuel Capacity Reduction in Power Sector:\n Current Policies vs Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
 
-# Subtitle
-#fig.text(0.5, 0.93, 'Emissions from current power plants in operation are projected using growth rates from NGFS GCAM6 model', ha='center', fontsize=12)
-#fig.text(0.5, 0.90, 'Solid line: Carbon budget consistent Net Zero* | Dotted line: Current Policies', ha='center', fontsize=12)
-#fig.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
-
-# Legend for all charts (handles from one plot)
-handles, labels = ax_global.get_legend_handles_labels()
+# Global legend for first graph
+handles, labels = axes[0].get_legend_handles_labels()
 fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, -0.1), fontsize=10)
 
-# Adjust the spacing to move the charts lower and create space between rows
-plt.subplots_adjust(top=0.80, bottom=0.05, hspace=0.4, wspace=0.6)
+# Add a second legend for line styles
+solid_line = Line2D([0], [0], color='black', lw=2, linestyle='-')
+dashed_line = Line2D([0], [0], color='black', lw=2, linestyle='--')
+fig.legend([solid_line, dashed_line], ['Annual Capacity Reduction (Left axis)', 'Cumulative Capacity Reduction (Right axes)'], 
+           loc='upper center', ncol=2, bbox_to_anchor=(0.5, -0.1), fontsize=10)
 
-# Show the plot
+plt.subplots_adjust(top=0.80, bottom=0.05, hspace=0.4, wspace=0.6)
 plt.show()
 
 
-
-# --------------
+# -------------------------
 # Second Graph: 8 Countries
-fig = plt.figure(figsize=(12, 6))  # Adjusted figure size for 2x5 layout
+fig = plt.figure(figsize=(12, 6))  # Adjusted figure size for grid layout
 gs = fig.add_gridspec(2, 4, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1])
 
+# Plot for each country
+plot_combined_emissions(fig.add_subplot(gs[0, 0]), df_byfuel_avoided_annual_ind, df_byfuel_avoided_cumulative_ind,
+                        'India', ylabel_left='Annual (GW)')
 
-# First row
-ax_ind = fig.add_subplot(gs[0, 0])
-plot_country_avoided_emissions(ax_ind, df_byfuel_avoided_cumulative_ind, 'India', ylabel="GW")
+plot_combined_emissions(fig.add_subplot(gs[0, 1]), df_byfuel_avoided_annual_idn, df_byfuel_avoided_cumulative_idn,
+                        'Indonesia')
 
-ax_idn = fig.add_subplot(gs[0, 1])
-plot_country_avoided_emissions(ax_idn, df_byfuel_avoided_cumulative_idn, 'Indonesia')
+plot_combined_emissions(fig.add_subplot(gs[0, 2]), df_byfuel_avoided_annual_zaf, df_byfuel_avoided_cumulative_zaf,
+                        'South Africa')
 
-ax_zaf = fig.add_subplot(gs[0, 2])
-plot_country_avoided_emissions(ax_zaf, df_byfuel_avoided_cumulative_zaf, 'South Africa')
+plot_combined_emissions(fig.add_subplot(gs[0, 3]), df_byfuel_avoided_annual_mex, df_byfuel_avoided_cumulative_mex,
+                        'Mexico', ylabel_right='Cumulative (GW)')
 
-ax_mex = fig.add_subplot(gs[0, 3])
-plot_country_avoided_emissions(ax_mex, df_byfuel_avoided_cumulative_mex, 'Mexico')
+plot_combined_emissions(fig.add_subplot(gs[1, 0]), df_byfuel_avoided_annual_vnm, df_byfuel_avoided_cumulative_vnm,
+                        'Viet Nam', ylabel_left='Annual (GW)')
 
-# Second row
-ax_vnm = fig.add_subplot(gs[1, 0])
-plot_country_avoided_emissions(ax_vnm, df_byfuel_avoided_cumulative_vnm, 'Viet Nam', ylabel="GW")
+plot_combined_emissions(fig.add_subplot(gs[1, 1]), df_byfuel_avoided_annual_irn, df_byfuel_avoided_cumulative_irn,
+                        'Iran')
 
-ax_irn = fig.add_subplot(gs[1, 1])
-plot_country_avoided_emissions(ax_irn, df_byfuel_avoided_cumulative_irn, 'Iran')
+plot_combined_emissions(fig.add_subplot(gs[1, 2]), df_byfuel_avoided_annual_tha, df_byfuel_avoided_cumulative_tha,
+                        'Thailand')
 
-ax_tha = fig.add_subplot(gs[1, 2])
-plot_country_avoided_emissions(ax_tha, df_byfuel_avoided_cumulative_tha, 'Thailand')
+plot_combined_emissions(fig.add_subplot(gs[1, 3]), df_byfuel_avoided_annual_egy, df_byfuel_avoided_cumulative_egy,
+                        'Egypt', ylabel_right='Cumulative (GW)')
 
-ax_egy = fig.add_subplot(gs[1, 3])
-plot_country_avoided_emissions(ax_egy, df_byfuel_avoided_cumulative_egy, 'Egypt')
+# Main title for the second graph
+fig.suptitle('Fossil Fuel Capacity Reduction in Power Sector:\n Current Policies vs Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
 
-# Main title
-fig.suptitle('Cumulative Avoided Fossil Fuel Capacity in Power Sector:\n Current Policies vs Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
-
-# Subtitle
-#fig.text(0.5, 0.93, 'Emissions from current power plants in operation are projected using growth rates from NGFS GCAM6 model', ha='center', fontsize=12)
-#fig.text(0.5, 0.90, 'Solid line: Carbon budget consistent Net Zero* | Dotted line: Current Policies', ha='center', fontsize=12)
-#fig.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
-
-# Legend for all charts (handles from one plot)
-handles, labels = ax_idn.get_legend_handles_labels()
+# Global legend for second graph
+handles, labels = fig.get_axes()[0].get_legend_handles_labels()
 fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, -0.1), fontsize=10)
 
-# Adjust the spacing to move the charts lower and create space between rows
+# Add a second legend for line styles
+solid_line = Line2D([0], [0], color='black', lw=2, linestyle='-')
+dashed_line = Line2D([0], [0], color='black', lw=2, linestyle='--')
+fig.legend([solid_line, dashed_line], ['Annual Capacity Reduction (Left axis)', 'Cumulative Capacity Reduction (Right axes)'], 
+           loc='upper center', ncol=2, bbox_to_anchor=(0.5, -0.1), fontsize=10)
+
 plt.subplots_adjust(top=0.80, bottom=0.05, hspace=0.4, wspace=0.6)
-
-# Show the plot
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# In[11]
-##################################################################################################
-##################### SECTION 8: BY FUEL: AVOIDED EMISSIONS --- ANNUAL & CUMULATIVE ###############
-##################################################################################################
-
-# --------------
-# ANNUAL
-# Ensure the years_columns array has the correct length for country and global data
-years_columns_countries = years_columns[:len(df_byfuel_avoided_annual_ind.columns[8:])]
-years_columns_global = years_columns[:len(df_byfuel_avoided_annual_global.columns[1:])]  # For global, adjust the slicing
-
-# Function to plot avoided emissions by fuel type for each country or global
-def plot_country_avoided_emissions(ax, df_annual, country_name, ylabel=None, is_global=False):
-    # Adjust starting column based on whether it's global or country data
-    start_col = 1 if is_global else 8  # Use 1 for global, 8 for countries
-    years_columns = years_columns_global if is_global else years_columns_countries
-    
-    # Plot Annual avoided emissions (dotted lines) on primary y-axis
-    for fuel in df_annual['fuel_type'].unique():
-        fuel_data = df_annual[df_annual['fuel_type'] == fuel]
-        ax.plot(years_columns, abs(fuel_data.iloc[0, start_col:]), color=colors.get(fuel, 'grey'), label=fuel)
-
-    # Customize the x-axis for primary y-axis
-    ax.set_xticks([str(year) for year in range(2030, 2051, 10)])
-    ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
-
-    # Set the title and labels
-    ax.set_title(f'{country_name}', fontsize=14, fontweight='bold', pad=10)
-    
-    # Set the y-axis label if specified
-    if ylabel:
-        ax.set_ylabel(ylabel, fontsize=12)
-
-
-# --------------
-# First Graph: Global, DOPUNFCCC, DEVUNFCCC
-fig = plt.figure(figsize=(12, 5))  # Adjusted figure size for 2x5 layout
-gs = fig.add_gridspec(1, 3, height_ratios=[1], width_ratios=[1, 1, 1])
-
-
-# First row
-ax_global = fig.add_subplot(gs[0, 0])
-plot_country_avoided_emissions(ax_global, df_byfuel_avoided_annual_global, 'Global', ylabel="GW", is_global= True)
-
-ax_dopunfccc = fig.add_subplot(gs[0, 1])
-plot_country_avoided_emissions(ax_dopunfccc, df_byfuel_avoided_annual_dopunfccc, 'Developed Countries', is_global= True)
-
-ax_devunfccc = fig.add_subplot(gs[0, 2])
-plot_country_avoided_emissions(ax_devunfccc, df_byfuel_avoided_annual_devunfccc, 'Developing Countries', is_global= True)
-
-# Main title
-fig.suptitle('Annual Avoided Fossil Fuel Capacity in Power Sector:\n Current Policies vs Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
-
-# Subtitle
-#fig.text(0.5, 0.93, 'Emissions from current power plants in operation are projected using growth rates from NGFS GCAM6 model', ha='center', fontsize=12)
-#fig.text(0.5, 0.90, 'Solid line: Carbon budget consistent Net Zero* | Dotted line: Current Policies', ha='center', fontsize=12)
-#fig.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
-
-# Legend for all charts (handles from one plot)
-handles, labels = ax_global.get_legend_handles_labels()
-fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, -0.1), fontsize=10)
-
-# Adjust the spacing to move the charts lower and create space between rows
-plt.subplots_adjust(top=0.80, bottom=0.05, hspace=0.4, wspace=0.6)
-
-# Show the plot
-plt.show()
-
-
-
-# --------------
-# Second Graph: 8 Countries
-fig = plt.figure(figsize=(12, 6))  # Adjusted figure size for 2x5 layout
-gs = fig.add_gridspec(2, 4, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1])
-
-
-# First row
-ax_ind = fig.add_subplot(gs[0, 0])
-plot_country_avoided_emissions(ax_ind, df_byfuel_avoided_annual_ind, 'India', ylabel="GW")
-
-ax_idn = fig.add_subplot(gs[0, 1])
-plot_country_avoided_emissions(ax_idn, df_byfuel_avoided_annual_idn, 'Indonesia')
-
-ax_zaf = fig.add_subplot(gs[0, 2])
-plot_country_avoided_emissions(ax_zaf, df_byfuel_avoided_annual_zaf, 'South Africa')
-
-ax_mex = fig.add_subplot(gs[0, 3])
-plot_country_avoided_emissions(ax_mex, df_byfuel_avoided_annual_mex, 'Mexico')
-
-# Second row
-ax_vnm = fig.add_subplot(gs[1, 0])
-plot_country_avoided_emissions(ax_vnm, df_byfuel_avoided_annual_vnm, 'Viet Nam', ylabel="GW")
-
-ax_irn = fig.add_subplot(gs[1, 1])
-plot_country_avoided_emissions(ax_irn, df_byfuel_avoided_annual_irn, 'Iran')
-
-ax_tha = fig.add_subplot(gs[1, 2])
-plot_country_avoided_emissions(ax_tha, df_byfuel_avoided_annual_tha, 'Thailand')
-
-ax_egy = fig.add_subplot(gs[1, 3])
-plot_country_avoided_emissions(ax_egy, df_byfuel_avoided_annual_egy, 'Egypt')
-
-# Main title
-fig.suptitle('Annual Avoided Fossil Fuel Capacity in Power Sector:\n Current Policies vs Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
-
-# Subtitle
-#fig.text(0.5, 0.93, 'Emissions from current power plants in operation are projected using growth rates from NGFS GCAM6 model', ha='center', fontsize=12)
-#fig.text(0.5, 0.90, 'Solid line: Carbon budget consistent Net Zero* | Dotted line: Current Policies', ha='center', fontsize=12)
-#fig.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
-
-# Legend for all charts (handles from one plot)
-handles, labels = ax_ind.get_legend_handles_labels()
-fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, -0.1), fontsize=10)
-
-# Adjust the spacing to move the charts lower and create space between rows
-plt.subplots_adjust(top=0.80, bottom=0.05, hspace=0.4, wspace=0.6)
-
-# Show the plot
-plt.show()
-
-
-
-
-
-
-
-
-# --------------
-# CUMULATIVE
-# Ensure the years_columns array has the correct length for country and global data
-years_columns_countries = years_columns[:len(df_byfuel_avoided_annual_ind.columns[8:])]
-years_columns_global = years_columns[:len(df_byfuel_avoided_annual_global.columns[1:])]  # For global, adjust the slicing
-
-# Function to plot avoided emissions by fuel type for each country or global
-def plot_country_avoided_emissions(ax, df_cumulative, country_name, ylabel=None, is_global=False):
-    # Adjust starting column based on whether it's global or country data
-    start_col = 1 if is_global else 8
-    years_columns = years_columns_global if is_global else years_columns_countries
-    
-    # Plot cumulative avoided emissions for each fuel type
-    for fuel in df_cumulative['fuel_type'].unique():
-        fuel_data = df_cumulative[df_cumulative['fuel_type'] == fuel]
-        ax.plot(years_columns, abs(fuel_data.iloc[0, start_col:]), color=colors.get(fuel, 'grey'), label=fuel)
-
-    # Customize the x-axis and format y-axis
-    ax.set_xticks([str(year) for year in range(2030, 2051, 10)])
-    ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
-
-    # Set the title and labels
-    ax.set_title(f'{country_name}', fontsize=14, fontweight='bold', pad=10)
-    
-    # Set the y-axis label if specified
-    if ylabel:
-        ax.set_ylabel(ylabel, fontsize=12)
-
-
-# --------------
-# First Graph: Global, DOPUNFCCC, DEVUNFCCC
-fig = plt.figure(figsize=(12, 5))  # Adjusted figure size for 2x5 layout
-gs = fig.add_gridspec(1, 3, height_ratios=[1], width_ratios=[1, 1, 1])
-
-
-# First row
-ax_global = fig.add_subplot(gs[0, 0])
-plot_country_avoided_emissions(ax_global, df_byfuel_avoided_cumulative_global, 'Global', ylabel="GW", is_global= True)
-
-ax_dopunfccc = fig.add_subplot(gs[0, 1])
-plot_country_avoided_emissions(ax_dopunfccc, df_byfuel_avoided_cumulative_dopunfccc, 'Developed Countries', is_global= True)
-
-ax_devunfccc = fig.add_subplot(gs[0, 2])
-plot_country_avoided_emissions(ax_devunfccc, df_byfuel_avoided_cumulative_devunfccc, 'Developing Countries', is_global= True)
-
-# Main title
-fig.suptitle('Cumulative Avoided Fossil Fuel Capacity in Power Sector:\n Current Policies vs Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
-
-# Subtitle
-#fig.text(0.5, 0.93, 'Emissions from current power plants in operation are projected using growth rates from NGFS GCAM6 model', ha='center', fontsize=12)
-#fig.text(0.5, 0.90, 'Solid line: Carbon budget consistent Net Zero* | Dotted line: Current Policies', ha='center', fontsize=12)
-#fig.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
-
-# Legend for all charts (handles from one plot)
-handles, labels = ax_global.get_legend_handles_labels()
-fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, -0.1), fontsize=10)
-
-# Adjust the spacing to move the charts lower and create space between rows
-plt.subplots_adjust(top=0.80, bottom=0.05, hspace=0.4, wspace=0.6)
-
-# Show the plot
-plt.show()
-
-
-
-# --------------
-# Second Graph: 8 Countries
-fig = plt.figure(figsize=(12, 6))  # Adjusted figure size for 2x5 layout
-gs = fig.add_gridspec(2, 4, height_ratios=[1, 1], width_ratios=[1, 1, 1, 1])
-
-
-# First row
-ax_ind = fig.add_subplot(gs[0, 0])
-plot_country_avoided_emissions(ax_ind, df_byfuel_avoided_cumulative_ind, 'India', ylabel="GW")
-
-ax_idn = fig.add_subplot(gs[0, 1])
-plot_country_avoided_emissions(ax_idn, df_byfuel_avoided_cumulative_idn, 'Indonesia')
-
-ax_zaf = fig.add_subplot(gs[0, 2])
-plot_country_avoided_emissions(ax_zaf, df_byfuel_avoided_cumulative_zaf, 'South Africa')
-
-ax_mex = fig.add_subplot(gs[0, 3])
-plot_country_avoided_emissions(ax_mex, df_byfuel_avoided_cumulative_mex, 'Mexico')
-
-# Second row
-ax_vnm = fig.add_subplot(gs[1, 0])
-plot_country_avoided_emissions(ax_vnm, df_byfuel_avoided_cumulative_vnm, 'Viet Nam', ylabel="GW")
-
-ax_irn = fig.add_subplot(gs[1, 1])
-plot_country_avoided_emissions(ax_irn, df_byfuel_avoided_cumulative_irn, 'Iran')
-
-ax_tha = fig.add_subplot(gs[1, 2])
-plot_country_avoided_emissions(ax_tha, df_byfuel_avoided_cumulative_tha, 'Thailand')
-
-ax_egy = fig.add_subplot(gs[1, 3])
-plot_country_avoided_emissions(ax_egy, df_byfuel_avoided_cumulative_egy, 'Egypt')
-
-# Main title
-fig.suptitle('Cumulative Avoided Fossil Fuel Capacity in Power Sector:\n Current Policies vs Carbon Budget Consistent Net Zero', fontsize=16, fontweight='bold', y=0.98)
-
-# Subtitle
-#fig.text(0.5, 0.93, 'Emissions from current power plants in operation are projected using growth rates from NGFS GCAM6 model', ha='center', fontsize=12)
-#fig.text(0.5, 0.90, 'Solid line: Carbon budget consistent Net Zero* | Dotted line: Current Policies', ha='center', fontsize=12)
-#fig.text(0.5, 0.85, '*Annual growth rates from NGFS GCAM6 model are modified to align global cumulative emissions \n with global carbon budget limiting warming to 1.5°C with 50% likelihood', ha='center', fontsize=12)
-
-# Legend for all charts (handles from one plot)
-handles, labels = ax_idn.get_legend_handles_labels()
-fig.legend(handles, labels, loc='lower center', ncol=3, bbox_to_anchor=(0.5, -0.1), fontsize=10)
-
-# Adjust the spacing to move the charts lower and create space between rows
-plt.subplots_adjust(top=0.80, bottom=0.05, hspace=0.4, wspace=0.6)
-
-# Show the plot
-plt.show()
-
-
-
-
-
-
-
 
 
