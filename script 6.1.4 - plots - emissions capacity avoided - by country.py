@@ -474,7 +474,7 @@ plt.show()
 # Function to plot both annual and cumulative avoided emissions on the same axes
 def plot5_capacity_reduction(ax, df_country, region_name, ylabel_left=None, ylabel_right=None):
     # Plot annual avoided emissions on the left y-axis
-    line1, = ax.plot(df_country.index, abs(df_country['capacity_annaul_avoided']), label='Annual Avoided Capacity', color=colors['Annual'])
+    line1, = ax.plot(df_country.index, df_country['capacity_annaul_reduction']*(-1), color=colors['Annual'])
     ax.set_xticks([str(year) for year in range(2030, 2051, 10)])
     ax.set_title(f'{region_name}', fontsize=12, fontweight='bold', pad=10)
     ax.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
@@ -483,7 +483,7 @@ def plot5_capacity_reduction(ax, df_country, region_name, ylabel_left=None, ylab
 
     # Create a twin y-axis for cumulative avoided emissions
     ax2 = ax.twinx()
-    line2, = ax2.plot(df_country.index, abs(df_country['capacity_cumulative_avoided']), label='Cumulative Avoided Capacity', color=colors['Cumulative'], linestyle='--')
+    line2, = ax2.plot(df_country.index, df_country['capacity_cumulative_reduction']*(-1), color=colors['Cumulative'], linestyle='--')
     ax2.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
     if ylabel_right:
         ax2.set_ylabel(ylabel_right, fontsize=10)
@@ -717,7 +717,7 @@ def plot7_capacity_reduction_byfuel(ax, df_annual, df_cumulative, region_name, y
     # Plot Annual avoided emissions on the left y-axis
     for fuel in df_annual['fuel_type'].unique():
         fuel_data = df_annual[df_annual['fuel_type'] == fuel]
-        ax.plot(years_columns, abs(fuel_data.iloc[0, start_col_annual:]), label=f'{fuel}', color=colors.get(fuel, 'grey'))
+        ax.plot(years_columns, fuel_data.iloc[0, start_col_annual:]*(-1), label=f'{fuel}', color=colors.get(fuel, 'grey'))
 
     ax.set_xticks([str(year) for year in range(2030, 2051, 10)])
     ax.set_title(f'{region_name}', fontsize=12, fontweight='bold', pad=10)
@@ -729,7 +729,7 @@ def plot7_capacity_reduction_byfuel(ax, df_annual, df_cumulative, region_name, y
     ax2 = ax.twinx()
     for fuel in df_cumulative['fuel_type'].unique():
         fuel_data = df_cumulative[df_cumulative['fuel_type'] == fuel]
-        ax2.plot(years_columns, abs(fuel_data.iloc[0, start_col_cumulative:]), label=f'Cumulative: {fuel}', color=colors.get(fuel, 'grey'), linestyle='--')
+        ax2.plot(years_columns, fuel_data.iloc[0, start_col_cumulative:]*(-1), label=f'Cumulative: {fuel}', color=colors.get(fuel, 'grey'), linestyle='--')
 
     ax2.yaxis.set_major_formatter(FuncFormatter(thousands_formatter_0dec))
     if ylabel_right:
